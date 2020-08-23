@@ -1,0 +1,33 @@
+
+version: '3.7'
+
+services:
+
+  dashboard-client:
+    image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
+    build:
+      args: [ COMMIT_SHA, CYBER_DOJO_DASHBOARD_CLIENT_PORT ]
+      context: source/client
+    container_name: test-dashboard-client
+    depends_on:
+      - dashboard-server
+    ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
+    read_only: true
+    restart: "no"
+    tmpfs: /tmp
+    volumes: [ "./test:/test:ro" ]
+
+  dashboard-server:
+    image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
+    build:
+      args: [ COMMIT_SHA, CYBER_DOJO_DASHBOARD_PORT ]
+      context: source/server
+    container_name: test-dashboard-server
+    environment: [ NO_PROMETHEUS ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
+    read_only: true
+    restart: "no"
+    tmpfs: /tmp
+    volumes: [ "./test:/test:ro" ]

@@ -1,0 +1,46 @@
+
+fullnameOverride: "dashboard"
+
+replicaCount: 1
+
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+
+volumes:
+  - name: dashboard-tmp-dir
+    emptyDir:
+      medium: Memory
+      sizeLimit: "64Mi"
+
+podSecurityContext:
+  runAsUser: 65534 # nobody
+  fsGroup: 65534 # nobody
+
+containers:
+  - name: dashboard
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    volumeMounts:
+      - name: dashboard-tmp-dir
+        mountPath: /tmp
+        readOnly: false
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    livenessProbe:
+      path: /alive?
+    readinessProbe:
+      path: /ready?
+
+envFromSecret: {}
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
