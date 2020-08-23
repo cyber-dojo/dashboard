@@ -6,8 +6,7 @@ build_tagged_images()
   remove_current_docker_image "${CYBER_DOJO_DASHBOARD_IMAGE}"
   remove_current_docker_image "${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}"
 
-  docker-compose \
-    --file "${SH_DIR}/../docker-compose.yml" \
+  augmented_docker_compose \
     build \
     --build-arg COMMIT_SHA=$(git_commit_sha)
 

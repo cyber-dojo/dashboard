@@ -16,7 +16,7 @@ wait_briefly_until_ready()
 {
   local -r name="${1}"
   local -r port="${2}"
-  local -r max_tries=10
+  local -r max_tries=20
   printf "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries})
   do
@@ -135,11 +135,9 @@ container_up()
 {
   local -r service_name="${1}"
   printf '\n'
-  docker-compose \
-    --file "${SH_DIR}/../docker-compose.yml" \
+  augmented_docker_compose \
     up \
     --detach \
-    --force-recreate \
     "${service_name}"
 }
 
@@ -150,7 +148,7 @@ containers_up()
   if [ "${1:-}" == 'server' ]; then
     container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_PORT}"        dashboard-server
   else
+    container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_PORT}"        dashboard-server
     container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" dashboard-client
   fi
-  #curl --silent --fail -X GET http://${IP_ADDRESS}:${CYBER_DOJO_DASHBOARD_PORT}/sha
 }
