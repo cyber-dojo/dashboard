@@ -9,7 +9,7 @@ class Dashboard
   # - - - - - - - - - - - - - - - - - - - - - -
 
   def ready?
-    creator.ready?
+    dashboard.ready?
   end
 
   private
