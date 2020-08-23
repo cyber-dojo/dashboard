@@ -1,0 +1,22 @@
+<script>
+'use strict';
+$(() => {
+
+  const urlParam = (name) => {
+    const results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.search);
+    return (results !== null) ? results[1] || 0 : false;
+  };
+
+  $('button#ok').click(() => {
+    const exerciseName = urlParam('exercise_name');
+    const displayName = encodeURIComponent(cd.selectedDisplayName);
+    const params = `exercise_name=${exerciseName}&languages_names[]=${displayName}`;
+    window.location = `<%= @next_url %>?${params}`;
+  });
+
+});
+</script>
+
+<div>
+  <button type="button" id="ok">ok</button>
+</div>
