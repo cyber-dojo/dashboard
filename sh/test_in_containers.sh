@@ -41,7 +41,7 @@ run_tests()
   local -r reports_dir_name=reports
   local -r tmp_dir=/tmp
   local -r coverage_root=/${tmp_dir}/${reports_dir_name}
-  local -r test_dir="${SH_DIR}/../test/${type}"
+  local -r test_dir="${ROOT_DIR}/test/${type}"
   local -r reports_dir=${test_dir}/${reports_dir_name}
   local -r test_log=test.log
   local -r container_name="test-dashboard-${type}" # eg test-dashboard-server

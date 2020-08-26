@@ -1,21 +1,21 @@
-Run options: --seed 24546
+Run options: --seed 48192
 
 # Running:
 
 ...........
 
-Finished in 0.006971s, 1577.9140 runs/s, 6885.4430 assertions/s.
+Finished in 0.006961s, 1580.3188 runs/s, 6895.9365 assertions/s.
 
 11 runs, 48 assertions, 0 failures, 0 errors, 0 skips
 Coverage report generated for MiniTest to //tmp/reports. 9759 / 22520 LOC (43.33%) covered.
 
 Slowest 5 tests are...
-0.0004 - 4499F4:dashboard_td_gapper_test.rb:193:fully gapped with collapsing and td-holes
-0.0001 - 4499F5:dashboard_td_gapper_test.rb:310:time-ticks with no collapsing and no td-holes
-0.0001 - 4499F6:dashboard_td_gapper_test.rb:344:time-ticks with collapsing and td-holes
+0.0003 - 4499F4:dashboard_td_gapper_test.rb:193:fully gapped with collapsing and td-holes
+0.0002 - 4499F6:dashboard_td_gapper_test.rb:344:time-ticks with collapsing and td-holes
+0.0002 - 4499F5:dashboard_td_gapper_test.rb:310:time-ticks with no collapsing and no td-holes
 0.0001 - 4499F3:dashboard_td_gapper_test.rb:166:fully gapped with no collapsing and no td-holes
 0.0001 - 449634:dashboard_td_gapper_test.rb:130:strip removes lightless tds from both ends
-0.0001 - 449F5E:dashboard_td_gapper_test.rb:37:stats                             
+0.0001 - 449E42:dashboard_td_gapper_test.rb:76:vertical bleed                    
 
 
                  failures |       0   <=     0 | [32m true [0m

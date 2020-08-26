@@ -10,13 +10,13 @@ build_tagged_images()
     build \
     --build-arg COMMIT_SHA=$(git_commit_sha)
 
-  docker tag $(image_name):$(image_tag) $(image_name):latest
+  docker tag ${CYBER_DOJO_DASHBOARD_IMAGE}:$(image_tag) ${CYBER_DOJO_DASHBOARD_IMAGE}:latest
   docker tag ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:$(image_tag) ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:latest
 
   check_embedded_env_var
   echo
-  echo "CYBER_DOJO_DASHBOARD_TAG=$(image_tag)"
-  echo "CYBER_DOJO_DASHBOARD_SHA=$(image_sha)"
+  echo "CYBER_DOJO_DASHBOARD_TAG=${CYBER_DOJO_DASHBOARD_TAG}"
+  echo "CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -

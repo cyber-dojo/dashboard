@@ -1,7 +1,5 @@
 #!/bin/bash -Eeu
 
-readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
 # - - - - - - - - - - - - - - - - - - - - - - - -
 image_sha()
 {
