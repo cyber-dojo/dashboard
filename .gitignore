@@ -1,0 +1,5 @@
+test/server/reports/*
+test/server/reports/.*
+
+test/client/reports/*
+test/client/reports/.*
