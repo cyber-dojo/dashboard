@@ -1,5 +1,5 @@
 This cyber-dojo/ dir holds test data for saver.
-It is tar-piped into the saver container in the sh/run_tests_in_container.sh script.
+It is tar-piped into the saver container in the sh/test_in_containers.sh script.
 
 saver
 -----
