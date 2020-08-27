@@ -21,6 +21,14 @@ class App < AppBase
 
   # - - - - - - - - - - - - - - - - - - - - -
 
+  get '/show', provides:[:html] do
+    respond_to do |format|
+      format.html do
+        erb:'show'
+      end
+    end
+  end
+
   private
 
   def params_args

@@ -144,6 +144,12 @@ container_up()
 # - - - - - - - - - - - - - - - - - - -
 containers_up()
 {
+  if [ "${1:-}" == 'api-demo' ]; then
+    container_up nginx
+    container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_PORT}"        dashboard-server
+    return
+  fi
+
   export NO_PROMETHEUS=true
   if [ "${1:-}" == 'server' ]; then
     container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_PORT}"        dashboard-server

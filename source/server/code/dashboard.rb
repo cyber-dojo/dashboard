@@ -23,13 +23,10 @@ class Dashboard
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-
   private
 
   def dependent_services
-    @dependent_services ||= [
-      saver
-    ]
+    [ saver ]
   end
 
   def saver

@@ -3,7 +3,6 @@
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SH_DIR="${ROOT_DIR}/sh"
 source ${SH_DIR}/show_help_if_requested.sh
-source ${SH_DIR}/augmented_docker_compose.sh
 source ${SH_DIR}/build_tagged_images.sh
 source ${SH_DIR}/containers_up.sh
 source ${SH_DIR}/test_in_containers.sh
