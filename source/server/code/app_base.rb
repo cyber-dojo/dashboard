@@ -15,13 +15,11 @@ class AppBase < Sinatra::Base
 
   silently { register Sinatra::Contrib }
   set :port, ENV['PORT']
+  set :environment, Sprockets::Environment.new
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  set :environment, Sprockets::Environment.new
-  environment.append_path('code/assets/javascripts')
   environment.append_path('code/assets/stylesheets')
-  environment.js_compressor  = Uglifier.new(harmony: true)
   environment.css_compressor = :sassc
 
   get '/assets/app.css', provides:[:css] do
@@ -32,6 +30,11 @@ class AppBase < Sinatra::Base
       end
     end
   end
+
+  # - - - - - - - - - - - - - - - - - - - - - -
+
+  environment.append_path('code/assets/javascripts')
+  environment.js_compressor  = Uglifier.new(harmony: true)
 
   get '/assets/app.js', provides:[:js] do
     respond_to do |format|
@@ -45,7 +48,7 @@ class AppBase < Sinatra::Base
   # - - - - - - - - - - - - - - - - - - - - - -
 
   def self.get_probe(name)
-    get "/#{name}" do
+    get "/#{name}", provides:[:json] do
       result = instance_exec {
         probe.public_send(name)
       }
