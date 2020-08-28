@@ -18,7 +18,7 @@ html_demo()
   if [ "${1:-}" == '--no-browser' ]; then
     containers_down
   else
-    open "http://$(ip_address):$(port)/dashboard/show"
+    open "http://$(ip_address):$(port)/dashboard/show/FxWwrr"
   fi
 }
 

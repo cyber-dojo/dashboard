@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require_relative 'app_base'
-require_relative 'dashboard'
+require_relative 'probe'
 
 class App < AppBase
 
@@ -11,19 +11,20 @@ class App < AppBase
 
   attr_reader :externals
 
-  def dashboard
-    Dashboard.new(externals)
-  end
-
   get_probe(:alive?) # curl/k8s
   get_probe(:ready?) # curl/k8s
   get_probe(:sha)    # identity
+
+  def probe
+    Probe.new(externals)
+  end
 
   # - - - - - - - - - - - - - - - - - - - - -
 
   get '/show', provides:[:html] do
     respond_to do |format|
       format.html do
+        # setup instance variables
         erb:'show'
       end
     end

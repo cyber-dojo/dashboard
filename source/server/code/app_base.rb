@@ -47,7 +47,7 @@ class AppBase < Sinatra::Base
   def self.get_probe(name)
     get "/#{name}" do
       result = instance_exec {
-        dashboard.public_send(name)
+        probe.public_send(name)
       }
       json({ name => result })
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Dashboard
+class Probe
 
   def initialize(externals)
     @externals = externals
