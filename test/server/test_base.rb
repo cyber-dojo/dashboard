@@ -3,7 +3,7 @@ require_relative '../id58_test_base'
 require_source 'app'
 require_source 'externals'
 
-class DashboardTestBase < Id58TestBase
+class TestBase < Id58TestBase
 
   include Rack::Test::Methods # [1]
 

@@ -1,7 +1,7 @@
-require_relative 'dashboard_test_base'
-require_source 'dashboard_td_gapper'
+require_relative 'test_base'
+require_source 'td_gapper'
 
-class DashboardTdGapperTest < DashboardTestBase
+class TdGapperTest < TestBase
 
   def self.id58_prefix
     '449'
@@ -10,7 +10,7 @@ class DashboardTdGapperTest < DashboardTestBase
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def id58_setup
-    @gapper = DashboardTdGapper.new(start, seconds_per_td, max_seconds_uncollapsed)
+    @gapper = TdGapper.new(start, seconds_per_td, max_seconds_uncollapsed)
   end
 
   attr_reader :gapper
@@ -193,7 +193,7 @@ class DashboardTdGapperTest < DashboardTestBase
   test '9F4',
   'fully gapped with collapsing and td-holes' do
     start = Time.mktime(*[year,month,day,hour,0,0])
-    @gapper = DashboardTdGapper.new(start, seconds_per_td=60, max_seconds_uncollapsed=60*4)
+    @gapper = TdGapper.new(start, seconds_per_td=60, max_seconds_uncollapsed=60*4)
 
     all_lights =
     {
@@ -310,7 +310,7 @@ class DashboardTdGapperTest < DashboardTestBase
   test '9F5',
   'time-ticks with no collapsing and no td-holes' do
     start = Time.mktime(*[year,month,day,hour,0,0])
-    @gapper = DashboardTdGapper.new(start, seconds_per_td=60, max_seconds_uncollapsed=60*4)
+    @gapper = TdGapper.new(start, seconds_per_td=60, max_seconds_uncollapsed=60*4)
 
     all_lights =
     {
@@ -344,7 +344,7 @@ class DashboardTdGapperTest < DashboardTestBase
   test '9F6',
   'time-ticks with collapsing and td-holes' do
     start = Time.mktime(*[year,month,day,hour,0,0])
-    @gapper = DashboardTdGapper.new(start, seconds_per_td=60, max_seconds_uncollapsed=60*4)
+    @gapper = TdGapper.new(start, seconds_per_td=60, max_seconds_uncollapsed=60*4)
 
     all_lights =
     {

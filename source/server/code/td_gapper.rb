@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DashboardTdGapper
+class TdGapper
 
   def initialize(start, seconds_per_td, max_seconds_uncollapsed)
     @start = start
