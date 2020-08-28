@@ -1,2 +1,14 @@
 
-Hello from the dashboard
+<div id="dashboard-page">
+  <%= erb :heartbeat %>
+  <%= erb :refresh_fn %>
+  <table>
+    <tr>
+      <td><div id='age-box'><%= erb :age %></div></td>
+      <td><%= erb :auto_refresh_button %></td>
+      <td><%= erb :minute_columns_button %></td>
+      <td><%= erb :progress_button %></td>
+    </tr>
+  </table>
+  <%= erb :traffic_lights %>
+</div>
