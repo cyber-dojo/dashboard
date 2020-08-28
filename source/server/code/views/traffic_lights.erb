@@ -48,7 +48,7 @@ $(() => {
   		    <% seconds = @time_ticks[td_no] %>
   		    <th>
     	      <% if seconds.class != Hash %>
-              <div class='time-tick' data-tip="<%= raw time_tick(seconds) %>"></div>
+              <div class='time-tick' data-tip="<%= time_tick(seconds) %>"></div>
             <% end %>
           </th>
         <% end %>
@@ -66,9 +66,9 @@ $(() => {
 
       <th>
         <div class="fixed-column">
-          <%= raw diff_avatar_image(kata_id, avatar_index, lights.last.index) %>
-          <%= raw pie_chart(kata_id, lights) %>
-          <%= raw traffic_light_count(lights) %>
+          <%= diff_avatar_image(kata_id, avatar_index, lights.last.index) %>
+          <%= pie_chart(kata_id, lights) %>
+          <%= traffic_light_count(lights) %>
         </div>
       </th>
 
@@ -83,7 +83,7 @@ $(() => {
       		  <% end %>
       		  <% if lights.is_a?(Array) %>
       		    <% lights.each do |light| %>
-                <%= raw diff_traffic_light(light, avatar_index, number) %>
+                <%= diff_traffic_light(light, avatar_index, number) %>
                 <% number += 1 %>
               <% end %>
       		  <% end %>

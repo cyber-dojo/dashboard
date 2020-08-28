@@ -1,10 +1,8 @@
 # frozen_string_literal: true
-
 require_relative 'avatars'
 require_relative 'group'
 require_relative 'id_pather'
 require_relative 'manifest'
-require_relative 'runner'
 require_relative 'schema'
 require_relative 'version'
 
@@ -16,7 +14,7 @@ class Kata
   end
 
   def id
-    @params[:id]
+    @params['id']
   end
 
   def exists?
@@ -51,22 +49,6 @@ class Kata
     else
       ''
     end
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def run_tests
-    Runner.new(@externals).run(@params)
-  end
-
-  def ran_tests(id, index, files, stdout, stderr, status, summary)
-    kata.ran_tests(id, index, files, stdout, stderr, status, summary)
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def revert(id, index, files, stdout, stderr, status, summary)
-    kata.revert(id, index, files, stdout, stderr, status, summary)
   end
 
   # - - - - - - - - - - - - - - - - -

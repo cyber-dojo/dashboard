@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative 'manifest'
 require_relative 'schema'
 require_relative 'version'
@@ -12,7 +11,7 @@ class Group
   end
 
   def id
-    @params[:id]
+    @params['id']
   end
 
   def exists?

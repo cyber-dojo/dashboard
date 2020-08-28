@@ -32,7 +32,7 @@ class ExternalSaver
   # - - - - - - - - - - - - - - - - - - -
   # primitives
 
-  def run(command)
+  def assert(command)
     @http.post(__method__, { command:command })
   end
 
@@ -40,6 +40,10 @@ class ExternalSaver
   # batches
 
   def assert_all(commands)
+    @http.post(__method__, { commands:commands })
+  end
+
+  def run_all(commands)
     @http.post(__method__, { commands:commands })
   end
 

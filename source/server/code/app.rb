@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_relative 'app_base'
 require_relative 'probe'
+require_relative 'helpers/app_helpers'
 
 class App < AppBase
 
@@ -21,19 +22,15 @@ class App < AppBase
 
   # - - - - - - - - - - - - - - - - - - - - -
 
-  get '/show', provides:[:html] do
+  get '/show/:id', provides:[:html] do
     respond_to do |format|
       format.html do
-        # setup instance variables
-        erb:'show'
+        gather
+        erb :show
       end
     end
   end
 
-  private
-
-  def params_args
-    symbolized(params)
-  end
+  helpers AppHelpers
 
 end
