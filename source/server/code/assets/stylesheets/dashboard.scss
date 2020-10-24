@@ -1,5 +1,19 @@
 @import "lib/all";
 
+@mixin  right-align($margin-right) { margin: { left : auto; right: $margin-right; } }
+@mixin font-size-tiny()    { font-size: 0.80em; }
+@mixin diff-line-count
+{
+  text-align: right;
+      margin: 0px;
+      margin: { bottom: 2px; }
+     padding: 2px;
+   font-size: 13px;
+       width: 20px;
+}
+
+// - - - - - - - - - - - - - - - - - - -
+
 #dashboard-page
 {
   margin: { left: 35px; top: 40px; }

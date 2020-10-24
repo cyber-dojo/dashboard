@@ -46,14 +46,17 @@ class AppBase < Sinatra::Base
     end
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - -
+  private
 
-  def self.get_probe(name)
+  def self.get_delegate(klass, name)
     get "/#{name}", provides:[:json] do
-      result = instance_exec {
-        probe.public_send(name)
-      }
-      json({ name => result })
+      respond_to do |format|
+        format.json {
+          target = klass.new(@externals)
+          result = target.public_send(name, params)
+          json({ name => result })
+        }
+      end
     end
   end
 
@@ -62,8 +65,6 @@ class AppBase < Sinatra::Base
   def json_args
     symbolized(json_payload)
   end
-
-  private
 
   def symbolized(h)
     # named-args require symbolization

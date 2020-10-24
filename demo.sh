@@ -18,8 +18,7 @@ html_demo()
   if [ "${1:-}" == '--no-browser' ]; then
     containers_down
   else
-    #open "http://$(ip_address):80/dashboard/show/FxWwrr"
-    open "http://$(ip_address):80/"
+    open "http://$(ip_address):80/dashboard/show/FxWwrr"
   fi
 }
 
@@ -35,7 +34,7 @@ api_demo()
   curl_200           assets/app.css 'Content-Type: text/css'
   curl_200           assets/app.js  'Content-Type: application/javascript'
   echo
-  curl_200           dashboard/show/FxWwrr  
+  curl_200           show/FxWwrr  dashboard-page
   echo
 }
 

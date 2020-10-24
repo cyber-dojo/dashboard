@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require_relative 'app_base'
-require_relative 'probe'
+require_relative 'prober'
 require_relative 'helpers/app_helpers'
 
 class App < AppBase
@@ -12,15 +12,9 @@ class App < AppBase
 
   attr_reader :externals
 
-  get_probe(:alive?) # curl/k8s
-  get_probe(:ready?) # curl/k8s
-  get_probe(:sha)    # identity
-
-  def probe
-    Probe.new(externals)
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - -
+  get_delegate(Prober, :alive?)
+  get_delegate(Prober, :ready?)
+  get_delegate(Prober, :sha)
 
   get '/show/:id', provides:[:html] do
     respond_to do |format|
@@ -30,6 +24,8 @@ class App < AppBase
       end
     end
   end
+
+  private
 
   helpers AppHelpers
 

@@ -18,13 +18,13 @@ wait_briefly_until_ready()
   local -r port="${2}"
   local -r max_tries=20
   printf "Waiting until ${name} is ready"
-  for _ in $(seq ${max_tries})
+  for n in $(seq ${max_tries})
   do
     if ready ${port}; then
       printf '.OK\n'
       return
     else
-      printf '.'
+      printf ".${n}"
       sleep 0.1
     fi
   done
@@ -148,7 +148,6 @@ containers_up()
     container_up nginx
     container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_PORT}"        dashboard-server
   else
-    export NO_PROMETHEUS=true
     if [ "${1:-}" == 'server' ]; then
       container_up_ready_and_clean "${CYBER_DOJO_DASHBOARD_PORT}"        dashboard-server
     else
