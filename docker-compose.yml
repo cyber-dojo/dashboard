@@ -8,8 +8,8 @@ services:
       context: source/nginx_stub
     container_name: test-dashboard-nginx
     depends_on:
-      - dashboard-server
-    image: cyberdojo/nginx_custom_stub
+      - dashboard-client
+    image: cyberdojo/nginx_dashboard_stub
     ports: [ "${CYBER_DOJO_NGINX_PORT}:${CYBER_DOJO_NGINX_PORT}" ]
     user: root
 

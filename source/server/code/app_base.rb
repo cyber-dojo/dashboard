@@ -9,7 +9,8 @@ require 'uglifier'
 
 class AppBase < Sinatra::Base
 
-  def initialize
+  def initialize(externals)
+    @externals = externals
     super(nil)
   end
 

@@ -18,7 +18,8 @@ html_demo()
   if [ "${1:-}" == '--no-browser' ]; then
     containers_down
   else
-    open "http://$(ip_address):$(port)/dashboard/show/FxWwrr"
+    #open "http://$(ip_address):80/dashboard/show/FxWwrr"
+    open "http://$(ip_address):80/"
   fi
 }
 
@@ -27,14 +28,14 @@ api_demo()
 {
   echo
   echo API
-  curl_json_body_200 dashboard/alive
-  curl_json_body_200 dashboard/ready
-  curl_json_body_200 dashboard/sha
+  curl_json_body_200 alive
+  curl_json_body_200 ready
+  curl_json_body_200 sha
   echo
-  curl_200           dashboard/assets/app.css 'Content-Type: text/css'
-  curl_200           dashboard/assets/app.js  'Content-Type: application/javascript'
+  curl_200           assets/app.css 'Content-Type: text/css'
+  curl_200           assets/app.js  'Content-Type: application/javascript'
   echo
-  #curl_200           dashboard/show/FxWwrr  columns
+  curl_200           dashboard/show/FxWwrr  
   echo
 }
 
@@ -55,7 +56,7 @@ curl_json_body_200()
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
   local -r result=$(tail -n 1 "$(log_filename)")
-  echo "$(tab)GET ${route} => 200 ${result}"
+  echo "$(tab)GET ${route} => 200 ...|${result}"
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,11 +74,11 @@ curl_200()
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
   local -r result=$(grep "${pattern}" "$(log_filename)" | head -n 1)
-  echo "$(tab)GET ${route} => 200 ${result}"
+  echo "$(tab)GET ${route} => 200 ...|${result}"
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-port() { echo -n "${CYBER_DOJO_NGINX_PORT}"; }
+port() { echo -n "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
 tab() { printf '\t'; }
 log_filename() { echo -n /tmp/dashboard.log; }

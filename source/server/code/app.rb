@@ -6,7 +6,7 @@ require_relative 'helpers/app_helpers'
 class App < AppBase
 
   def initialize(externals)
-    super()
+    super(externals)
     @externals = externals
   end
 
