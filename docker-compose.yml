@@ -36,21 +36,9 @@ services:
       context: source/server
     container_name: test-dashboard-server
     depends_on:
-      - avatars
       - saver
-    environment: [ NO_PROMETHEUS ]
     ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
     restart: "no"
     tmpfs: /tmp
     volumes: [ "./test:/test:ro" ]
-
-  avatars:
-    image: ${CYBER_DOJO_AVATARS_IMAGE}:${CYBER_DOJO_AVATARS_TAG}
-    user: nobody
-    environment: [ NO_PROMETHEUS=true ]
-    container_name: test-dashboard-avatars
-    read_only: true
-    ports: [ "${CYBER_DOJO_AVATARS_PORT}:${CYBER_DOJO_AVATARS_PORT}" ]
-    restart: 'no'
-    tmpfs: /tmp
