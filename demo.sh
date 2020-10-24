@@ -32,7 +32,7 @@ api_demo()
   curl_json_body_200 dashboard/sha
   echo
   curl_200           dashboard/assets/app.css 'Content-Type: text/css'
-  curl_200           dashboard/assets/app.js 'Content-Type: application/javascript'
+  curl_200           dashboard/assets/app.js  'Content-Type: application/javascript'
   echo
   #curl_200           dashboard/show/FxWwrr  columns
   echo

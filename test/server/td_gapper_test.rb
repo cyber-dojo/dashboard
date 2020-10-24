@@ -1,5 +1,5 @@
 require_relative 'test_base'
-require_source 'td_gapper'
+require_source 'helpers/td_gapper'
 
 class TdGapperTest < TestBase
 
