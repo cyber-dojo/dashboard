@@ -1,6 +1,6 @@
 @import "lib/all";
 
-@mixin  right-align($margin-right) { margin: { left : auto; right: $margin-right; } }
+@mixin right-align($margin-right) { margin: { left : auto; right: $margin-right; } }
 @mixin font-size-tiny()    { font-size: 0.80em; }
 @mixin diff-line-count
 {
