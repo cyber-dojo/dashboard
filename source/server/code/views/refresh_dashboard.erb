@@ -2,19 +2,36 @@
 'use strict';
 $(() => {
 
+  const $lights = $('#traffic-lights2');
+  const $tHeadTr = $('table thead tr', $lights);
+  const $tBody = $('table tbody', $lights);
+
   const id = '<%= @group.id %>';
 
   cd.refreshDashboard = () => {
     const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
     $.getJSON(`/dashboard/heartbeat?id=${id}&minute_columns=${minuteColumns}`, {}, (data) => {
-      // TODO: empty the table (via its ID)
       updateTimeTicks(data.time_ticks);
       updateAvatars(data.avatars);
     });
   };
 
   const updateTimeTicks = (timeTicks) => {
-    alert(`update time_ticks from: ${JSON.stringify(timeTicks)}`);
+    $tHeadTr.empty();
+    if (cd.minuteColumns.isChecked()) {
+      Object.keys(timeTicks).forEach(function(key) {
+        const seconds = timeTicks[key];
+        const $th = $('<th>');
+        if (Number.isInteger(seconds)) {
+          $th.append($('<div>', {
+            class:'time-tick',
+            'data-tip':'TODO'
+          }).text(seconds)); // faked
+        }
+        $tHeadTr.append($th);
+      });
+      $tHeadTr.append($('<th>')); // to match scroll-marker
+    }
   };
 
   const updateAvatars = (avatars) => {
