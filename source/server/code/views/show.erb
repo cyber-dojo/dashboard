@@ -1,4 +1,3 @@
-
 <div id="dashboard-page">
   <table>
     <tr>
@@ -11,13 +10,19 @@
   <%= erb :traffic_lights %>
   <%= erb :traffic_lights2 %>
 </div>
-
 <%= erb :refresh_dashboard %>
-<%= erb :heartbeat %>
 
 <script>
 'use strict';
 $(() => {
-  cd.refreshDashboard();
+
+  const heartbeat = () => {
+    const seconds = (n) => n * 1000;
+    cd.refreshDashboard();
+    setTimeout(heartbeat, seconds(10));
+  };
+
+  heartbeat();
+
 });
 </script>

@@ -1,3 +1,12 @@
+<% if @group.manifest.progress_regexs != [] %>
+  <div id="progress-button-box">
+    <button type="button"
+              id="progress-button">
+      progress?
+    </button>
+  </div>
+<% end %>
+
 <script>
 'use strict';
 $(() => {
@@ -57,12 +66,3 @@ $(() => {
 
 });
 </script>
-
-<% if @group.manifest.progress_regexs != [] %>
-  <div id="progress-button-box">
-    <button type="button"
-              id="progress-button">
-      progress?
-    </button>
-  </div>
-<% end %>

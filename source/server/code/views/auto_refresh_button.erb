@@ -2,13 +2,14 @@
 'use strict';
 $(() => {
 
+  const initially = '<%= @auto_refresh %>' === 'true';
   const checkBox = $('#auto-refresh-checkbox');
 
   checkBox.isChecked = () => checkBox.is(':checked');
   checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
 
-  checkBox.attr('checked', '<%= @auto_refresh %>' === 'true')
-          .click(() => cd.dashboardHeartbeat());
+  checkBox.attr('checked', initially)
+          .click(() => cd.refreshDashboard());
 
   $('#auto-refresh-text').click(() => {
     checkBox.toggle();
@@ -16,7 +17,7 @@ $(() => {
   });
 
   cd.autoRefresh = checkBox;
-  
+
 });
 </script>
 
