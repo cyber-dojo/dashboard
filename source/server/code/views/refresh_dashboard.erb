@@ -10,31 +10,32 @@ $(() => {
 
   cd.refreshDashboard = () => {
     const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
-    $.getJSON(`/dashboard/heartbeat?id=${id}&minute_columns=${minuteColumns}`, {}, (data) => {
-      updateTimeTicks(data.time_ticks);
-      updateAvatars(data.avatars);
+    const args = `id=${id}&minute_columns=${minuteColumns}`;
+    const url = `/dashboard/heartbeat?${args}`;
+    $.getJSON(url, {}, (data) => {
+      refreshTableHeadWith(data.time_ticks);
+      refreshTableBodyWith(data.avatars);
     });
   };
 
-  const updateTimeTicks = (timeTicks) => {
+  const refreshTableHeadWith = (timeTicks) => {
     $tHeadTr.empty();
     if (cd.minuteColumns.isChecked()) {
+      $tHeadTr.append($('<tr>')); // to match avatar-image|pie-chart|traffic-light-count
       Object.keys(timeTicks).forEach(function(key) {
-        const seconds = timeTicks[key];
+        const dhs = timeTicks[key];
         const $th = $('<th>');
-        if (Number.isInteger(seconds)) {
-          $th.append($('<div>', {
-            class:'time-tick',
-            'data-tip':'TODO'
-          }).text(seconds)); // faked
+        if (Array.isArray(dhs)) {
+          $th.append($('<div>', { class:'time-tick' }));
+          cd.createTip($th, cd.timeTick(dhs));
         }
         $tHeadTr.append($th);
-      });
+      }); // forEach
       $tHeadTr.append($('<th>')); // to match scroll-marker
     }
   };
 
-  const updateAvatars = (avatars) => {
+  const refreshTableBodyWith = (avatars) => {
     // for each avatar...
     //   update avatar-image
     //   update pie-chart

@@ -39,7 +39,8 @@ class App < AppBase
     respond_to { |wants|
       wants.json {
         gather
-        json({'time_ticks':@time_ticks})
+        time_ticks = modified(@time_ticks)
+        json({'time_ticks':time_ticks})
       }
     }
   end
@@ -47,5 +48,25 @@ class App < AppBase
   private
 
   helpers AppHelpers
+
+  def modified(ticks)
+    ticks.inject({}) { |h, (k, v)| h[k] = dhm(v); h }
+  end
+
+  def dhm(value)
+    if value.is_a?(Integer)
+      time_tick2(value)
+    else
+      value # Hash === collapsed columns
+    end
+  end
+
+  def time_tick2(seconds)
+    # Avoiding Javascript integer arithmetic 
+    minutes = (seconds / 60) % 60
+    hours   = (seconds / 60 / 60) % 24
+    days    = (seconds / 60 / 60 / 24)
+    [days, hours, minutes]
+  end
 
 end
