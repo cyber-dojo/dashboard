@@ -1,0 +1,9 @@
+
+.avatar-image img
+{
+  @include rounded-corner(6px);
+    width: 30px;
+   height: 30px;
+   margin: 0px;
+  padding: 0px;
+}
