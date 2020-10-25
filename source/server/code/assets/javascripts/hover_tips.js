@@ -21,7 +21,6 @@ var cyberDojo = (function(cd, $) {
       // server currently reads JSON args from the request body.
       $.post('/differ/diff_summary', JSON.stringify(args), (data) => {
         const tip = tipHtml($light, avatarIndex, colour, number, data.diff_summary);
-        // tip arrives but jQuery position() is failing I think
         cd.showHoverTip($light, tip);
       });
     });
@@ -123,10 +122,6 @@ var cyberDojo = (function(cd, $) {
 
   // - - - - - - - - - - - - - - - - - - - -
 
-  const hoverTipContainer = () => {
-    return $('#hover-tip-container');
-  };
-
   cd.setTip = (node, setTipCallBack) => {
     // The speed of the mouse could easily exceed
     // the speed of the getJSON callback...
@@ -154,8 +149,6 @@ var cyberDojo = (function(cd, $) {
   cd.showHoverTip = (node, tip) => {
     if (!node.attr('disabled')) {
       if (!node.hasClass('mouse-has-left')) {
-        // position() is the jQuery UI plug-in
-        // https://jqueryui.com/position/
         const hoverTip = $('<div>', {
           'class': 'hover-tip'
         }).html(tip).position({
@@ -167,6 +160,12 @@ var cyberDojo = (function(cd, $) {
         hoverTipContainer().html(hoverTip);
       }
     }
+  };
+
+  // - - - - - - - - - - - - - - - - - - - -
+
+  const hoverTipContainer = () => {
+    return $('#hover-tip-container');
   };
 
   // - - - - - - - - - - - - - - - - - - - -
