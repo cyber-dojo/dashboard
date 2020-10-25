@@ -17,12 +17,12 @@ class App < AppBase
   get_delegate(Prober, :sha)
 
   get '/show/:id', provides:[:html] do
-    respond_to do |format|
-      format.html do
+    respond_to { |wants|
+      wants.html {
         gather
         erb :show
-      end
-    end
+      }
+    }
   end
 
   private
