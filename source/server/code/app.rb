@@ -20,6 +20,16 @@ class App < AppBase
     respond_to { |wants|
       wants.html {
         gather
+        if false
+          p "@gapped " + ('~'*60)
+          print JSON.pretty_generate(@gapped)
+          p "@all_lights " + ('~'*60)
+          print JSON.pretty_generate(@all_lights)
+          p "@all_indexes " + ('~'*60)
+          print JSON.pretty_generate(@all_indexes)
+          p "@time_ticks " + ('~'*60)
+          print JSON.pretty_generate(@time_ticks)
+        end
         erb :show
       }
     }
