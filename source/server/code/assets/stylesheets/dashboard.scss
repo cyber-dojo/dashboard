@@ -1,6 +1,7 @@
 @import "lib/all";
 @import "avatar-image";
 @import "pie-chart";
+@import "traffic-light-count";
 
 @mixin right-align($margin-right) { margin: { left : auto; right: $margin-right; } }
 @mixin font-size-tiny()    { font-size: 0.80em; }
