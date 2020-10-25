@@ -141,6 +141,7 @@
     }
     .fixed-column
     {
+      height:26px;
       display: flex;
       .avatar-image img
       {
@@ -150,6 +151,7 @@
       .traffic-light-count-wrapper
       {
         width: 40px;
+        height:26px;
         .traffic-light-count
         {
           text-align: right;
@@ -162,9 +164,11 @@
        border: { bottom: dotted lighten($darker-color, 3%) 1px; }
       &.odd  { background: lighten($darker-color,  5%); }
       &.even { background: lighten($darker-color, 11%); }
+      height:26px;
     }
     .minute-box
     {
+              height: 26px;      
              display: flex;
                float: left;
       vertical-align: middle;
