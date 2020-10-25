@@ -6,7 +6,6 @@ module AppHelpers # mix-in
   module_function
 
   def pie_chart(kata_id, lights)
-    # used in dashboard view
     pie_chart_from_counts({
             red: colour_count(lights, :red),
           amber: colour_count(lights, :amber),
@@ -16,7 +15,7 @@ module AppHelpers # mix-in
   end
 
   def pie_chart_from_counts(counts, key)
-    size = 32
+    size = 26
      '<div ' +
        " class='pie-chart-wrapper'" +
        " width='#{size}px'" +
@@ -31,7 +30,7 @@ module AppHelpers # mix-in
           " width='#{size}px'" +
           " height='#{size}px'>" +
         '</canvas>' +
-      '</div>';
+      '</div>'
   end
 
 end
