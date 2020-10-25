@@ -2,8 +2,6 @@
 'use strict';
 $(() => {
 
-  const version = '<%= @version %>';
-
   $('.kata-row').each((_i,row) => {
     let index = 0; // each avatar-row must reset traffic-light index to zero
     $.each($('.diff-traffic-light', $(row)), (_,light) => {
@@ -12,21 +10,23 @@ $(() => {
       const avatarIndex = $light.data('avatar-index');
       const wasIndex = index;
       const nowIndex = $light.data('index');
+      const colour = $light.data('colour');
       const number = $light.data('number');
-      $light.click(() => {
-        window.open(cd.showReviewUrl(id, wasIndex, nowIndex));
-      });
-      cd.setupTrafficLightTip($light, version, id, avatarIndex, wasIndex, nowIndex, number);
+      $light.click(() => window.open(cd.showReviewUrl(id, wasIndex, nowIndex)));
+      cd.setupTrafficLightTip($light, id, avatarIndex, wasIndex, nowIndex, colour, number);
       index = nowIndex;
     });
   });
 
-  $('.kata-row .avatar-image').click(element => {
+  const avatarImages = $('.kata-row .avatar-image');
+
+  avatarImages.click(element => {
     const e = $(element.currentTarget);
     const id = e.data('id');
     const index = e.data('index');
     window.open(cd.showReviewUrl(id, index, index));
   });
+  // TODO: cd.setupAvatarNameHoverTip(...
 
   cd.pieChart($('#traffic-lights .pie'));
   cd.setupHoverTips($('[data-tip]'));

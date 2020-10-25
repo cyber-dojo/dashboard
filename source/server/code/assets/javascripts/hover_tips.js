@@ -14,46 +14,20 @@ var cyberDojo = (function(cd, $) {
 
   // - - - - - - - - - - - - - - - - - - - -
 
-  cd.setupTrafficLightTip2 = ($light, kataId, avatarIndex, wasIndex, nowIndex, colour, number) => {
+  cd.setupTrafficLightTip = ($light, kataId, avatarIndex, wasIndex, nowIndex, colour, number) => {
     cd.setTip($light, () => {
       const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
       // This should be $.getJSON but the receiving Rack
       // server currently reads JSON args from the request body.
       $.post('/differ/diff_summary', JSON.stringify(args), (data) => {
-        cd.showHoverTip($light, tipHtml2($light, avatarIndex, colour, number, data.diff_summary));
+        const tip = tipHtml($light, avatarIndex, colour, number, data.diff_summary);
+        // tip arrives but jQuery position() is failing I think
+        cd.showHoverTip($light, tip);
       });
     });
   };
 
-  const tipHtml2 = ($light, avatarIndex, colour, number, diffSummary) => {
-    return `<table>
-             <tr>
-               <td>${avatarImage(avatarIndex)}</td>
-               <td><span class="traffic-light-count ${colour}">${number}</span></td>
-               <td><img src="/images/traffic-light/${colour}.png"
-                      class="traffic-light-diff-tip-traffic-light-image"></td>
-             </tr>
-           </table>
-           ${diffLinesHtmlTable(diffSummary)}`;
-  };
-
-  // - - - - - - - - - - - - - - - - - - - -
-
-  cd.setupTrafficLightTip = ($light, kataId, wasIndex, nowIndex) => {
-    cd.setTip($light, () => {
-      const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
-      // This should be $.getJSON but the receiving Rack
-      // server currently reads JSON args from the request body.
-      $.post('/differ/diff_summary', JSON.stringify(args), (data) => {
-        cd.showHoverTip($light, tipHtml($light, data.diff_summary));
-      });
-    });
-  };
-
-  const tipHtml = ($light, diffSummary) => {
-    const avatarIndex = $light.data('avatar-index');
-    const colour = $light.data('colour');
-    const number = $light.data('number');
+  const tipHtml = ($light, avatarIndex, colour, number, diffSummary) => {
     return `<table>
              <tr>
                <td>${avatarImage(avatarIndex)}</td>

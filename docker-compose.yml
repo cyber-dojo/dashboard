@@ -36,6 +36,7 @@ services:
       context: source/server
     container_name: test-dashboard-server
     depends_on:
+      - differ
       - saver
     ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
