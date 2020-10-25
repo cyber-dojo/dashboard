@@ -1,0 +1,22 @@
+<script>
+'use strict';
+$(() => {
+
+  const id = '<%= @group.id %>';
+
+  // TODO: Need to send minute-columns in URL too
+
+  cd.refreshDashboard = () => {
+    $.getJSON(`/dashboard/heartbeat?id=${id}`, {}, (data) => {
+      updateDashboardFromJson(data);
+    });
+  };
+
+  const updateDashboardFromJson = (data) => {
+    alert(`heartbeat ${JSON.stringify(data)}`);
+  };
+
+  cd.refreshDashboard();
+
+});
+</script>

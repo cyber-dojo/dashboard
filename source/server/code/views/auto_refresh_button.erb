@@ -3,15 +3,18 @@
 $(() => {
 
   const checkBox = $('#auto-refresh-checkbox');
+  checkBox.isChecked = () => checkBox.is(':checked');
+  checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
 
-  checkBox
-    .attr('checked', '<%= @auto_refresh %>' === 'true')
-    .click(() => cd.refreshDashboard());
+  checkBox.attr('checked', '<%= @auto_refresh %>' === 'true')
+          .click(() => cd.dashboardHeartbeat());
 
   $('#auto-refresh-text').click(() => {
-    checkBox.attr('checked', !checkBox.is(':checked'));
-    cd.refreshDashboard();
+    checkBox.toggle();
+    cd.dashboardHeartbeat();
   });
+
+  cd.autoRefresh = checkBox;
 
 });
 </script>

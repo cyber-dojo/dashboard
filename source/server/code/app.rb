@@ -35,6 +35,15 @@ class App < AppBase
     }
   end
 
+  get '/heartbeat', provides:[:json] do
+    respond_to { |wants|
+      wants.json {
+        gather
+        json({'time_ticks':@time_ticks})
+      }
+    }
+  end
+
   private
 
   helpers AppHelpers
