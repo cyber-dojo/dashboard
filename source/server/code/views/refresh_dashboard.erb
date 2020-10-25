@@ -4,19 +4,26 @@ $(() => {
 
   const id = '<%= @group.id %>';
 
-  // TODO: Need to send minute-columns in URL too
-
   cd.refreshDashboard = () => {
-    $.getJSON(`/dashboard/heartbeat?id=${id}`, {}, (data) => {
-      updateDashboardFromJson(data);
+    const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
+    $.getJSON(`/dashboard/heartbeat?id=${id}&minute_columns=${minuteColumns}`, {}, (data) => {
+      // TODO: empty the table (via its ID)
+      updateTimeTicks(data.time_ticks);
+      updateAvatars(data.avatars);
     });
   };
 
-  const updateDashboardFromJson = (data) => {
-    alert(`heartbeat ${JSON.stringify(data)}`);
+  const updateTimeTicks = (timeTicks) => {
+    alert(`update time_ticks from: ${JSON.stringify(timeTicks)}`);
   };
 
-  cd.refreshDashboard();
+  const updateAvatars = (avatars) => {
+    // for each avatar...
+    //   update avatar-image
+    //   update pie-chart
+    //   update traffic-light-count
+    //   update traffic-lights
+  };
 
 });
 </script>

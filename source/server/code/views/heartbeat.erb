@@ -3,6 +3,8 @@
 $(() => {
 
   cd.dashboardHeartbeat = () => {
+    // This is a public cd.function so its callable
+    // when auto-refresh/minute-columns checkboxes are clicked.
     if (cd.autoRefresh.isChecked()) {
       cd.refreshDashboard();
     }
@@ -10,7 +12,7 @@ $(() => {
 
   const milliSecond = 1;
   const seconds = 1000 * milliSecond;
-  setInterval(cd.dashboardHeartbeat, 5*seconds);
+  setInterval(cd.dashboardHeartbeat, 10*seconds);
 
 });
 </script>

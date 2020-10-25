@@ -1,10 +1,8 @@
 
 <div id="dashboard-page">
-  <%= erb :heartbeat %>
-  <%= erb :refresh_dashboard %>
   <table>
     <tr>
-      <td><div id='age-box'><%= erb :age %></div></td>
+      <td><%= erb :age %></td>
       <td><%= erb :auto_refresh_button %></td>
       <td><%= erb :minute_columns_button %></td>
       <td><%= erb :progress_button %></td>
@@ -13,3 +11,13 @@
   <%= erb :traffic_lights %>
   <%= erb :traffic_lights2 %>
 </div>
+
+<%= erb :refresh_dashboard %>
+<%= erb :heartbeat %>
+
+<script>
+'use strict';
+$(() => {
+  cd.refreshDashboard();
+});
+</script>

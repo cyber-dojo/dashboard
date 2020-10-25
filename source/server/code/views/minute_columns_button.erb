@@ -4,14 +4,18 @@ $(() => {
 
   const checkBox = $('#minute-columns-checkbox');
 
-  checkBox
-    .attr('checked', '<%= @minute_columns %>' === 'true')
-    .click(() => cd.refreshDashboard());
+  checkBox.isChecked = () => checkBox.is(':checked');
+  checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
+  
+  checkBox.attr('checked', '<%= @minute_columns %>' === 'true')
+          .click(() => cd.refreshDashboard());
 
   $('#minute-columns-text').click(() => {
-    checkBox.attr('checked', !checkBox.is(':checked'));
+    checkBox.toggle();
     cd.refreshDashboard();
   });
+
+  cd.minuteColumns = checkBox;
 
 });
 </script>
