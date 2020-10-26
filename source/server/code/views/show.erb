@@ -1,7 +1,6 @@
 <div id="dashboard-page">
   <table>
     <tr>
-      <td><%= erb :age %></td>
       <td><%= erb :auto_refresh_button %></td>
       <td><%= erb :minute_columns_button %></td>
       <td><%= erb :progress_button %></td>
@@ -16,7 +15,7 @@
 $(() => {
 
   const heartbeat = (forced) => {
-    const seconds = (n) => n * 1000;
+    const seconds = (n) => n * 1000; // millisecs
     cd.refreshDashboard(forced);
     setTimeout(heartbeat, seconds(10));
   };

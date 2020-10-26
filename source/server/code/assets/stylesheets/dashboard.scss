@@ -21,7 +21,7 @@
 {
   margin: { left: 35px; top: 40px; }
 
-  #age-box, #auto-refresh-box, #minute-columns-box
+  #auto-refresh-box, #minute-columns-box
   {
     @include edged-panel();
     background: lighten($darker-color,8%);
@@ -31,18 +31,6 @@
     font-size: 13px;
      margin: { bottom: 0px; left: 0px; right: 15px; }
     display: inline-block;
-  }
-  #age-box
-  {
-    cursor: default;
-    padding: { top: 7px; bottom: 6px; }
-    position: relative;
-    top: -1px;
-  }
-  #age
-  {
-    text-align: center;
-    font-size: 13px;
   }
 
   #auto-refresh-checkbox, #minute-columns-checkbox
@@ -168,7 +156,7 @@
     }
     .minute-box
     {
-              height: 26px;      
+              height: 26px;
              display: flex;
                float: left;
       vertical-align: middle;
