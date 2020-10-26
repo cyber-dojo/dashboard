@@ -79,7 +79,6 @@ $(() => {
       		  <% end %>
       		  <% if lights.is_a?(Array) %>
       		    <% lights.each do |light| %>
-                <%= diff_traffic_light(light, avatar_index, number) %>
                 <% number += 1 %>
               <% end %>
       		  <% end %>
