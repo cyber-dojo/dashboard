@@ -1,4 +1,3 @@
-require_relative 'diff_avatar_image'
 require_relative 'diff_traffic_light'
 require_relative 'gatherer'
 require_relative 'parity'
