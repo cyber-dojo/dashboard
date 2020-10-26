@@ -1,10 +1,9 @@
 @import "lib/all";
+@import "checkboxes";
 @import "avatar-image";
 @import "pie-chart";
 @import "traffic-light-count";
 
-@mixin right-align($margin-right) { margin: { left : auto; right: $margin-right; } }
-@mixin font-size-tiny()    { font-size: 0.80em; }
 @mixin diff-line-count
 {
   text-align: right;
@@ -20,26 +19,6 @@
 #dashboard-page
 {
   margin: { left: 35px; top: 40px; }
-
-  #auto-refresh-box, #minute-columns-box
-  {
-    @include edged-panel();
-    background: lighten($darker-color,8%);
-    @include right-align(15px);
-    @include plaintext-font();
-    cursor: pointer;
-    font-size: 13px;
-     margin: { bottom: 0px; left: 0px; right: 15px; }
-    display: inline-block;
-  }
-
-  #auto-refresh-checkbox, #minute-columns-checkbox
-  {
-    width: 15px;
-    height: 15px;
-    transform: scale(1.2);
-    cursor: pointer;
-  }
 
   #progress-button-box
   {
@@ -65,8 +44,6 @@
     padding: { left: 1px; right: 0px; }
     margin : { left: 0px; right: 0px; }
   }
-
-  .traffic-light-count { padding-left: 0px; }
 
   .table-scroll
   {

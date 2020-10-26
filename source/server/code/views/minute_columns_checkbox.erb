@@ -5,7 +5,7 @@ $(() => {
   const initially = cd.urlParam('minute_columns', 'true');
   const checkBox = $('#minute-columns-checkbox');
 
-  cd.createTip($('#minute-columns-box'), "toggle the 1-minute<br/>columns on/off");
+  cd.createTip($('#minute-columns-wrapper'), "toggle the one-minute<br/>columns on/off");
 
   checkBox.isChecked = () => checkBox.is(':checked');
   checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
@@ -23,7 +23,7 @@ $(() => {
 });
 </script>
 
-<table id="minute-columns-box">
+<table id="minute-columns-wrapper">
   <tr>
     <td>
       <div id="minute-columns-text">
