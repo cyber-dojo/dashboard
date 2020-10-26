@@ -1,6 +1,6 @@
-/*global jQuery,cyberDojo*/
+/*global cd,$*/
 'use strict';
-var cyberDojo = (function(cd, $) {
+(() => {
 
   cd.setupAvatarNameHoverTip = ($element, textBefore, avatarIndex, textAfter) => {
     cd.setTip($element, () => {
@@ -168,8 +168,4 @@ var cyberDojo = (function(cd, $) {
     return $('#hover-tip-container');
   };
 
-  // - - - - - - - - - - - - - - - - - - - -
-
-  return cd;
-
-})(cyberDojo || {}, jQuery);
+})();

@@ -1,4 +1,4 @@
-/*global jQuery,cyberDojo*/
+/*global cd,$*/
 'use strict';
 $(() => {
 

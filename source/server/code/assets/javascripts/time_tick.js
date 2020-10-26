@@ -1,6 +1,6 @@
-/*global jQuery,cyberDojo*/
+/*global cd*/
 'use strict';
-var cyberDojo = ((cd, $) => {
+(() => {
 
   const d = "<span class='d-for-days'>d</span>";
   const h = "<span class='h-for-hours'>h</span>";
@@ -21,6 +21,4 @@ var cyberDojo = ((cd, $) => {
     return tick;
   };
 
-  return cd;
-
-})(cyberDojo || {}, jQuery);
+})();

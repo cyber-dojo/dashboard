@@ -1,6 +1,6 @@
-/*global jQuery,cyberDojo*/
+/*global cd,$*/
 'use strict';
-var cyberDojo = ((cd, $) => {
+(() => {
 
   const options = {
     segmentShowStroke: false,
@@ -36,6 +36,4 @@ var cyberDojo = ((cd, $) => {
     });
   };
 
-  return cd;
-
-})(cyberDojo || {}, jQuery);
+})();
