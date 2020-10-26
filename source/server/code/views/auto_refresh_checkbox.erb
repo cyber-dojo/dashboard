@@ -7,18 +7,23 @@ $(() => {
 
   cd.createTip($('#auto-refresh-wrapper'), "toggle the 10 second<br/>auto-refresh on/off");
 
-  checkBox.isChecked = () => checkBox.is(':checked');
-  checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
+  checkBox.isChecked = () => checkBox.prop('checked');
+  checkBox.toggle = () => checkBox.prop('checked', !checkBox.isChecked());
+  checkBox.onClick = () => {
+    if (checkBox.isChecked()) {
+      cd.refresh();
+    }
+  };
 
   checkBox.attr('checked', initially === 'true')
-          .click(() => cd.refreshDashboard(/*forced=*/true));
+          .click(() => checkBox.onClick());
 
   $('#auto-refresh-text').click(() => {
     checkBox.toggle();
-    cd.dashboardHeartbeat();
+    checkBox.onClick();
   });
 
-  cd.autoRefresh = checkBox;
+  cd.autoRefresh = checkBox; // public, heartbeat() needs to get its state
 
 });
 </script>

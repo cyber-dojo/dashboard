@@ -10,19 +10,17 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  cd.refreshDashboard = (forced) => {
+  cd.refresh = () => {
     // A public cd.function so its callable from heartbeat()
     // and also when auto-refresh/minute-columns checkboxes
     // are clicked.
-    if (cd.autoRefresh.isChecked() || forced) {
-      const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
-      const args = `id=${groupId}&minute_columns=${minuteColumns}`;
-      const url = `/dashboard/heartbeat?${args}`;
-      $.getJSON(url, {}, (data) => {
-        refreshTableHeadWith(data.time_ticks);
-        refreshTableBodyWith(data.avatars);
-      });
-    }
+    const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
+    const args = `id=${groupId}&minute_columns=${minuteColumns}`;
+    const url = `/dashboard/heartbeat?${args}`;
+    $.getJSON(url, {}, (data) => {
+      refreshTableHeadWith(data.time_ticks);
+      refreshTableBodyWith(data.avatars);
+    });
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
