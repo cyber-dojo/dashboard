@@ -38,7 +38,17 @@ class App < AppBase
         gather
         time_ticks = modified(@time_ticks)
         avatars = altered(@all_indexes, @gapped)
-        json({'time_ticks':time_ticks, 'avatars':avatars})
+        json({time_ticks:time_ticks, avatars:avatars})
+      }
+    }
+  end
+
+  # - - - - - - - - - - - - - - -
+
+  get '/progress', provides:[:json] do
+    respond_to { |wants|
+      wants.json {
+        json(animals:animals_progress)
       }
     }
   end
@@ -99,18 +109,55 @@ class App < AppBase
 
   def dhm(value)
     if value.is_a?(Integer)
-      time_tick2(value)
+      time_tick(value)
     else
       value # Hash === collapsed columns
     end
   end
 
-  def time_tick2(seconds)
+  def time_tick(seconds)
     # Avoiding Javascript integer arithmetic
     minutes = (seconds / 60) % 60
     hours   = (seconds / 60 / 60) % 24
     days    = (seconds / 60 / 60 / 24)
     [days, hours, minutes]
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def animals_progress
+    group.katas
+         .select(&:active?)
+         .map { |kata| animal_progress(kata) }
+  end
+
+  def animal_progress(kata)
+    {   colour: kata.lights[-1].colour,
+      progress: most_recent_progress(kata),
+         index: kata.avatar_index,
+            id: kata.id
+    }
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def most_recent_progress(kata)
+    non_amber = kata.lights.reverse.find { |light|
+      [:red,:green].include?(light.colour)
+    }
+    if non_amber
+      output = non_amber.stdout['content'] + non_amber.stderr['content']
+    else
+      output = ''
+    end
+
+    regexs = kata.manifest.progress_regexs
+    matches = regexs.map { |regex| Regexp.new(regex).match(output) }
+
+    {
+        text: matches.join,
+      colour: (matches[0] != nil ? 'red' : 'green')
+    }
   end
 
 end
