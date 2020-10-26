@@ -1,6 +1,5 @@
 require_relative 'diff_traffic_light'
 require_relative 'gatherer'
-require_relative 'parity'
 require_relative '../models/group'
 require_relative '../models/katas'
 
