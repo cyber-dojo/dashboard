@@ -29,8 +29,8 @@ $(() => {
     if (cd.minuteColumns.isChecked()) {
       $tHeadTr.append($('<th>')); // to match avatar-image|pie-chart|traffic-light-count
       Object.keys(timeTicks).forEach(function(minutes) { // eg minutes == "1"
-        const minute = timeTicks[minutes];               // eg minute  == [ days,hours,seconds ]
-        const $th = $('<th>');                           //         or == { "collapsed":525 }
+        const minute = timeTicks[minutes];               // eg minute == [ days,hours,seconds ]
+        const $th = $('<th>');                           // or minute == { "collapsed":525 }
         unless(minute.collapsed, () => {
           $th.append($('<div>', { class:'time-tick' }));
           cd.createTip($th, cd.timeTick(minute));
@@ -65,7 +65,7 @@ $(() => {
       $fixedColumn.append($trafficLightsCounts);
       $th.append($fixedColumn);
       $tr.append($th);
-      const counts = appendAllLights($tr, kataId, avatar['lights']);
+      const counts = appendAllLights($tr, groupIndex, kataId, avatar['lights']);
       fillInCounts($pieChart, $trafficLightsCounts, counts)
       $tBody.append($tr);
     }); // forEach
@@ -98,7 +98,7 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const appendAllLights = ($tr, kataId, minutes) => {
+  const appendAllLights = ($tr, groupId, kataId, minutes) => {
     // minutes = {
     //    "0": [ {...},{...},{...} ],
     //    "1": { "collapsed":525 },
@@ -114,11 +114,12 @@ $(() => {
       const $td = $('<td>', { class:`${parity} column` });
       const $minuteBox = $('<div>', { class:'minute-box' });
       const lights = minutes[minute];
-      appendOneMinutesLights($minuteBox, lights, counts, args);
+      appendOneMinutesLights($minuteBox, groupId, kataId, lights, counts, args);
       $td.append($minuteBox);
       $tr.append($td);
       parity = nextParity(parity);
     });
+    //TODO: append <td> scroll-handle
     return counts;
   };
 
@@ -126,16 +127,28 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const appendOneMinutesLights = ($minuteBox, lights, counts, args) => {
+  const appendOneMinutesLights = ($minuteBox, groupId, kataId, lights, counts, args) => {
     if (lights.collapsed) { // eg lights === { "collapsed":525 }
       $minuteBox.append($('<span>', { class:'collapsed-multi-gap' }));
     } else { // eg lights === [ {"index":3,"colour":"red"},{...} ]
-      //...
-      //...
-      // FAKING...
-      counts['red'] = 1;
-      counts['amber'] = 3;
-      counts['green'] = 2;
+      lights.forEach(function(light) { // eg light === {"index":3,"colour":"red"}
+        const colour = light.colour;
+        const nowIndex = light.index;
+        const $light = $('<img>', {
+            src:`/images/traffic-light/${colour}.png`,
+          class:'diff-traffic-light',
+            alt:`${colour} traffic-light`
+        });
+        //TODO: Setup traffic-light diff-hover-tip
+        args.number += 1;
+        args.wasIndex = nowIndex;
+        args.lastColour = colour; // (for colour of traffic-lights-count)
+        //TODO: predicted?
+        //TODO: reverted?
+        $minuteBox.append($light);
+      });
+
+      //counts[colour] += 1;
     }
     return args;
   };
@@ -143,7 +156,6 @@ $(() => {
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const fillInCounts = ($pieChart, $trafficLightsCounts, counts) => {
-    //TODO:
   };
 
 });

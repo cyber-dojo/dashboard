@@ -1,0 +1,10 @@
+
+img.diff-traffic-light, // new
+.diff-traffic-light img // old
+{
+  cursor: pointer;
+    width: 24px;
+   height: 24px;
+  padding: { left: 1px; right: 0px; }
+  margin : { left: 0px; right: 0px; }
+}

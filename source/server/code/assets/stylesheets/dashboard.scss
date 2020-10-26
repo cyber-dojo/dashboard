@@ -4,6 +4,7 @@
 @import "pie-chart";
 @import "traffic-light-count";
 @import "time-tick";
+@import "diff-traffic-light";
 
 @mixin diff-line-count
 {
@@ -35,15 +36,6 @@
         position: relative;
              top: -7px;
     }
-  }
-
-  .diff-traffic-light img
-  {
-    cursor: pointer;
-      width: 24px;
-     height: 24px;
-    padding: { left: 1px; right: 0px; }
-    margin : { left: 0px; right: 0px; }
   }
 
   .table-scroll
