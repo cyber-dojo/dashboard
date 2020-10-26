@@ -5,16 +5,10 @@
 @import "traffic-light-count";
 @import "time-tick";
 @import "diff-traffic-light";
-
-@mixin diff-line-count
-{
-  text-align: right;
-      margin: 0px;
-      margin: { bottom: 2px; }
-     padding: 2px;
-   font-size: 13px;
-       width: 20px;
-}
+@import "collapsed-columns";
+@import "minute-box";
+@import "fixed-column";
+@import "column";
 
 // - - - - - - - - - - - - - - - - - - -
 
@@ -85,37 +79,6 @@
       position:relative;
       left:2px;
     }
-
-    .fixed-column
-    {
-      height:26px;
-      display: flex;
-    }
-    .column
-    {
-      padding: 0px;
-       border: { bottom: dotted lighten($darker-color, 3%) 1px; }
-      &.odd  { background: lighten($darker-color,  5%); }
-      &.even { background: lighten($darker-color, 11%); }
-      height:26px;
-    }
-    .minute-box
-    {
-              height: 26px;
-             display: flex;
-               float: left;
-      vertical-align: middle;
-      .collapsed-multi-gap
-      {
-               display: inline-block;
-             font-size: 12px;
-                 color: lighten(black,40%);
-                margin: { left: 6px; right: 6px; bottom: 6px; }
-        vertical-align: middle;
-        $ellipsis: "\2026";
-        &:after { content: $ellipsis; }
-      }
-    }
   }
 }
 
@@ -150,6 +113,16 @@
   @include rounded-corner(4px);
    width: 26px !important;
   height: 26px !important;
+}
+
+@mixin diff-line-count
+{
+  text-align: right;
+      margin: 0px;
+      margin: { bottom: 2px; }
+     padding: 2px;
+   font-size: 13px;
+       width: 20px;
 }
 
 .traffic-light-diff-tip-line-count-deleted,

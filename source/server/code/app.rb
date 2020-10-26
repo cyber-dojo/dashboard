@@ -36,6 +36,9 @@ class App < AppBase
   end
 
   get '/heartbeat', provides:[:json] do
+    # Process all traffic-lights into minute columns here in Ruby
+    # which can easily handle integers (unlike JS).
+    # Then let browser do all rendering in JS.
     respond_to { |wants|
       wants.json {
         gather

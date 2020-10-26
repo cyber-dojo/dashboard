@@ -108,7 +108,7 @@ $(() => {
 
   const appendOneMinutesLights = ($minuteBox, kataId, groupIndex, lights, args) => {
     if (lights.collapsed) {            // eg lights === { "collapsed":525 }
-      $minuteBox.append($('<span>', { class:'collapsed-multi-gap' }));
+      $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                           // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach(function(light) { // eg light === {"index":3,"colour":"red"}
         const colour = light.colour;
