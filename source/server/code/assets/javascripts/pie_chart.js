@@ -2,6 +2,8 @@
 'use strict';
 (() => {
 
+  // Chart.js http://www.chartjs.org/docs/
+
   const options = {
     segmentShowStroke: false,
     segmentStrokeColor: '#757575',
@@ -30,7 +32,6 @@
       const totalCount = redCount + amberCount + greenCount + timedOutCount;
       const animation = ($.data(document.body, key) != totalCount); // [X]
       options['animation'] = animation;
-      // Chart.js http://www.chartjs.org/docs/
       new Chart(ctx).Pie(data, options);
       // [X] Store totalCount against pie-chart ready for
       // pie chart animation on refresh
