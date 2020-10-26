@@ -1,3 +1,4 @@
+<div id="hover-tip-container"></div>
 <div id="dashboard-page">
   <table>
     <tr>
@@ -11,21 +12,18 @@
 </div>
 
 <script>
-/*global cd,$*/
+/*global cd*/
 'use strict';
 $(() => {
 
   cd.refresh();
-
   const seconds = (n) => n * 1000; // millisecs
-
   const heartbeat = () => {
     if (cd.autoRefresh.isChecked()) {
       cd.refresh();
     }
     setTimeout(heartbeat, seconds(10));
   };
-
   setTimeout(heartbeat, seconds(10));
 
 });
