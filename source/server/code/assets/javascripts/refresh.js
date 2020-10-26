@@ -4,7 +4,8 @@ $(() => {
 
   const groupId = cd.urlParam('id');
 
-  const $lights = $('#traffic-lights2');
+  const cssId = 'traffic-lights2';
+  const $lights = $(`#${cssId}`);
   const $tHeadTr = $('table thead tr', $lights);
   const $tBody = $('table tbody', $lights);
 
@@ -19,7 +20,7 @@ $(() => {
     $.getJSON(url, {}, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
-      cd.pieChart($('#traffic-lights2 .pie'));
+      cd.pieChart($(`#${cssId} .pie`));
       $('.scroll-handle').scrollIntoView();
     });
   };
@@ -136,6 +137,14 @@ $(() => {
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const $trafficLightsPieChart = (counts, kataId) => {
+    // Here be dragons...
+    // Sizing a canvas appears to be horribly delicate.
+    // See https://www.chartjs.org/docs/latest/general/responsive.html
+    // The code below works, and gives a circular 26px diameter pie-chart :-)
+    // All attempts to convert to $('<div>',{...}) syntax failed.
+    // jQuery appears to change the width/height attributes and
+    // to also put them inside a style attribute.
+    // All attempts to use a .scss file also failed.
     return '' +
       `<div
          class="pie-chart-wrapper"
@@ -152,24 +161,6 @@ $(() => {
            height="26px">
          </canvas>
        </div>`;
-  };
-
-  const $XXX_trafficLightsPieChart = (counts,kataId) => {
-    const $pie = $('<div>', {
-      class:'pie-chart-wrapper',
-      'width':'26px',
-      'height':'26px'
-    }).append($('<canvas>', {
-      class:'pie',
-      'data-red-count':counts.red || 0,
-      'data-amber-count':counts.amber || 0,
-      'data-green-count':counts.green || 0,
-      'data-timed-out-count':counts.timedOut || 0,
-      'data-key':kataId,
-      'width':'26px',
-      'height':'26px'
-    }));
-    return $pie;
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
