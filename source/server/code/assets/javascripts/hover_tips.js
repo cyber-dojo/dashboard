@@ -75,7 +75,40 @@
 
   // - - - - - - - - - - - - - - - - - - - -
 
-  cd.setupHoverTips = function(nodes) {
+  cd.setupTrafficLightCountHoverTip = ($count, counts) => {
+    const reds = counts.red || 0;
+    const ambers = counts.amber || 0;
+    const greens = counts.green || 0;
+    const timeOuts = counts.timed_out || 0;
+
+    const tr = (s) => `<tr>${s}</tr>`;
+    const td = (s) => `<td>${s}</td>`;
+    const trLight = (colour, count) => {
+      return tr(td('<img' +
+                   " class='traffic-light-diff-tip-traffic-light-image'" +
+                   ` src='/images/traffic-light/${colour}.png'>`) +
+                td(`<div class='traffic-light-diff-tip-tag ${colour}'>` +
+                   count +
+                   '</div>'));
+    };
+    let html = '';
+    html += '<table>';
+    html += trLight('red', reds);
+    html += trLight('amber', ambers);
+    html += trLight('green', greens);
+    if (timeOuts > 0) {
+      html += trLight('timed_out', timeOuts);
+    }
+    html += '</table>';
+
+    cd.setTip($count, () => {
+      cd.showHoverTip($count, html);
+    });
+  };
+
+  // - - - - - - - - - - - - - - - - - - - -
+
+  cd.setupHoverTips = function(nodes) { // TODO: DROP
     nodes.each(function() {
       const node = $(this);
       const setTipCallBack = () => {

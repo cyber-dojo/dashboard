@@ -147,7 +147,7 @@ $(() => {
     const $count = $('<div>', {
       class:`traffic-light-count ${args.lastColour}`
     }).text(args.number);
-    //TODO: count hover-tip
+    cd.setupTrafficLightCountHoverTip($count, args.counts);
     return $count;
   };
 
