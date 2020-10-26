@@ -3,7 +3,6 @@ require_relative 'diff_traffic_light'
 require_relative 'gatherer'
 require_relative 'parity'
 require_relative 'time_tick'
-require_relative 'traffic_light_count'
 require_relative '../models/group'
 require_relative '../models/katas'
 
