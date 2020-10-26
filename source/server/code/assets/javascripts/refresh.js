@@ -19,6 +19,7 @@ $(() => {
     $.getJSON(url, {}, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
+      //TODO: Use scroll-handle to show most recent traffic-light
     });
   };
 
@@ -118,7 +119,7 @@ $(() => {
       $td.append($minuteBox);
       $tr.append($td);
     });
-    //TODO: append <td> scroll-handle
+    $tr.append($('<td>', { class:'scroll-handle' }));
     return counts;
   };
 
