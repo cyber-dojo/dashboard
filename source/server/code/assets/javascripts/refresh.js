@@ -19,7 +19,8 @@ $(() => {
     $.getJSON(url, {}, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
-      //TODO: Use scroll-handle to show most recent traffic-light
+      cd.pieChart($('#traffic-lights2 .pie'));
+      $('.scroll-handle').scrollIntoView();
     });
   };
 
@@ -60,7 +61,7 @@ $(() => {
       $tBody.append($tr.append($('<th>').append($fixedColumn)));
       const args = appendAllLights($tr, kataId, groupIndex, avatar['lights']);
       $fixedColumn.append($avatarImage(kataId, groupIndex));
-      $fixedColumn.append($trafficLightsPieChart(args.counts));
+      $fixedColumn.append($trafficLightsPieChart(args.counts, kataId));
       $fixedColumn.append($trafficLightsCount(args));
     }); // forEach
   };
@@ -134,11 +135,41 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const $trafficLightsPieChart = (counts) => {
-    return $('<div>', {
-      class:'pie-chart-wrapper'
-    });
-    //TODO: create pie-chart
+  const $trafficLightsPieChart = (counts, kataId) => {
+    return '' +
+      `<div
+         class="pie-chart-wrapper"
+         width="26px"
+         height="26px">
+         <canvas
+           class="pie"
+           data-red-count="${counts.red || 0}"
+           data-amber-count="${counts.amber || 0}"
+           data-green-count="${counts.green || 0}"
+           data-timed-out-count="${counts.timedOut || 0}"
+           data-key="${kataId}"
+           width="26px"
+           height="26px">
+         </canvas>
+       </div>`;
+  };
+
+  const $XXX_trafficLightsPieChart = (counts,kataId) => {
+    const $pie = $('<div>', {
+      class:'pie-chart-wrapper',
+      'width':'26px',
+      'height':'26px'
+    }).append($('<canvas>', {
+      class:'pie',
+      'data-red-count':counts.red || 0,
+      'data-amber-count':counts.amber || 0,
+      'data-green-count':counts.green || 0,
+      'data-timed-out-count':counts.timedOut || 0,
+      'data-key':kataId,
+      'width':'26px',
+      'height':'26px'
+    }));
+    return $pie;
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -

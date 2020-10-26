@@ -29,11 +29,40 @@
       const key = $node.data('key');
       const totalCount = redCount + amberCount + greenCount + timedOutCount;
       const animation = ($.data(document.body, key) != totalCount);
+      //alert(`totalCount=:${totalCount}: animation=:${animation}:`);
       options['animation'] = animation;
       // Chart.js http://www.chartjs.org/docs/
       new Chart(ctx).Pie(data, options);
       $.data(document.body, key, totalCount);
     });
+  };
+
+
+  cd.pieChart2 = ($node) => {
+    const count = (of) => $node.data(of + '-count');
+    const      redCount = count('red');
+    const    amberCount = count('amber');
+    const    greenCount = count('green');
+    const timedOutCount = count('timed-out');
+
+    const data = [
+        { value:      redCount, color: '#F00' },
+        { value:    amberCount, color: '#FF0' },
+        { value:    greenCount, color: '#0F0' },
+        { value: timedOutCount, color: 'darkGray' }
+    ];
+
+    const $canvas = $('.pie', $node);
+    const context = $canvas[0].getContext('2d');
+    const key = $canvas.data('key');
+    const totalCount = redCount + amberCount + greenCount + timedOutCount;
+    const animation = ($.data(document.body, key) != totalCount); // [X]
+    options['animation'] = animation;
+    // Chart.js http://www.chartjs.org/docs/
+    new Chart(context).Pie(data, options);
+    // [X] Store totalCount against pie-chart ready for
+    // pie chart animation on refresh
+    $.data(document.body, key, totalCount); // [X]
   };
 
 })();
