@@ -29,9 +29,9 @@ $(() => {
     if (cd.minuteColumns.isChecked()) {
       $tHeadTr.append($('<tr>')); // to match avatar-image|pie-chart|traffic-light-count
       Object.keys(timeTicks).forEach(function(minutes) { // eg minutes == "1"
-        const minute = timeTicks[minutes];               // eg minute  == [days,hours,seconds]
-        const $th = $('<th>');
-        unless(isCollapsed(minute), () => {
+        const minute = timeTicks[minutes];               // eg minute  == [ days,hours,seconds ]
+        const $th = $('<th>');                           //         or == { "collapsed":525 }
+        unless(minute.collapsed, () => {
           $th.append($('<div>', { class:'time-tick' }));
           cd.createTip($th, cd.timeTick(minute));
         });
@@ -45,10 +45,6 @@ $(() => {
     if (!truth) {
       callBack();
     }
-  };
-
-  const isCollapsed = (minute) => {
-    return !Array.isArray(minute); // eg { "collapsed": 525 }
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
