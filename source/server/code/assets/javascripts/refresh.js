@@ -65,7 +65,7 @@ $(() => {
       $fixedColumn.append($trafficLightsCounts);
       $th.append($fixedColumn);
       $tr.append($th);
-      const counts = appendAllLights($tr, groupIndex, kataId, avatar['lights']);
+      const counts = appendAllLights($tr, kataId, groupIndex, avatar['lights']);
       fillInCounts($pieChart, $trafficLightsCounts, counts)
       $tBody.append($tr);
     }); // forEach
@@ -98,23 +98,23 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const appendAllLights = ($tr, groupId, kataId, minutes) => {
+  const appendAllLights = ($tr, kataId, groupIndex, minutes) => {
     // minutes = {
     //    "0": [ {...},{...},{...} ],
     //    "1": { "collapsed":525 },
     //  "526": [ {...},{...} ]
     // }
+    let parity = 'even';
     const args = {
       'number':1,    // the UI traffic-light number
       'wasIndex':0   // the previously displayed element's git tag
     };
-    let parity = 'even';
-    const counts = { 'red':0, 'amber':0, 'green':0, 'timed_out':0 };
+    const counts = {};
     Object.keys(minutes).forEach(function(minute) {
       const $td = $('<td>', { class:`${parity} column` });
       const $minuteBox = $('<div>', { class:'minute-box' });
       const lights = minutes[minute];
-      appendOneMinutesLights($minuteBox, groupId, kataId, lights, counts, args);
+      appendOneMinutesLights($minuteBox, kataId, groupIndex, lights, counts, args);
       $td.append($minuteBox);
       $tr.append($td);
       parity = nextParity(parity);
@@ -127,10 +127,10 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const appendOneMinutesLights = ($minuteBox, groupId, kataId, lights, counts, args) => {
-    if (lights.collapsed) { // eg lights === { "collapsed":525 }
+  const appendOneMinutesLights = ($minuteBox, kataId, groupIndex, lights, counts, args) => {
+    if (lights.collapsed) {            // eg lights === { "collapsed":525 }
       $minuteBox.append($('<span>', { class:'collapsed-multi-gap' }));
-    } else { // eg lights === [ {"index":3,"colour":"red"},{...} ]
+    } else {                           // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach(function(light) { // eg light === {"index":3,"colour":"red"}
         const colour = light.colour;
         const nowIndex = light.index;
@@ -139,15 +139,15 @@ $(() => {
           class:'diff-traffic-light',
             alt:`${colour} traffic-light`
         });
-        //TODO: Setup traffic-light diff-hover-tip
+        cd.setupTrafficLightTip($light, kataId, groupIndex, args.wasIndex, nowIndex, colour, args.number);
         args.number += 1;
         args.wasIndex = nowIndex;
         args.lastColour = colour; // (for colour of traffic-lights-count)
-        //TODO: predicted?
-        //TODO: reverted?
+        //TODO: ? light.predicted
+        //TODO: ? light.reverted
         $minuteBox.append($light);
       });
-
+      //unless(counts[colour], () => counts[colour] = 0);
       //counts[colour] += 1;
     }
     return args;
