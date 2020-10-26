@@ -27,7 +27,7 @@ $(() => {
   const refreshTableHeadWith = (timeTicks) => {
     $tHeadTr.empty();
     if (cd.minuteColumns.isChecked()) {
-      $tHeadTr.append($('<tr>')); // to match avatar-image|pie-chart|traffic-light-count
+      $tHeadTr.append($('<th>')); // to match avatar-image|pie-chart|traffic-light-count
       Object.keys(timeTicks).forEach(function(minutes) { // eg minutes == "1"
         const minute = timeTicks[minutes];               // eg minute  == [ days,hours,seconds ]
         const $th = $('<th>');                           //         or == { "collapsed":525 }
@@ -65,8 +65,8 @@ $(() => {
       $fixedColumn.append($trafficLightsCounts);
       $th.append($fixedColumn);
       $tr.append($th);
-      // const counts = appendLights($tr, kataId, avatar['lights']);
-      // fillInCounts($pieChart, $trafficLightsCounts, counts)
+      const counts = appendAllLights($tr, kataId, avatar['lights']);
+      fillInCounts($pieChart, $trafficLightsCounts, counts)
       $tBody.append($tr);
     }); // forEach
   };
@@ -98,11 +98,52 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const appendLights = ($tr, kataId, lights) => {
-    // variables for wasIndex, number
-    const counts = {};
-    //...
+  const appendAllLights = ($tr, kataId, minutes) => {
+    // minutes = {
+    //    "0": [ {...},{...},{...} ],
+    //    "1": { "collapsed":525 },
+    //  "526": [ {...},{...} ]
+    // }
+    const args = {
+      'number':1,    // the UI traffic-light number
+      'wasIndex':0   // the previously displayed element's git tag
+    };
+    let parity = 'even';
+    const counts = { 'red':0, 'amber':0, 'green':0, 'timed_out':0 };
+    Object.keys(minutes).forEach(function(minute) {
+      const $td = $('<td>', { class:`${parity} column` });
+      const $minuteBox = $('<div>', { class:'minute-box' });
+      const lights = minutes[minute];
+      appendOneMinutesLights($minuteBox, lights, counts, args);
+      $td.append($minuteBox);
+      $tr.append($td);
+      parity = nextParity(parity);
+    });
     return counts;
+  };
+
+  const nextParity = (s) => s === 'odd' ? 'even' : 'odd';
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const appendOneMinutesLights = ($minuteBox, lights, counts, args) => {
+    if (lights.collapsed) { // eg lights === { "collapsed":525 }
+      $minuteBox.append($('<span>', { class:'collapsed-multi-gap' }));
+    } else { // eg lights === [ {"index":3,"colour":"red"},{...} ]
+      //...
+      //...
+      // FAKING...
+      counts['red'] = 1;
+      counts['amber'] = 3;
+      counts['green'] = 2;
+    }
+    return args;
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const fillInCounts = ($pieChart, $trafficLightsCounts, counts) => {
+    //TODO:
   };
 
 });
