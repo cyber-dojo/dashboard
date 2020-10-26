@@ -1,4 +1,4 @@
-<script>
+/*global jQuery,cyberDojo*/
 'use strict';
 $(() => {
 
@@ -58,4 +58,3 @@ $(() => {
   };
 
 });
-</script>
