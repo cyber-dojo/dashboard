@@ -21,7 +21,7 @@ class App < AppBase
   get '/show', provides:[:html] do
     respond_to { |wants|
       wants.html {
-        gather
+        group # set @group        
         erb :show
       }
     }
