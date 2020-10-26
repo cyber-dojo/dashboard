@@ -1,3 +1,4 @@
+/*global cd*/
 'use strict';
 
 cd.showReviewUrl = (id, wasIndex, nowIndex) => {
