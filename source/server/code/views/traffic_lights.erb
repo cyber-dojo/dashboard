@@ -12,7 +12,7 @@ $(() => {
       const nowIndex = $light.data('index');
       const colour = $light.data('colour');
       const number = $light.data('number');
-      $light.click(() => window.open(cd.showReviewUrl(id, wasIndex, nowIndex)));
+      $light.click(() => window.open(cd.reviewUrl(id, wasIndex, nowIndex)));
       cd.setupTrafficLightTip($light, id, avatarIndex, wasIndex, nowIndex, colour, number);
       index = nowIndex;
     });
@@ -24,7 +24,7 @@ $(() => {
     const e = $(element.currentTarget);
     const id = e.data('id');
     const index = e.data('index');
-    window.open(cd.showReviewUrl(id, index, index));
+    window.open(cd.reviewUrl(id, index, index));
   });
   // TODO: cd.setupAvatarNameHoverTip(...
 

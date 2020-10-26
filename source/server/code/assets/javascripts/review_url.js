@@ -1,8 +1,8 @@
 /*global cd*/
 'use strict';
 
-cd.showReviewUrl = (id, wasIndex, nowIndex) => {
-  return `/review/show/${id}` +
+cd.reviewUrl = (kataId, wasIndex, nowIndex) => {
+  return `/review/show/${kataId}` +
     `?was_index=${wasIndex}` +
     `&now_index=${nowIndex}`;
 };
