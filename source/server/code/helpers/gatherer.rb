@@ -6,8 +6,6 @@ module AppHelpers # mixin
   module_function
 
   def gather
-    @minute_columns = bool('minute_columns')
-    @auto_refresh = bool('auto_refresh')
     @all_lights = {}
     @all_indexes = {}
     e = group.events
@@ -26,8 +24,7 @@ module AppHelpers # mixin
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
-    @age = group.age(e)
-    set_footer_info
+    #set_footer_info
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -38,16 +35,10 @@ module AppHelpers # mixin
     @exercise = group.manifest.exercise
   end
 
-  def bool(attribute)
-    tf = params[attribute]
-    (tf == 'false') ? tf : 'true'
-  end
-
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def seconds_per_column
     flag = params['minute_columns']
-    # default is that time-gaps are on
     return 60 if flag.nil? || flag == 'true'
     return 60*60*24*365*1000
   end
