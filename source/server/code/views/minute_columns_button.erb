@@ -2,14 +2,14 @@
 'use strict';
 $(() => {
 
-  const initially = '<%= @minute_columns %>' === 'true';
+  const initially = cd.urlParam('minute_columns', 'true');
   const checkBox = $('#minute-columns-checkbox');
 
   checkBox.isChecked = () => checkBox.is(':checked');
   checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
 
-  checkBox.attr('checked', initially)
-          .click(() => cd.refreshDashboard());
+  checkBox.attr('checked', initially === 'true')
+          .click(() => cd.refreshDashboard(/*forced=*/true));
 
   $('#minute-columns-text').click(() => {
     checkBox.toggle();

@@ -16,7 +16,7 @@ class App < AppBase
   get_delegate(Prober, :ready?)
   get_delegate(Prober, :sha)
 
-  get '/show/:id', provides:[:html] do
+  get '/show', provides:[:html] do
     respond_to { |wants|
       wants.html {
         gather
@@ -62,7 +62,7 @@ class App < AppBase
   end
 
   def time_tick2(seconds)
-    # Avoiding Javascript integer arithmetic 
+    # Avoiding Javascript integer arithmetic
     minutes = (seconds / 60) % 60
     hours   = (seconds / 60 / 60) % 24
     days    = (seconds / 60 / 60 / 24)

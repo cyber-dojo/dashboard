@@ -18,7 +18,7 @@ html_demo()
   if [ "${1:-}" == '--no-browser' ]; then
     containers_down
   else
-    open "http://$(ip_address):80/dashboard/show/FxWwrr"
+    open "http://$(ip_address):80/dashboard/show?id=FxWwrr&auto_refresh=true&minute_columns=true"
   fi
 }
 
@@ -42,7 +42,7 @@ api_demo()
   #Must not contain Uglifier::Error
   #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   echo
-  curl_200           show/FxWwrr  dashboard-page
+  curl_200           show?id=FxWwrr  dashboard-page
   echo
 }
 

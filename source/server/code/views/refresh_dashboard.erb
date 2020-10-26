@@ -2,7 +2,7 @@
 'use strict';
 $(() => {
 
-  const groupId = '<%= @group.id %>';
+  const groupId = cd.urlParam('id');
 
   const $lights = $('#traffic-lights2');
   const $tHeadTr = $('table thead tr', $lights);
@@ -10,11 +10,11 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  cd.refreshDashboard = () => {
+  cd.refreshDashboard = (forced) => {
     // A public cd.function so its callable from heartbeat()
     // and also when auto-refresh/minute-columns checkboxes
     // are clicked.
-    if (cd.autoRefresh.isChecked()) {
+    if (cd.autoRefresh.isChecked() || forced) {
       const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
       const args = `id=${groupId}&minute_columns=${minuteColumns}`;
       const url = `/dashboard/heartbeat?${args}`;

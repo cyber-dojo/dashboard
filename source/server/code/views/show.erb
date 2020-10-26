@@ -16,13 +16,13 @@
 'use strict';
 $(() => {
 
-  const heartbeat = () => {
+  const heartbeat = (forced) => {
     const seconds = (n) => n * 1000;
-    cd.refreshDashboard();
+    cd.refreshDashboard(forced);
     setTimeout(heartbeat, seconds(10));
   };
 
-  heartbeat();
+  heartbeat(true);
 
 });
 </script>
