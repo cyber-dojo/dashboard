@@ -74,7 +74,7 @@ $(() => {
         alt:'avatar image'
     });
     $img.click(() => window.open(cd.reviewUrl(kataId, -1, -1)));
-    cd.setupAvatarNameHoverTip($img, '', groupIndex, '');
+    cd.setupAvatarNameHoverTip($img, groupIndex);
     return $img;
   };
 

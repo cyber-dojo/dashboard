@@ -2,12 +2,11 @@
 'use strict';
 (() => {
 
-  cd.setupAvatarNameHoverTip = ($element, textBefore, avatarIndex, textAfter) => {
+  cd.setupAvatarNameHoverTip = ($element, avatarIndex) => {
     cd.setTip($element, () => {
       $.getJSON('/images/avatars/names.json', {}, (avatarsNames) => {
         const avatarName = avatarsNames[avatarIndex];
-        const tip = `${textBefore}${avatarName}${textAfter}`;
-        cd.showHoverTip($element, tip);
+        cd.showHoverTip($element, avatarName);
       });
     });
   };
