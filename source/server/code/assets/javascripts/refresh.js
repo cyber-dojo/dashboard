@@ -143,16 +143,17 @@ $(() => {
         //TODO: ? light.predicted
         //TODO: ? light.reverted
         $minuteBox.append($light);
+        unless(counts[colour], () => counts[colour] = 0);
+        counts[colour] += 1;
       }); // forEach
       args.parity = (args.parity === 'odd' ? 'even' : 'odd');
-      //unless(counts[colour], () => counts[colour] = 0);
-      //counts[colour] += 1;
-    }
+    } // else
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const fillInCounts = ($pieChart, $trafficLightsCounts, counts) => {
+    console.log(counts);
   };
 
 });
