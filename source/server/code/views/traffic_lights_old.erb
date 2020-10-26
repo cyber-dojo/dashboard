@@ -48,7 +48,6 @@ $(() => {
   		    <% seconds = @time_ticks[td_no] %>
   		    <th>
     	      <% if seconds.class != Hash %>
-              <div class='time-tick' data-tip="<%= time_tick(seconds) %>"></div>
             <% end %>
           </th>
         <% end %>
