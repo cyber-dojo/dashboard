@@ -51,24 +51,17 @@ $(() => {
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const refreshTableBodyWith = (avatars) => {
-    //console.log(`avatars ${JSON.stringify(avatars)}`);
     $tBody.empty();
     Object.keys(avatars).forEach(function(groupIndex) {
       const avatar = avatars[groupIndex];
       const kataId = avatar['kata_id'];
       const $tr = $('<tr>');
-      const $th = $('<th>');
       const $fixedColumn = $('<div>', { class:'fixed-column' });
-      const $pieChart = $emptyPieChart();
-      const $trafficLightsCounts = $emptyTrafficLightsCounts();
+      $tBody.append($tr.append($('<th>').append($fixedColumn)));
+      const args = appendAllLights($tr, kataId, groupIndex, avatar['lights']);
       $fixedColumn.append($avatarImage(kataId, groupIndex));
-      $fixedColumn.append($pieChart);
-      $fixedColumn.append($trafficLightsCounts);
-      $th.append($fixedColumn);
-      $tr.append($th);
-      const counts = appendAllLights($tr, kataId, groupIndex, avatar['lights']);
-      fillInCounts($pieChart, $trafficLightsCounts, counts)
-      $tBody.append($tr);
+      $fixedColumn.append($trafficLightsPieChart(args.counts));
+      $fixedColumn.append($trafficLightsCount(args));
     }); // forEach
   };
 
@@ -87,18 +80,6 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const $emptyPieChart = () => {
-    return $('<div>', { class:'pie-chart-wrapper' });
-  };
-
-  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  const $emptyTrafficLightsCounts = () => {
-    return $('<div>', { class:'traffic-light-count-wrapper' });
-  };
-
-  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const appendAllLights = ($tr, kataId, groupIndex, minutes) => {
     // minutes = {
     //    "0": [ {...},{...},{...} ],
@@ -106,26 +87,26 @@ $(() => {
     //  "526": [ {...},{...} ]
     // }
     const args = {
-      'number':1,     // the UI traffic-light number
-      'wasIndex':0,   // the previously displayed element's git tag
-      'parity':'even'
+      'number':1,      // the UI traffic-light number
+      'wasIndex':0,    // the previously displayed element's git tag
+      'parity':'even', // for columns
+      'counts':{}      // of each traffic-light colour
     };
-    const counts = {};
     Object.keys(minutes).forEach(function(minute) {
       const $td = $('<td>', { class:`${args.parity} column` });
       const $minuteBox = $('<div>', { class:'minute-box' });
       const lights = minutes[minute];
-      appendOneMinutesLights($minuteBox, kataId, groupIndex, lights, counts, args);
+      appendOneMinutesLights($minuteBox, kataId, groupIndex, lights, args);
       $td.append($minuteBox);
       $tr.append($td);
     });
     $tr.append($('<td>', { class:'scroll-handle' }));
-    return counts;
+    return args;
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const appendOneMinutesLights = ($minuteBox, kataId, groupIndex, lights, counts, args) => {
+  const appendOneMinutesLights = ($minuteBox, kataId, groupIndex, lights, args) => {
     if (lights.collapsed) {            // eg lights === { "collapsed":525 }
       $minuteBox.append($('<span>', { class:'collapsed-multi-gap' }));
     } else {                           // eg lights === [ {"index":3,"colour":"red"},{...} ]
@@ -144,8 +125,8 @@ $(() => {
         //TODO: ? light.predicted
         //TODO: ? light.reverted
         $minuteBox.append($light);
-        unless(counts[colour], () => counts[colour] = 0);
-        counts[colour] += 1;
+        unless(args.counts[colour], () => args.counts[colour] = 0);
+        args.counts[colour] += 1;
       }); // forEach
       args.parity = (args.parity === 'odd' ? 'even' : 'odd');
     } // else
@@ -153,8 +134,21 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  const fillInCounts = ($pieChart, $trafficLightsCounts, counts) => {
-    console.log(counts);
+  const $trafficLightsPieChart = (counts) => {
+    return $('<div>', {
+      class:'pie-chart-wrapper'
+    });
+    //TODO
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const $trafficLightsCount = (args) => {
+    const $count = $('<div>', {
+      class:`traffic-light-count ${args.lastColour}`
+    }).text(args.number);
+    //TODO: count hover-tip
+    return $count;
   };
 
 });
