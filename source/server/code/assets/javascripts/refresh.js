@@ -47,13 +47,33 @@ $(() => {
   const refreshTableBodyWith = (avatars) => {
     //alert(`avatars ${JSON.stringify(avatars)}`);
     $tBody.empty();
-    // Object.keys(avatars).forEach(function(kataId) => {
-    //   const avatar = avatars[kataId];
-    //   update avatar-image
-    //   update pie-chart
-    //   update traffic-light-count
-    //   update traffic-lights
-    // }
+    Object.keys(avatars).forEach(function(groupIndex) {
+      const avatar = avatars[groupIndex];
+      const kataIndex = avatar['kata_id'];
+      const $tr = $('<tr>');
+      const $th = $('<th>');
+      const $fixedColumn = $('<div>', { class:'fixed-column' });
+      $fixedColumn.append($avatarImage(groupIndex));
+      // $fixedColumn.append( pie-chart );
+      // $fixedColumn.append( traffic-light-count );
+      $th.append($fixedColumn);
+      $tr.append($th);
+      $tBody.append($tr);
+      // update lights === avatar['lights']
+    }); // forEach
   };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  const $avatarImage = (groupIndex) => {
+    const $img = $('<img>', {
+        src:`/images/avatars/${groupIndex}.jpg`,
+      class:'avatar-image',
+        alt:'avatar image'
+    });
+    cd.setupAvatarNameHoverTip($img, '', groupIndex, '');
+    return $img;
+  };
+
 
 });

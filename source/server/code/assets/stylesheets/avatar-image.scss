@@ -1,5 +1,6 @@
 
-.avatar-image img
+img.avatar-image,  // new
+.avatar-image img  // old
 {
   @include rounded-corner(6px);
     width: 26px;

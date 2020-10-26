@@ -54,7 +54,7 @@ class App < AppBase
     Hash[indexes.map{|kata_id,group_index|
       [group_index, {
         "kata_id":kata_id,
-        "avatars":lights_json(gapped[kata_id])
+        "lights":lights_json(gapped[kata_id])
       }]
     }]
   end
