@@ -5,6 +5,8 @@ $(() => {
   const initially = cd.urlParam('auto_refresh', 'true');
   const checkBox = $('#auto-refresh-checkbox');
 
+  cd.createTip($('#auto-refresh-box'), "toggle the 10 second<br/>auto-refresh on/off");
+
   checkBox.isChecked = () => checkBox.is(':checked');
   checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
 
@@ -21,7 +23,7 @@ $(() => {
 });
 </script>
 
-<table id="auto-refresh-box" data-tip="toggle the 10 second<br/>auto-refresh on/off">
+<table id="auto-refresh-box">
   <tr>
     <td>
       <div id="auto-refresh-text">

@@ -5,6 +5,8 @@ $(() => {
   const initially = cd.urlParam('minute_columns', 'true');
   const checkBox = $('#minute-columns-checkbox');
 
+  cd.createTip($('#minute-columns-box'), "toggle the 1-minute<br/>columns on/off");
+
   checkBox.isChecked = () => checkBox.is(':checked');
   checkBox.toggle = () => checkBox.attr('checked', !checkBox.isChecked());
 
@@ -16,12 +18,12 @@ $(() => {
     cd.refreshDashboard();
   });
 
-  cd.minuteColumns = checkBox;
+  cd.minuteColumns = checkBox; // public, refresh needs to get its state
 
 });
 </script>
 
-<table id="minute-columns-box" data-tip="toggle the 1-minute<br/>columns on/off">
+<table id="minute-columns-box">
   <tr>
     <td>
       <div id="minute-columns-text">
