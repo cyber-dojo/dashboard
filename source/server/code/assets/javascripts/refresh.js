@@ -45,6 +45,7 @@ $(() => {
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const refreshTableBodyWith = (avatars) => {
+    //alert(`avatars ${JSON.stringify(avatars)}`);
     $tBody.empty();
     // Object.keys(avatars).forEach(function(kataId) => {
     //   const avatar = avatars[kataId];

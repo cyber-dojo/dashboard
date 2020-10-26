@@ -40,7 +40,8 @@ class App < AppBase
       wants.json {
         gather
         time_ticks = modified(@time_ticks)
-        json({'time_ticks':time_ticks})
+        avatars = altered(@all_indexes, @gapped)
+        json({'time_ticks':time_ticks, 'avatars':avatars})
       }
     }
   end
@@ -48,6 +49,52 @@ class App < AppBase
   private
 
   helpers AppHelpers
+
+  def altered(indexes, gapped)
+    Hash[indexes.map{|kata_id,group_index|
+      [group_index, {
+        "kata_id":kata_id,
+        "avatars":lights_json(gapped[kata_id])
+      }]
+    }]
+  end
+
+  def lights_json(minutes)
+    # eg minutes = {
+    #     "0": [ L,L,L ],
+    #     "1": { "collapsed":525 },
+    #   "526": [ L,L ]
+    # }
+    Hash[minutes.map{|key,value| [key,minute_json(value)] }]
+  end
+
+  def minute_json(minute)
+    if !collapsed?(minute)
+      minute.map{|light| light_json(light)}
+    else
+      minute
+    end
+  end
+
+  def collapsed?(section)
+    section.is_a?(Hash) # lights are in an Array
+  end
+
+  def light_json(light)
+    element = {
+      'index':light.index,
+      'colour':light.colour
+    }
+    if light.predicted && light.predicted != 'none'
+      element['predicted'] = light.predicted
+    end
+    if light.revert
+      element['revert'] = light.revert
+    end
+    element
+  end
+
+  # - - - - - - - - - - - - - - -
 
   def modified(ticks)
     ticks.inject({}) { |h, (k, v)| h[k] = dhm(v); h }
