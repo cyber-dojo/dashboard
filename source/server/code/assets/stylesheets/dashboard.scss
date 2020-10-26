@@ -3,6 +3,7 @@
 @import "avatar-image";
 @import "pie-chart";
 @import "traffic-light-count";
+@import "time-tick";
 
 @mixin diff-line-count
 {
@@ -93,26 +94,10 @@
       left:2px;
     }
 
-    .time-tick
-    {
-      @include non-code-font();
-         display: block;
-      text-align: center;
-       font-size: 13px;
-           color: lighten(black,60%);
-      background: $darker-color; // overlay what scrolls underneath
-      $down-triangle: "\25BF";
-      &:after { content: $down-triangle; }
-    }
     .fixed-column
     {
       height:26px;
       display: flex;
-      .avatar-image img
-      {
-         width: 26px;
-        height: 26px;
-      }
       .traffic-light-count-wrapper
       {
         width: 40px;
@@ -202,9 +187,4 @@
 .traffic-light-diff-tip-line-count-added
 {
   background: $diff-added-count-color;
-}
-
-.d-for-days, .m-for-minutes, .h-for-hours
-{
-  font-size: 10px;
 }
