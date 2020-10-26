@@ -138,7 +138,7 @@ $(() => {
     return $('<div>', {
       class:'pie-chart-wrapper'
     });
-    //TODO
+    //TODO: create pie-chart
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -

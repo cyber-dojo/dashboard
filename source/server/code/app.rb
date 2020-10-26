@@ -10,30 +10,24 @@ class App < AppBase
     @externals = externals
   end
 
-  attr_reader :externals
+  attr_reader :externals # TODO: Drop when using model-http-proxy
 
   get_delegate(Prober, :alive?)
   get_delegate(Prober, :ready?)
   get_delegate(Prober, :sha)
 
+  # - - - - - - - - - - - - - - -
+
   get '/show', provides:[:html] do
     respond_to { |wants|
       wants.html {
         gather
-        if false
-          p "@gapped " + ('~'*60)
-          print JSON.pretty_generate(@gapped)
-          p "@all_lights " + ('~'*60)
-          print JSON.pretty_generate(@all_lights)
-          p "@all_indexes " + ('~'*60)
-          print JSON.pretty_generate(@all_indexes)
-          p "@time_ticks " + ('~'*60)
-          print JSON.pretty_generate(@time_ticks)
-        end
         erb :show
       }
     }
   end
+
+  # - - - - - - - - - - - - - - -
 
   get '/heartbeat', provides:[:json] do
     # Process all traffic-lights into minute columns here in Ruby
@@ -56,8 +50,8 @@ class App < AppBase
   def altered(indexes, gapped)
     Hash[indexes.map{|kata_id,group_index|
       [group_index, {
-        "kata_id":kata_id,
-        "lights":lights_json(gapped[kata_id])
+        'kata_id':kata_id,
+        'lights':lights_json(gapped[kata_id])
       }]
     }]
   end

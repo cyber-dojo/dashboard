@@ -25,7 +25,7 @@ $(() => {
     checkBox.onClick();
   });
 
-  cd.autoRefresh = checkBox; // public, heartbeat() needs to get its state
+  cd.autoRefresh = checkBox; // public as heartbeat() calls isChecked()
 
 });
 </script>
