@@ -104,26 +104,23 @@ $(() => {
     //    "1": { "collapsed":525 },
     //  "526": [ {...},{...} ]
     // }
-    let parity = 'even';
     const args = {
-      'number':1,    // the UI traffic-light number
-      'wasIndex':0   // the previously displayed element's git tag
+      'number':1,     // the UI traffic-light number
+      'wasIndex':0,   // the previously displayed element's git tag
+      'parity':'even'
     };
     const counts = {};
     Object.keys(minutes).forEach(function(minute) {
-      const $td = $('<td>', { class:`${parity} column` });
+      const $td = $('<td>', { class:`${args.parity} column` });
       const $minuteBox = $('<div>', { class:'minute-box' });
       const lights = minutes[minute];
       appendOneMinutesLights($minuteBox, kataId, groupIndex, lights, counts, args);
       $td.append($minuteBox);
       $tr.append($td);
-      parity = nextParity(parity);
     });
     //TODO: append <td> scroll-handle
     return counts;
   };
-
-  const nextParity = (s) => s === 'odd' ? 'even' : 'odd';
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -146,11 +143,11 @@ $(() => {
         //TODO: ? light.predicted
         //TODO: ? light.reverted
         $minuteBox.append($light);
-      });
+      }); // forEach
+      args.parity = (args.parity === 'odd' ? 'even' : 'odd');
       //unless(counts[colour], () => counts[colour] = 0);
       //counts[colour] += 1;
     }
-    return args;
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
