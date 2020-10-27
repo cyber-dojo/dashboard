@@ -130,16 +130,16 @@
 
   // - - - - - - - - - - - - - - - - - - - -
 
-  const showHoverTip = (node, tip) => {
-    if (!node.attr('disabled')) {
-      if (!node.hasClass('mouse-has-left')) {
+  const showHoverTip = ($node, tip) => {
+    if (!$node.attr('disabled')) {
+      if (!$node.hasClass('mouse-has-left')) {
         const hoverTip = $('<div>', {
-          'class': 'hover-tip'
+          class:'hover-tip'
         }).html(tip).position({
-          my: 'top',
-          at: 'bottom',
-          of: node,
-          collision: 'fit'
+          my: 'left top+50',
+          at: 'bottom right',
+          of: $node,
+          collision: 'flip'
         });
         hoverTipContainer().html(hoverTip);
       }
