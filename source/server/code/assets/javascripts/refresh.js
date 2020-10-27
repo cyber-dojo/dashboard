@@ -76,7 +76,8 @@ $(() => {
         alt:'avatar image'
     });
     $img.click(() => window.open(cd.reviewUrl(kataId, -1, -1)));
-    cd.setupAvatarNameHoverTip($img, groupIndex);
+    const apostrophe = '&#39;'
+    cd.setupAvatarNameHoverTip($img, 'show ', groupIndex, `${apostrophe}s<br/>current code`);
     return $img;
   };
 
