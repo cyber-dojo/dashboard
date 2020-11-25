@@ -15,9 +15,8 @@ $(() => {
     // A public cd.function so its callable from heartbeat() and
     // when auto-refresh/minute-columns checkboxes are clicked.
     const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
-    const args = `id=${groupId}&minute_columns=${minuteColumns}`;
-    const url = `/dashboard/heartbeat?${args}`;
-    $.getJSON(url, {}, (data) => {
+    const args = { id:groupId, minute_columns:minuteColumns };
+    $.getJSON('/dashboard/heartbeat', args, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
       cd.pieChart($(`#${cssId} .pie`));
@@ -31,9 +30,9 @@ $(() => {
     $tHeadTr.empty();
     if (cd.minuteColumns.isChecked()) {
       $tHeadTr.append($('<th>')); // to match avatar-image|pie-chart|traffic-light-count
-      Object.keys(timeTicks).forEach(function(minutes) { // eg minutes == "1"
-        const minute = timeTicks[minutes];               // eg minute == [ days,hours,seconds ]
-        const $th = $('<th>');                           // or minute == { "collapsed":525 }
+      Object.keys(timeTicks).forEach((minutes) => { // eg minutes == "1"
+        const minute = timeTicks[minutes];          // eg minute == [ days,hours,seconds ]
+        const $th = $('<th>');                      // or minute == { "collapsed":525 }
         unless(minute.collapsed, () => {
           $th.append($('<div>', { class:'time-tick' }));
           cd.createTip($th, cd.timeTick(minute));
@@ -54,7 +53,7 @@ $(() => {
 
   const refreshTableBodyWith = (avatars) => {
     $tBody.empty();
-    Object.keys(avatars).forEach(function(groupIndex) {
+    Object.keys(avatars).forEach((groupIndex) => {
       const avatar = avatars[groupIndex];
       const kataId = avatar['kata_id'];
       const $tr = $('<tr>');
@@ -95,7 +94,7 @@ $(() => {
       'parity':'even', // for columns
       'counts':{}      // of each traffic-light colour
     };
-    Object.keys(minutes).forEach(function(minute) {
+    Object.keys(minutes).forEach((minute) => {
       const $td = $('<td>', { class:`${args.parity} column` });
       const $minuteBox = $('<div>', { class:'minute-box' });
       const lights = minutes[minute];
@@ -113,7 +112,7 @@ $(() => {
     if (lights.collapsed) {            // eg lights === { "collapsed":525 }
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                           // eg lights === [ {"index":3,"colour":"red"},{...} ]
-      lights.forEach(function(light) { // eg light === {"index":3,"colour":"red"}
+      lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
         const colour = light.colour;
         const nowIndex = light.index;
         const $light = $('<img>', {
