@@ -16,8 +16,6 @@ export $(echo_versioner_env_vars)
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_smoke_test()
 {
-  echo
-  echo API
   curl_json_body_200 alive
   curl_json_body_200 ready
   curl_json_body_200 sha
@@ -54,7 +52,7 @@ curl_json_body_200()
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
   local -r result=$(tail -n 1 "$(log_filename)")
-  echo "$(tab)GET ${route} => 200 ...|${result}"
+  echo "GET ${route} => 200 ...|${result}"
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,12 +70,11 @@ curl_200()
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
   local -r result=$(grep "${pattern}" "$(log_filename)" | head -n 1)
-  echo "$(tab)GET ${route} => 200 ...|${result}"
+  echo "GET ${route} => 200 ...|${result}"
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 port() { echo -n "${CYBER_DOJO_DASHBOARD_PORT}"; }
-tab() { printf '\t'; }
 log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
