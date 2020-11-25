@@ -8,6 +8,7 @@ source "${SH_DIR}/containers_down.sh"
 source "${SH_DIR}/containers_up_healthy_and_clean.sh"
 source "${SH_DIR}/copy_in_saver_test_data.sh"
 source "${SH_DIR}/ip_address.sh"
+source "${SH_DIR}/remove_old_images.sh"
 
 source "${SH_DIR}/echo_versioner_env_vars.sh"
 export $(echo_versioner_env_vars)
@@ -80,6 +81,7 @@ tab() { printf '\t'; }
 log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
+remove_old_images
 build_tagged_images
 augmented_docker_compose up --detach nginx
 server_up_healthy_and_clean

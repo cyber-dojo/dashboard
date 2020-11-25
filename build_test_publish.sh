@@ -9,6 +9,7 @@ source "${SH_DIR}/containers_up_healthy_and_clean.sh"
 source "${SH_DIR}/copy_in_saver_test_data.sh"
 source "${SH_DIR}/ip_address.sh"
 source "${SH_DIR}/on_ci_publish_images.sh"
+source "${SH_DIR}/remove_old_images.sh"
 source "${SH_DIR}/show_help_if_requested.sh"
 source "${SH_DIR}/test_in_containers.sh"
 
@@ -17,6 +18,7 @@ export $(echo_versioner_env_vars)
 
 #- - - - - - - - - - - - - - - - - - - - - -
 show_help_if_requested "$@"
+remove_old_images
 build_tagged_images "$@"
 server_up_healthy_and_clean "$@"
 client_up_healthy_and_clean "$@"
