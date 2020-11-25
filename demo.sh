@@ -2,28 +2,18 @@
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SH_DIR="${ROOT_DIR}/sh"
+
 source "${SH_DIR}/build_tagged_images.sh"
 source "${SH_DIR}/containers_down.sh"
 source "${SH_DIR}/containers_up.sh"
-source "${SH_DIR}/ip_address.sh"
+source "${SH_DIR}/copy_in_saver_test_data.sh"
 source "${SH_DIR}/echo_versioner_env_vars.sh"
+source "${SH_DIR}/ip_address.sh"
+
 export $(echo_versioner_env_vars)
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-html_demo()
-{
-  build_tagged_images
-  containers_up api-demo
-  api_demo
-  if [ "${1:-}" == '--no-browser' ]; then
-    containers_down
-  else
-    open "http://$(ip_address):80/dashboard/show?id=FxWwrr&auto_refresh=true&minute_columns=true"
-  fi
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
-api_demo()
+curl_smoke_test()
 {
   echo
   echo API
@@ -86,9 +76,16 @@ curl_200()
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 port() { echo -n "${CYBER_DOJO_DASHBOARD_PORT}"; }
-
 tab() { printf '\t'; }
 log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-html_demo "$@"
+build_tagged_images
+containers_up api-demo
+copy_in_saver_test_data
+curl_smoke_test
+if [ "${1:-}" == '--no-browser' ]; then
+  containers_down
+else
+  open "http://$(ip_address):80/dashboard/show?id=FxWwrr&auto_refresh=true&minute_columns=true"
+fi

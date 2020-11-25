@@ -121,7 +121,11 @@ $(() => {
           class:'diff-traffic-light',
             alt:`${colour} traffic-light`
         });
-        cd.setupTrafficLightTip($light, kataId, groupIndex, args.wasIndex, nowIndex, colour, args.number);
+
+        cd.setupTrafficLightTip2($light, colour, groupIndex, kataId, args.wasIndex, nowIndex);
+
+        //cd.setupTrafficLightTip($light, kataId, groupIndex, args.wasIndex, nowIndex, colour, args.number);
+
         args.number += 1;
         args.wasIndex = nowIndex;
         args.lastColour = colour; // (for colour of traffic-lights-count)
