@@ -8,8 +8,8 @@ source ${SH_DIR}/containers_up.sh
 source ${SH_DIR}/test_in_containers.sh
 source ${SH_DIR}/containers_down.sh
 source ${SH_DIR}/on_ci_publish_images.sh
-source ${SH_DIR}/versioner_env_vars.sh
-export $(versioner_env_vars)
+source ${SH_DIR}/echo_versioner_env_vars.sh
+export $(echo_versioner_env_vars)
 
 #- - - - - - - - - - - - - - - - - - - - - -
 build_test_publish()
