@@ -2,12 +2,16 @@ version: 2
 jobs:
   build-publish:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202008-01
     steps:
       - checkout
       - run:
           name: Build tagged image, test it, publish it
-          command: ./build_test_publish.sh
+          command: |
+            # DOCKER_USER, DOCKER_PASS are in the context
+            echo "${DOCKER_PASS}" | docker login --username "${DOCKER_USER}" --password-stdin
+            ./build_test_publish.sh
+            docker logout
 
   deploy-to-beta:
     docker:
@@ -36,12 +40,13 @@ workflows:
           filters:
             branches:
               only: [ master ]
-      - deploy-to-beta:
-          context: cyberdojo-context
-          requires: [ build-publish ]
-      - approve-to-prod:
-          type: approval
-          requires: [ deploy-to-beta ]
-      - deploy-to-prod:
-          context: cyberdojo-context
-          requires: [ approve-to-prod ]
+
+#      - deploy-to-beta:
+#          context: cyberdojo-context
+#          requires: [ build-publish ]
+#      - approve-to-prod:
+#          type: approval
+#          requires: [ deploy-to-beta ]
+#      - deploy-to-prod:
+#          context: cyberdojo-context
+#          requires: [ approve-to-prod ]
