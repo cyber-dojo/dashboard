@@ -11,7 +11,7 @@ class Prober # k8s/curl probing + identity
   end
 
   def ready?(_args)
-    dependent_services.all?(&:ready?)
+    saver.ready?
   end
 
   def sha(_args)
@@ -20,8 +20,8 @@ class Prober # k8s/curl probing + identity
 
   private
 
-  def dependent_services
-    [ @externals.saver ]
+  def saver
+    @externals.saver
   end
 
 end

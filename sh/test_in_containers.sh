@@ -23,28 +23,19 @@ test_in_containers()
 on_ci() { [ -n "${CIRCLECI:-}" ]; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
-run_client_tests()
-{
-  run_tests "${CYBER_DOJO_DASHBOARD_CLIENT_USER}" client "${@:-}";
-}
-
-run_server_tests()
-{
-  run_tests "${CYBER_DOJO_DASHBOARD_SERVER_USER}" server "${@:-}";
-}
+run_client_tests() { run_tests client "${@:-}"; }
+run_server_tests() { run_tests server "${@:-}"; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_tests()
 {
-  local -r user="${1}" # eg nobody
-  local -r type="${2}" # eg client|server
+  local -r type="${1}" # eg client|server
   local -r reports_dir_name=reports
   local -r tmp_dir=/tmp
   local -r coverage_root=/${tmp_dir}/${reports_dir_name}
   local -r test_dir="${ROOT_DIR}/test/${type}"
   local -r reports_dir=${test_dir}/${reports_dir_name}
   local -r test_log=test.log
-  local -r container_name="test-dashboard-${type}" # eg test-dashboard-server
   local -r coverage_code_tab_name=tested
   local -r coverage_test_tab_name=tester
 
@@ -57,14 +48,14 @@ run_tests()
   docker exec \
     --env COVERAGE_CODE_TAB_NAME=${coverage_code_tab_name} \
     --env COVERAGE_TEST_TAB_NAME=${coverage_test_tab_name} \
-    --user "${user}" \
-    "${container_name}" \
-      sh -c "/test/run.sh ${coverage_root} ${test_log} ${type} ${*:3}"
+    --user "${CONTAINER_USER}" \
+    "${CONTAINER_NAME}" \
+      sh -c "/test/run.sh ${coverage_root} ${test_log} ${type} ${*:2}"
   set -e
 
   # You can't [docker cp] from a tmpfs, so tar-piping coverage out
   docker exec \
-    "${container_name}" \
+    "${CONTAINER_NAME}" \
     tar Ccf \
       "$(dirname "${coverage_root}")" \
       - "$(basename "${coverage_root}")" \
@@ -88,7 +79,7 @@ run_tests()
   echo "${type} test coverage at ${coverage_path}"
   echo "${type} test status == ${status}"
   if [ "${status}" != '0' ]; then
-    docker logs "${container_name}"
+    docker logs "${CONTAINER_NAME}"
   fi
   return ${status}
 }

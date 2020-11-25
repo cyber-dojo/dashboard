@@ -15,6 +15,9 @@ echo_versioner_env_vars()
 
   echo CYBER_DOJO_DASHBOARD_SHA="$(image_sha)"
   echo CYBER_DOJO_DASHBOARD_TAG="$(image_tag)"
+
+  echo CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER=test_dashboard_client
+  echo CYBER_DOJO_DASHBOARD_SERVER_CONTAINER=test_dashboard_server
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
