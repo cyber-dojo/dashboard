@@ -12,6 +12,6 @@ ENV PORT=${CYBER_DOJO_DASHBOARD_PORT}
 
 EXPOSE ${PORT}
 USER nobody
-HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /app/healthcheck.sh
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /app/config/healthcheck.sh
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
-CMD [ "/app/up.sh" ]
+CMD [ "/app/config/up.sh" ]
