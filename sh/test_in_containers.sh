@@ -23,25 +23,41 @@ test_in_containers()
 on_ci() { [ -n "${CIRCLECI:-}" ]; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
-run_client_tests() { run_tests client "${@:-}"; }
-run_server_tests() { run_tests server "${@:-}"; }
+run_client_tests()
+{
+  run_tests \
+    "${CYBER_DOJO_DASHBOARD_CLIENT_USER}" \
+    "${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER}" \
+    client "${@:-}";
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - -
+run_server_tests()
+{
+  run_tests \
+    "${CYBER_DOJO_DASHBOARD_SERVER_USER}" \
+    "${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER}" \
+    server "${@:-}";
+}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_tests()
 {
-  local -r type="${1}" # eg client|server
+  local -r USER="${1}"           # eg nobody
+  local -r CONTAINER_NAME="${2}" # eg test_dashboard_server
+  local -r TYPE="${3}"           # eg server
+
   local -r reports_dir_name=reports
   local -r tmp_dir=/tmp
   local -r coverage_root=/${tmp_dir}/${reports_dir_name}
-  local -r test_dir="${ROOT_DIR}/test/${type}"
+  local -r test_dir="${ROOT_DIR}/test/${TYPE}"
   local -r reports_dir=${test_dir}/${reports_dir_name}
   local -r test_log=test.log
   local -r coverage_code_tab_name=tested
   local -r coverage_test_tab_name=tester
 
-  echo
   echo '=================================='
-  echo "Running ${type} tests"
+  echo "Running ${TYPE} tests"
   echo '=================================='
 
   set +e
@@ -50,7 +66,7 @@ run_tests()
     --env COVERAGE_TEST_TAB_NAME=${coverage_test_tab_name} \
     --user "${CONTAINER_USER}" \
     "${CONTAINER_NAME}" \
-      sh -c "/test/run.sh ${coverage_root} ${test_log} ${type} ${*:2}"
+      sh -c "/test/run.sh ${coverage_root} ${test_log} ${TYPE} ${*:4}"
   set -e
 
   # You can't [docker cp] from a tmpfs, so tar-piping coverage out
@@ -76,9 +92,10 @@ run_tests()
   set -e
 
   local -r coverage_path="${reports_dir}/index.html"
-  echo "${type} test coverage at ${coverage_path}"
-  echo "${type} test status == ${status}"
+  echo "${TYPE} test coverage at ${coverage_path}"
+  echo "${TYPE} test status == ${status}"
   if [ "${status}" != '0' ]; then
+    echo
     docker logs "${CONTAINER_NAME}"
   fi
   return ${status}
