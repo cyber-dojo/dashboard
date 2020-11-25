@@ -1,5 +1,6 @@
 *
 !code/
 !config.ru
+!healthcheck.sh
 !puma.rb
 !up.sh

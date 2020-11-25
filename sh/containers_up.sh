@@ -1,17 +1,6 @@
 #!/bin/bash -Eeu
 
 # - - - - - - - - - - - - - - - - - - - - - -
-ip_address_slow()
-{
-  if [ -n "${DOCKER_MACHINE_NAME:-}" ]; then
-    docker-machine ip ${DOCKER_MACHINE_NAME}
-  else
-    echo localhost
-  fi
-}
-readonly IP_ADDRESS=$(ip_address_slow)
-
-# - - - - - - - - - - - - - - - - - - - - - -
 wait_briefly_until_ready()
 {
   local -r name="${1}"
@@ -47,7 +36,7 @@ ready()
       --output $(ready_response_filename) \
       --silent \
       --fail \
-      -X GET http://${IP_ADDRESS}:${port}/${path}"
+      -X GET http://$(ip_address):${port}/${path}"
   rm -f "$(ready_response_filename)"
   if ${ready_cmd} && [ "$(ready_response)" = '{"ready?":true}' ]; then
     true
