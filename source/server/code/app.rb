@@ -98,6 +98,9 @@ class App < AppBase
     if light.revert
       element['revert'] = light.revert
     end
+    if light.checkout
+      element['checkout'] = light.checkout
+    end
     element
   end
 

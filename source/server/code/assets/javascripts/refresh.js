@@ -10,7 +10,6 @@ $(() => {
   const $tBody = $('table tbody', $lights);
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   cd.refresh = () => {
     // A public cd.function so its callable from heartbeat() and
     // when auto-refresh/minute-columns checkboxes are clicked.
@@ -25,7 +24,6 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const refreshTableHeadWith = (timeTicks) => {
     $tHeadTr.empty();
     if (cd.minuteColumns.isChecked()) {
@@ -50,7 +48,6 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const refreshTableBodyWith = (avatars) => {
     $tBody.empty();
     Object.keys(avatars).forEach((groupIndex) => {
@@ -67,7 +64,6 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const $avatarImage = (kataId, groupIndex) => {
     const $img = $('<img>', {
         src:`/images/avatars/${groupIndex}.jpg`,
@@ -81,7 +77,6 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const appendAllLights = ($tr, kataId, groupIndex, minutes) => {
     // minutes = {
     //    "0": [ {...},{...},{...} ],
@@ -107,11 +102,10 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const appendOneMinutesLights = ($minuteBox, kataId, groupIndex, lights, args) => {
-    if (lights.collapsed) {            // eg lights === { "collapsed":525 }
+    if (lights.collapsed) {       // eg lights === { "collapsed":525 }
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
-    } else {                           // eg lights === [ {"index":3,"colour":"red"},{...} ]
+    } else {                      // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
         const colour = light.colour;
         const nowIndex = light.index;
@@ -122,14 +116,14 @@ $(() => {
         });
 
         cd.setupTrafficLightTip2($light, colour, groupIndex, kataId, args.wasIndex, nowIndex);
-
         //cd.setupTrafficLightTip($light, kataId, groupIndex, args.wasIndex, nowIndex, colour, args.number);
 
-        args.number += 1;
         args.wasIndex = nowIndex;
         args.lastColour = colour; // (for colour of traffic-lights-count)
-        //TODO: ? light.predicted
-        //TODO: ? light.reverted
+
+        appendLightQualifierImg($minuteBox, light);
+        console.log(`light:${JSON.stringify(light)}:`);
+
         $minuteBox.append($light);
         unless(args.counts[colour], () => args.counts[colour] = 0);
         args.counts[colour] += 1;
@@ -138,8 +132,54 @@ $(() => {
     } // else
   };
 
-  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const appendLightQualifierImg = ($lights, light) => {
+    // Older katas did not distinguish between
+    //   - an auto-revert, from an incorrect test prediction
+    //   - a [checkout], from the review page.
+    // Both were light.revert == [id,index]
+    if (isPredict(light)) {
+      $lights.append($imgForPredict(light));
+    }
+    else if (isCheckout(light)) {
+      $lights.append($imgForCheckout(light));
+    }
+    else if (isRevert(light)) {
+      $lights.append($imgForRevert(light));
+    }
+  };
 
+  const isPredict = (light) => light.predicted != undefined && light.predicted != 'none';
+  const isRevert = (light) => light.revert != undefined;
+  const isCheckout = (light) => light.checkout != undefined;
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const $imgForPredict = (light) => {
+    const correct = (light.predicted === light.colour);
+    const icon = correct ? 'tick' : 'cross';
+    return $('<img>', {
+      class: icon,
+        src: `/images/traffic-light/circle-${icon}.png`
+    });
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const $imgForRevert = (light) => {
+    return $('<img>', {
+      class: 'revert',
+        src: '/images/traffic-light/circle-revert.png'
+    });
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const $imgForCheckout = (light) => {
+    return $('<img>', {
+      class:'avatar-image checkout',
+        src:`/images/avatars/${light.checkout.avatarIndex}.jpg`
+    });
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   const $trafficLightsPieChart = (counts, kataId) => {
     // Here be dragons...
     // Sizing a canvas appears to be horribly delicate.
@@ -168,7 +208,6 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   const $trafficLightsCount = (args) => {
     const $count = $('<div>', {
       class:`traffic-light-count ${args.lastColour}`

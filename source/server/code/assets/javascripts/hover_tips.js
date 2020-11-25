@@ -53,7 +53,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const $trafficLightTip = ($light, colour, index, avatarIndex, diff) => {
     const $holder = $(document.createDocumentFragment());
     $holder.append($trafficLightSummary($light, colour, index, avatarIndex));
@@ -62,7 +61,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const $trafficLightSummary = ($light, colour, index, avatarIndex) => {
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
@@ -72,7 +70,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const $avatarImageTd = (avatarIndex) => {
     const $td = $('<td>');
     if (avatarIndex != '') {
@@ -86,7 +83,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const $trafficLightCountTd = (colour, index) => {
     const $count = $('<span>', {
       class:`traffic-light-count ${colour}`
@@ -95,7 +91,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const $trafficLightImageTd = (colour) => {
     const $img = $('<img>', {
         src:`/images/traffic-light/${colour}.png`,
@@ -105,7 +100,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const $diffLinesTable = (diffs) => {
     const $table = $('<table>', { class:'filenames' });
     const $tr = $('<tr>');
@@ -132,7 +126,6 @@
   };
 
   // - - - - - - - -
-
   const $linesCountIconTd = (type, glyph) => {
     const $icon = $('<div>', {
       class:`diff-line-count-icon ${type}`
@@ -141,7 +134,6 @@
   };
 
   // - - - - - - - -
-
   const $lineCountTd = (type, file) => {
     const lineCount = file.line_counts[type];
     const css = lineCount > 0 ? type : '';
@@ -154,7 +146,6 @@
   };
 
   // - - - - - - - -
-
   const $diffTypeTd = (diff) => {
     const $type = $('<div>', {
       class:`diff-type-marker ${diff.type}`
@@ -163,7 +154,6 @@
   };
 
   // - - - - - - - -
-
   const $diffFilenameTd = (diff) => {
     const $filename = $('<div>', { class:`diff-filename ${diff.type}` });
     $filename.text(diffFilename(diff));
