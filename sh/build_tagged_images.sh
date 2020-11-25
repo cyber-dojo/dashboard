@@ -17,8 +17,9 @@ build_tagged_images()
 
   check_embedded_env_var
   echo
-  echo "CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
-  echo "CYBER_DOJO_DASHBOARD_TAG=${CYBER_DOJO_DASHBOARD_TAG}"
+  echo "echo CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
+  echo "echo CYBER_DOJO_DASHBOARD_TAG=${CYBER_DOJO_DASHBOARD_TAG}"
+  echo
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -

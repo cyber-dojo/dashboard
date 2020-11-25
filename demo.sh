@@ -48,7 +48,7 @@ curl_json_body_200()
     --request GET \
     --silent \
     --verbose \
-      "http://${IP_ADDRESS}:$(port)/${route}" \
+      "http://$(ip_address):$(port)/${route}" \
       > "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
@@ -66,7 +66,7 @@ curl_200()
     --request GET \
     --silent \
     --verbose \
-      "http://${IP_ADDRESS}:$(port)/${route}" \
+      "http://$(ip_address):$(port)/${route}" \
       > "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
@@ -81,7 +81,7 @@ log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 build_tagged_images
-#containers_up api-demo
+augmented_docker_compose up --detach nginx
 server_up_healthy_and_clean
 copy_in_saver_test_data
 curl_smoke_test
