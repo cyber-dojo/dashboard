@@ -198,20 +198,14 @@
   };
 
   const isHighlight = (filename) => {
-    return false; //cd.highlightFilenames().includes(filename);
+    // cd.highlightFilenames() is set in views/manifest.erb
+    return cd.highlightFilenames().includes(filename);
   };
 
   const isSource = (filename) => {
-    return false; //cd.extensionFilenames().find(ext => filename.endsWith(ext));
+    // cd.extensionFilenames() is set in views/manifest.erb    
+    return cd.extensionFilenames().find(ext => filename.endsWith(ext));
   };
-
-  /*cd.highlightFilenames = () => {
-    return $.parseJSON('<%= raw @highlight_filenames %>');
-  };
-
-  cd.extensionFilenames = () => {
-    return $.parseJSON('<%= @filename_extension.inspect.html_safe %>');
-  };*/
 
   // - - - - - - - - - - - - - - - - - - - -
   cd.setupTrafficLightCountHoverTip = ($count, counts) => {

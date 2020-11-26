@@ -2,7 +2,7 @@
 'use strict';
 $(() => {
 
-  const groupId = cd.urlParam('id');
+  cd.id = () => cd.urlParam('id');;
 
   const cssId = 'traffic-lights2';
   const $lights = $(`#${cssId}`);
@@ -14,7 +14,7 @@ $(() => {
     // A public cd.function so its callable from heartbeat() and
     // when auto-refresh/minute-columns checkboxes are clicked.
     const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
-    const args = { id:groupId, minute_columns:minuteColumns };
+    const args = { id:cd.id(), minute_columns:minuteColumns };
     $.getJSON('/dashboard/heartbeat', args, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
