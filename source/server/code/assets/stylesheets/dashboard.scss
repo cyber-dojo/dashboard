@@ -1,9 +1,11 @@
 @import "lib/all";
 @import "checkboxes";
+@import "panels";
 @import "avatar-image";
 @import "traffic-light-count";
 @import "time-tick";
 @import "diff-traffic-light";
+@import "age";
 @import "collapsed-columns";
 @import "minute-box";
 @import "fixed-column";
@@ -71,6 +73,7 @@
 
   #traffic-lights, #traffic-lights2
   {
+    margin-top:5px;
     img.revert, img.tick, img.cross
     {
       width:11px;

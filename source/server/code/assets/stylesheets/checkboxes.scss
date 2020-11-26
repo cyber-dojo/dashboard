@@ -1,14 +1,3 @@
-#auto-refresh-wrapper, #minute-columns-wrapper
-{
-  @include edged-panel();
-  background: lighten($darker-color,8%);
-  @include right-align(15px);
-  @include plaintext-font();
-  cursor: pointer;
-  font-size: 13px;
-   margin: { bottom: 0px; left: 0px; right: 15px; }
-  display: inline-block;
-}
 
 input[type=checkbox]
 {

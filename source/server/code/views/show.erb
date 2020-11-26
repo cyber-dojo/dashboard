@@ -3,6 +3,7 @@
 <div id="dashboard-page">
   <table>
     <tr>
+      <td><%= erb :age %></td>
       <td><%= erb :auto_refresh_checkbox %></td>
       <td><%= erb :minute_columns_checkbox %></td>
       <td><%= erb :progress_button %></td>
@@ -12,7 +13,7 @@
 </div>
 
 <script>
-/*global cd*/
+/*global cd,$*/
 'use strict';
 $(() => {
 
