@@ -11,12 +11,13 @@
 @import "fixed-column";
 @import "column";
 @import "diff-line-count";
+@import "top-bar";
 
 // - - - - - - - - - - - - - - - - - - -
 
 #dashboard-page
 {
-  margin: { left: 35px; top: 20px; }
+  margin: { left: 35px; top: 35px; }
 
   #progress-button-box
   {
