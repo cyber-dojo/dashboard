@@ -208,69 +208,15 @@
     return false; //cd.extensionFilenames().find(ext => filename.endsWith(ext));
   };
 
-
-  /*
-  cd.XX_setupTrafficLightTip = ($light, kataId, avatarIndex, wasIndex, nowIndex, colour, number) => {
-    setTip($light, () => {
-      //const args = `id=${kataId}&was_index=${wasIndex}&now_index=${nowIndex}`;
-      const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
-      $.getJSON('/differ/diff_summary', args, (data) => {
-        const tip = tipHtml($light, avatarIndex, colour, number, data.diff_summary);
-        showHoverTip($light, tip);
-      });
-    });
+  /*cd.highlightFilenames = () => {
+    return $.parseJSON('<%= raw @highlight_filenames %>');
   };
 
-  const tipHtml = ($light, avatarIndex, colour, number, diffSummary) => {
-    return `<table>
-             <tr>
-               <td>${avatarImage(avatarIndex)}</td>
-               <td><span class="traffic-light-count ${colour}">${number}</span></td>
-               <td><img src="/images/traffic-light/${colour}.png"
-                      class="traffic-light-diff-tip-traffic-light-image"></td>
-             </tr>
-           </table>
-           ${diffLinesHtmlTable(diffSummary)}`;
-  };
+  cd.extensionFilenames = () => {
+    return $.parseJSON('<%= @filename_extension.inspect.html_safe %>');
+  };*/
 
   // - - - - - - - - - - - - - - - - - - - -
-
-  const avatarImage = (avatarIndex) => {
-    if (avatarIndex === '') {
-      return '';
-    } else {
-      return `<img src="/images/avatars/${avatarIndex}.jpg"
-                 class="traffic-light-diff-tip-avatar-image">`;
-    }
-  };
-
-  // - - - - - - - - - - - - - - - - - - - -
-
-  const diffLinesHtmlTable = (files) => {
-    const chunks = $('<table>');
-    Object.keys(files).forEach(function(filename) {
-      chunks.append(
-        `<tr>
-          <td>
-            <div class="traffic-light-diff-tip-line-count-deleted some button">
-              ${files[filename].deleted}
-            </div>
-          </td>
-          <td>
-            <div class="traffic-light-diff-tip-line-count-added some button">
-              ${files[filename].added}
-            </div>
-          </td>
-          <td>&nbsp;${filename}</td>
-        </tr>`
-      ); //append
-    }); // forEach
-    return chunks.get(0).outerHTML;
-  };
-  */
-
-  // - - - - - - - - - - - - - - - - - - - -
-
   cd.setupTrafficLightCountHoverTip = ($count, counts) => {
     const reds = counts.red || 0;
     const ambers = counts.amber || 0;
@@ -301,7 +247,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   cd.createTip = (element, tip) => {
     setTip(element, () => {
       showHoverTip(element, tip);
@@ -309,7 +254,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const setTip = (node, setTipCallBack) => {
     // The speed of the mouse could exceed
     // the speed of the getJSON callback...
@@ -325,7 +269,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const showHoverTip = ($node, tip) => {
     if (!$node.attr('disabled')) {
       if (!$node.hasClass('mouse-has-left')) {
@@ -343,7 +286,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-
   const hoverTipContainer = () => {
     return $('#hover-tip-container');
   };
