@@ -8,6 +8,7 @@
 @import "minute-box";
 @import "fixed-column";
 @import "column";
+@import "diff-line-count";
 
 // - - - - - - - - - - - - - - - - - - -
 
@@ -85,7 +86,7 @@
       border-radius:15px;
       position:relative;
       left:2px;
-    }    
+    }
   }
 }
 
