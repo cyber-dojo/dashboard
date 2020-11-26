@@ -9,6 +9,9 @@ $(() => {
   cd.getJSON('model', 'group_manifest', {id:cd.id()}, (manifest) => {
     cd.highlightFilenames = () => (manifest.highlight_filenames || []);
     cd.extensionFilenames = () => (manifest.filename_extension  || []);
+    $('#display-name-box').html(manifest.display_name);
+    $('#exercise-name-box').html(manifest.exercise || '');
+    $('#id-box').html(manifest.id);
   });
 
 });
