@@ -16,9 +16,8 @@
   cd.setupTrafficLightTip = ($light, colour, avatarIndex, kataId, wasIndex, nowIndex) => {
     setTip($light, () => {
       const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
-      $.getJSON('/differ/diff_summary', args, (data) => {
-        const diff = data.diff_summary;
-        const $tip = $trafficLightTip($light, colour, nowIndex, avatarIndex, diff);
+      cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {
+        const $tip = $trafficLightTip($light, colour, nowIndex, avatarIndex, diffSummary);
         cd.showHoverTip($light, $tip);
       });
     });
@@ -198,12 +197,12 @@
   };
 
   const isHighlight = (filename) => {
-    // cd.highlightFilenames() is set in views/manifest.erb
+    // cd.highlightFilenames() is in views/manifest.erb
     return cd.highlightFilenames().includes(filename);
   };
 
   const isSource = (filename) => {
-    // cd.extensionFilenames() is set in views/manifest.erb    
+    // cd.extensionFilenames() is in views/manifest.erb
     return cd.extensionFilenames().find(ext => filename.endsWith(ext));
   };
 

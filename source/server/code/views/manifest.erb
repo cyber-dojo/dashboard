@@ -7,7 +7,6 @@ $(() => {
   cd.extensionFilenames = () => [];
 
   cd.getJSON('model', 'group_manifest', {id:cd.id()}, (manifest) => {
-    console.log(`manifest:${JSON.stringify(manifest)}`);
     cd.highlightFilenames = () => (manifest.highlight_filenames || []);
     cd.extensionFilenames = () => (manifest.filename_extension  || []);
   });
