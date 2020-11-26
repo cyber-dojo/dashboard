@@ -3,14 +3,10 @@ $diff-added-count-color: lighten($green, 35%);
 $diff-deleted-count-color: lighten($red, 35%);
 $diff-same-count-color: Gray;
 
-table.controls, table.filenames
+table.filenames
 {
   border-collapse: collapse;
   th, td { padding: 0px; }
-}
-table.sss
-{
-  margin-top:15px;
 }
 
 .diff-line-count, .diff-line-count-icon
@@ -25,7 +21,7 @@ table.sss
      padding: 2px;
    font-size: 11px;
        width: 20px;
-  
+
    color: $darker-color;
   border: 1px solid lighten($darker-color,6%);
   margin: { right: 2px; }
