@@ -112,7 +112,7 @@
     $table.append($tr);
     // cyber-dojo.sh cannot be deleted so there is always one file
     const filenames = diffs.map(diff => diffFilename(diff));
-    cd.sortedFilenames(filenames).forEach(filename => {
+    sortedFilenames(filenames).forEach(filename => {
       const fileDiff = diffs.find(diff => diffFilename(diff) === filename);
       const $tr = $('<tr>');
       $tr.append($lineCountTd('deleted', fileDiff));
@@ -125,7 +125,7 @@
     return $table;
   };
 
-  // - - - - - - - -
+  // - - - - - - - - - - - - - - - - - - - -
   const $linesCountIconTd = (type, glyph) => {
     const $icon = $('<div>', {
       class:`diff-line-count-icon ${type}`
@@ -133,7 +133,7 @@
     return $('<td>').append($icon);
   };
 
-  // - - - - - - - -
+  // - - - - - - - - - - - - - - - - - - - -
   const $lineCountTd = (type, file) => {
     const lineCount = file.line_counts[type];
     const css = lineCount > 0 ? type : '';
@@ -145,7 +145,7 @@
     return $('<td>').append($count);
   };
 
-  // - - - - - - - -
+  // - - - - - - - - - - - - - - - - - - - -
   const $diffTypeTd = (diff) => {
     const $type = $('<div>', {
       class:`diff-type-marker ${diff.type}`
@@ -153,13 +153,14 @@
     return $('<td>').append($type);
   };
 
-  // - - - - - - - -
+  // - - - - - - - - - - - - - - - - - - - -
   const $diffFilenameTd = (diff) => {
     const $filename = $('<div>', { class:`diff-filename ${diff.type}` });
     $filename.text(diffFilename(diff));
     return $('<td>').append($filename);
   };
 
+  // - - - - - - - - - - - - - - - - - - - -
   const diffFilename = (diff) => {
     if (diff.type === 'deleted') {
       return diff.old_filename;
@@ -167,6 +168,46 @@
       return diff.new_filename;
     }
   };
+
+  // - - - - - - - - - - - - - - - - - - - -
+  const sortedFilenames = (filenames) => {
+    const sliced = filenames.slice();
+    sliced.sort(orderer);
+    return sliced;
+  };
+
+  const orderer = (lhs, rhs) => {
+    const lhsFileCat = fileCategory(lhs);
+    const rhsFileCat = fileCategory(rhs);
+    if (lhsFileCat < rhsFileCat)      { return -1; }
+    else if (lhsFileCat > rhsFileCat) { return +1; }
+    else if (lhs < rhs)               { return -1; }
+    else if (lhs > rhs)               { return +1; }
+    else                              { return  0; }
+  };
+
+  const fileCategory = (filename) => {
+    let category = undefined;
+    if (isHighlight(filename))    { category = 1; }
+    else if (isSource(filename))  { category = 2; }
+    else                          { category = 3; }
+    // Special cases
+    if (filename === 'readme.txt')    { category = 0; } // [A]
+    if (filename === 'cyber-dojo.sh') { category = 3; } // [B]
+    return category;
+    // [A] Always at the top
+    // [B] Shell test frameworks (eg shunit2) use .sh extension
+    //     but cyber-dojo.sh is not a user source file.
+  };
+
+  const isHighlight = (filename) => {
+    return false; //cd.highlightFilenames().includes(filename);
+  };
+
+  const isSource = (filename) => {
+    return false; //cd.extensionFilenames().find(ext => filename.endsWith(ext));
+  };
+
 
   /*
   cd.XX_setupTrafficLightTip = ($light, kataId, avatarIndex, wasIndex, nowIndex, colour, number) => {
