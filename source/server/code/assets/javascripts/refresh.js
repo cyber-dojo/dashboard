@@ -121,7 +121,6 @@ $(() => {
         args.lastColour = colour; // (for colour of traffic-lights-count)
 
         appendLightQualifierImg($minuteBox, light);
-        console.log(`light:${JSON.stringify(light)}:`);
 
         $minuteBox.append($light);
         unless(args.counts[colour], () => args.counts[colour] = 0);
