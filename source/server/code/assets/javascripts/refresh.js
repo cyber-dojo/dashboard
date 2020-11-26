@@ -4,7 +4,7 @@ $(() => {
 
   cd.id = () => cd.urlParam('id');;
 
-  const cssId = 'traffic-lights2';
+  const cssId = 'traffic-lights';
   const $lights = $(`#${cssId}`);
   const $tHeadTr = $('table thead tr', $lights);
   const $tBody = $('table tbody', $lights);
