@@ -7,9 +7,6 @@ echo_versioner_env_vars()
   echo CYBER_DOJO_DASHBOARD_SERVER_USER=nobody
   echo CYBER_DOJO_DASHBOARD_CLIENT_USER=nobody
 
-  echo CYBER_DOJO_DASHBOARD_IMAGE=cyberdojo/dashboard
-  echo CYBER_DOJO_DASHBOARD_PORT=4527
-
   echo CYBER_DOJO_DASHBOARD_CLIENT_IMAGE=cyberdojo/dashboard-client
   echo CYBER_DOJO_DASHBOARD_CLIENT_PORT=9999
 
