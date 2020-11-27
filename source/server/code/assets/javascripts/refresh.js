@@ -29,9 +29,10 @@ $(() => {
     if (cd.minuteColumns.isChecked()) {
       $tHeadTr.append($('<th>')); // to match avatar-image|pie-chart|traffic-light-count
       Object.keys(timeTicks).forEach((minutes) => { // eg minutes == "1"
-        const minute = timeTicks[minutes];          // eg minute == [ days,hours,seconds ]
+        const minute = timeTicks[minutes];          // eg minute == [ days,hours,minutes ]
         const $th = $('<th>');                      // or minute == { "collapsed":525 }
         unless(minute.collapsed, () => {
+          ageTrafficLight(minute);
           $th.append($('<div>', { class:'time-tick' }));
           cd.createTip($th, cd.timeTick(minute));
         });
@@ -39,8 +40,53 @@ $(() => {
       }); // forEach
       $tHeadTr.append($('<th>')); // to match scroll-marker
     }
+    setAge();
   };
 
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+  let dhmOldest = undefined;
+  let dhmNewest = undefined;
+
+  const ageTrafficLight = (dhm) => {
+    const seconds = dhmSeconds(dhm);
+    if (dhmOldest === undefined || seconds < dhmOldest) {
+      dhmOldest = seconds;
+    }
+    if (dhmNewest === undefined || seconds > dhmNewest) {
+      dhmNewest = seconds;
+    }
+  };
+
+  const dhmSeconds = (dhm) => {
+    const days=dhm[0],hours=dhm[1],minutes=dhm[2];
+    return minutes*60 + hours*60*60 + days*24*60*60;
+  };
+
+  const dhmAge = () => {
+    if (dhmOldest === undefined) { return dhm(0,0,0); }
+    const seconds = dhmNewest - dhmOldest;
+    const days    = (seconds / 60  / 60  / 24);
+    const hours   = (seconds / 60  / 60) % 24;
+    const minutes = (seconds / 60) % 60;
+    return dhm(days,hours,minutes);
+  };
+
+  const dhm = (d,h,m) => {
+    return {
+         days:Math.floor(d),
+        hours:Math.floor(h),
+      minutes:Math.floor(m)
+    };
+  };
+
+  const setAge = () => {
+    const age = dhmAge();
+    $('#days').text(age.days);
+    $('#hours').text(age.hours);
+    $('#minutes').text(age.minutes);
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   const unless = (truth, callBack) => {
     if (!truth) {
       callBack();
@@ -61,10 +107,6 @@ $(() => {
       $fixedColumn.append($trafficLightsPieChart(args.counts, kataId));
       $fixedColumn.append($trafficLightsCount(args));
     }); // forEach
-
-    $('#days').text('2');
-    $('#hours').text('11');
-    $('#minutes').text('53');    
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
