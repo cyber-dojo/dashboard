@@ -61,6 +61,10 @@ $(() => {
       $fixedColumn.append($trafficLightsPieChart(args.counts, kataId));
       $fixedColumn.append($trafficLightsCount(args));
     }); // forEach
+
+    $('#days').text('2');
+    $('#hours').text('11');
+    $('#minutes').text('53');    
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
