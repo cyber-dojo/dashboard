@@ -3,6 +3,11 @@ fullnameOverride: "dashboard"
 
 replicaCount: 1
 
+envFromSecret: {}
+nodeSelector: {}
+affinity: {}
+tolerations: []
+
 service:
   annotations:
     prometheus.io/scrape: "true"
@@ -33,14 +38,6 @@ containers:
       limits:
         memory: 256Mi
     livenessProbe:
-      path: /alive?
+      path: /alive
     readinessProbe:
-      path: /ready?
-
-envFromSecret: {}
-
-nodeSelector: {}
-
-affinity: {}
-
-tolerations: []
+      path: /ready
