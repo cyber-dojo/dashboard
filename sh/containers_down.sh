@@ -1,10 +1,8 @@
-#!/bin/bash -Eeu
 
 # - - - - - - - - - - - - - - - - - - - - - -
 containers_down()
 {
-  docker-compose \
-    --file "${ROOT_DIR}/docker-compose.yml" \
+  augmented_docker_compose \
     down \
     --remove-orphans \
     --volumes
