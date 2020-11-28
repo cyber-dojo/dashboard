@@ -1,10 +1,13 @@
 
+# Values are low; legacy models/ code is being phased out.
+# Instead browser will make via $.getJSON() calls and run JS.
+
 MIN = {
   test_count:1,
-  app_coverage:100,
+  app_coverage:45,
   test_coverage:100,
-  line_ratio:0.7,
-  hits_ratio:6.2
+  line_ratio:0.1,
+  hits_ratio:0.4
 }
 
 MAX = {
