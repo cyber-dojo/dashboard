@@ -87,5 +87,6 @@ curl_smoke_test
 if [ "${1:-}" == '--no-browser' ]; then
   containers_down
 else
-  open "http://$(ip_address):80/dashboard/show?id=REf1t8&auto_refresh=true&minute_columns=true"
+  #open "http://$(ip_address):80/dashboard/show?id=REf1t8&auto_refresh=true&minute_columns=true"
+  open "http://$(ip_address):80/dashboard/show?id=FxWwrr&auto_refresh=true&minute_columns=true"
 fi

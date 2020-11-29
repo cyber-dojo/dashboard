@@ -1,11 +1,9 @@
-<% if @group.manifest.progress_regexs != [] %>
-  <div id="progress-button-box">
-    <button type="button"
-              id="progress-button">
-      progress?
-    </button>
-  </div>
-<% end %>
+<div id="progress-button-box">
+  <button type="button"
+            id="progress-button">
+    progress?
+  </button>
+</div>
 
 <script>
 /*global cd,$*/
@@ -31,7 +29,7 @@ $(() => {
                   " height='20'/>" +
             '</td>' +
             '<td>' +
-              `<img src='/avatar/image/${animal.index}'` +
+              `<img src='/images/avatars/${animal.index}.jpg'` +
                 ` data-id='${animal.id}'` +
                 " width='30'" +
                 " height='30'" +
@@ -49,7 +47,7 @@ $(() => {
       node.dialog({
         autoOpen: true,
            modal: true,
-           title: cd.dialogTitle('progress?'),
+           title: dialogTitle('progress?'),
          buttons: { close: () => node.remove() },
         maxWidth: 600
       });
@@ -59,6 +57,10 @@ $(() => {
         window.open(`/kata/edit/${id}`);
       });
     }); // getJSON
+  };
+
+  const dialogTitle = (title) => {
+    return `<span class="large dialog title">${title}<span>`;
   };
 
   $('#progress-button').click(() => {
