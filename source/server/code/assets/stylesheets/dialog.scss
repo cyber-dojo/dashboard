@@ -1,0 +1,24 @@
+
+.large  { font-size: 1.85em; }
+
+.dialog
+{
+  background: $lighter-color;
+       color: $darker-color;
+     display: table;
+      margin: { top: 0; bottom: auto; left: 45px; right: 45px; }
+
+  a:link, a:visited { color: $lighter-color; }
+
+  &.title
+  {
+    position: relative;
+        left: -45px;
+  }
+}
+
+.ui-dialog-buttonset
+{
+  position: relative;
+  left: -8px; // to left align custom [close] button.
+}

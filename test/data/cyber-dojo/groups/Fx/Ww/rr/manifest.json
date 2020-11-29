@@ -112,6 +112,6 @@
   "progress_regexs": [
     "\\(\\d+\\) runs, \\(\\d+\\) assertions, \\(\\d+\\) failures, \\(\\d+\\) errors, \\(\\d+\\) skips",
     "\\(\\d+\\) runs, \\(\\d+\\) assertions, \\(\\d+\\) failures, \\(\\d+\\) errors, \\(\\d+\\) skips"
-  ],  
+  ],
   "id": "FxWwrr"
 }
