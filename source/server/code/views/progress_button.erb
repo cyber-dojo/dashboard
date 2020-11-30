@@ -12,37 +12,11 @@ $(() => {
 
   const progressDialog = () => {
 	  $.getJSON(`/dashboard/progress/${cd.id()}`, {}, (data) => {
-      let html = '';
-      let index = 0;
-      html += '<div id="progress-dialog">';
-      html += '<table>';
-      $.each(data.animals, (name, animal) => {
-        const parity = (index % 2 === 0) ? 'even' : 'odd';
-        index += 1;
-        html +=
-          `<tr class='${parity} animal'>` +
-            "<td class='progress'>" +
-              `<img src='/images/traffic-light/${animal.colour}.png'` +
-                  ` alt='${animal.colour} traffic-light'` +
-                  " width='20'" +
-                  " height='20'/>" +
-            '</td>' +
-            '<td>' +
-              `<img src='/images/avatars/${animal.index}.jpg'` +
-                ` data-id='${animal.id}'` +
-                " width='30'" +
-                " height='30'" +
-                " class='avatar-image'/>" +
-            '</td>' +
-            `<td class='${animal.colour} progress'>` +
-              animal.progress.text +
-            '</td>' +
-          '</tr>';
-      }); // each
-      html += '</table>';
-      html += '</div>';
-
-      const node = $(html);
+      const node = $(progressTable(data.animals));
+      $('.avatar-image', node).click(event => {
+        const id = $(event.currentTarget).data('id');
+        window.open(`/kata/edit/${id}`);
+      });
       node.dialog({
         autoOpen: true,
            modal: true,
@@ -50,21 +24,55 @@ $(() => {
          buttons: { close: () => node.remove() },
         maxWidth: 600
       });
-
-      $('.avatar-image', node).click(event => {
-        const id = $(event.currentTarget).data('id');
-        window.open(`/kata/edit/${id}`);
-      });
-    }); // getJSON
+    });
   };
 
+  //- - - - - - - - - - - - - - - - - - - - - - - -
+  const progressTable = (avatars) => {
+    let html = '';
+    let index = 0;
+    html += '<div id="progress-dialog">';
+    html += '<table>';
+    $.each(avatars, (_name, avatar) => {
+      const parity = (index % 2 === 0) ? 'even' : 'odd';
+      index += 1;
+      html += progressTr(index, avatar);
+    });
+    html += '</table>';
+    html += '</div>';
+    return html;
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - -
+  const progressTr = (index, avatar) => {
+    const parity = (index % 2 === 0) ? 'even' : 'odd';
+    return '' +
+      `<tr class='${parity} animal'>` +
+        "<td class='progress'>" +
+          `<img src='/images/traffic-light/${avatar.colour}.png'` +
+              ` alt='${avatar.colour} traffic-light'` +
+              " width='20'" +
+              " height='20'/>" +
+        '</td>' +
+        '<td>' +
+          `<img src='/images/avatars/${avatar.index}.jpg'` +
+            ` data-id='${avatar.id}'` +
+            " width='30'" +
+            " height='30'" +
+            " class='avatar-image'/>" +
+        '</td>' +
+        `<td class='${avatar.colour} progress'>` +
+          avatar.progress.text +
+        '</td>' +
+      '</tr>';
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - -
   const dialogTitle = (title) => {
     return `<span class="large dialog title">${title}<span>`;
   };
 
-  $('#progress-button').click(() => {
-    progressDialog();
-  });
+  $('#progress-button').click(() => progressDialog());
 
 });
 </script>
