@@ -21,22 +21,6 @@
 {
   margin: { left: 35px; top: 38px; }
 
-  #progress-button-box
-  {
-    @include right-align(15px);
-    text-align: right;
-    margin-left: 10px;
-    #progress-button
-    {
-      @include plaintext-font();
-      @include font-size-tiny();
-         padding: { top: 1px; bottom: 2px; left: 9px; right: 9px; }
-      text-align: left;
-        position: relative;
-             top: -7px;
-    }
-  }
-
   .table-scroll
   {
     max-width: 1000px;

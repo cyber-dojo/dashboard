@@ -20,17 +20,21 @@ curl_smoke_test()
   curl_json_body_200 ready
   curl_json_body_200 sha
   echo
+
   curl_200           assets/app.css 'Content-Type: text/css'
   #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   #cat $(log_filename)
   #Must not contain SassC::SyntaxError:
   #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  echo
+
   curl_200           assets/app.js  'Content-Type: application/javascript'
   #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   #cat $(log_filename)
   #Must not contain Uglifier::Error
   #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   echo
+
   curl_200           show/FxWwrr  dashboard-page
   echo
 }
