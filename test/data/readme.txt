@@ -11,6 +11,6 @@ saver
 /cyber-dojo/groups/ch/y6/BJ/11/kata.id ==> k5ZTk0  (11==dolphin)
 /cyber-dojo/katas/k5/ZT/k0
 
-/cyber-dojo/groups/Ly/Qp/Fr                       Python, unittest
+/cyber-dojo/groups/Ly/Qp/Fr                       Python, unittest (has progress_regex)
 /cyber-dojo/groups/Fx/Ww/rr/26/kata.id ==> rUqcey (26==koala)
 /cyber-dojo/groups/Fx/Ww/rr/27/kata.id ==> 38w9NC (27==leopard)

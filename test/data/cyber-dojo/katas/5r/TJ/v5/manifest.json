@@ -19,10 +19,6 @@
     55,
     800239
   ],
-  "progress_regexs": [
-    "\\(\\d+\\) runs, \\(\\d+\\) assertions, \\(\\d+\\) failures, \\(\\d+\\) errors, \\(\\d+\\) skips",
-    "\\(\\d+\\) runs, \\(\\d+\\) assertions, \\(\\d+\\) failures, \\(\\d+\\) errors, \\(\\d+\\) skips"
-  ],  
   "group_id": "FxWwrr",
   "group_index": 32,
   "id": "5rTJv5"
