@@ -20,6 +20,21 @@ class AppBase < Sinatra::Base
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
+  environment.append_path('code/assets/images')
+
+  def self.jquery_dialog_image(name)
+    get "/assets/images/#{name}", provides:[:png] do
+      env['PATH_INFO'].sub!('/assets/images', '')
+      settings.environment.call(env)
+    end
+  end
+
+  jquery_dialog_image('ui-icons_222222_256x240.png')
+  jquery_dialog_image('ui-icons_ffffff_256x240.png')
+  jquery_dialog_image('ui-bg_diagonals-thick_20_666666_40x40.png')
+
+  # - - - - - - - - - - - - - - - - - - - - - -
+
   environment.append_path('code/assets/stylesheets')
   environment.css_compressor = :sassc
 
