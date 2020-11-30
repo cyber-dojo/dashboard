@@ -1,16 +1,9 @@
-
+<div id="hover-tip-container"></div>
 <%= erb :id %>
 <%= erb :manifest %>
-<div id="hover-tip-container"></div>
 <%= erb :top_bar %>
 <div id="dashboard-page">
-  <table>
-    <tr>
-      <td><%= erb :age %></td>
-      <td><%= erb :auto_refresh_checkbox %></td>
-      <td><%= erb :minute_columns_checkbox %></td>
-    </tr>
-  </table>
+  <%= erb :controls %>
   <%= erb :traffic_lights %>
 </div>
 

@@ -12,13 +12,14 @@
 @import "column";
 @import "diff-line-count";
 @import "top-bar";
+@import "controls";
 @import "jquery-ui-1.8.16.custom";
 
 // - - - - - - - - - - - - - - - - - - -
 
 #dashboard-page
 {
-  margin: { left: 35px; top: 38px; }
+  margin: { left:35px; top:0px; }
 
   .table-scroll
   {
