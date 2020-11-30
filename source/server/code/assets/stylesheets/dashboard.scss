@@ -13,6 +13,7 @@
 @import "diff-line-count";
 @import "top-bar";
 @import "dialog";
+@import "progress-dialog";
 @import "jquery-ui-1.8.16.custom";
 
 // - - - - - - - - - - - - - - - - - - -
@@ -77,18 +78,6 @@
       position:relative;
       left:2px;
     }
-  }
-}
-
-#progress-dialog
-{
-  padding-top: 0px;
-  .animal.odd  { background: lighten($darker-color,3%); }
-  .animal.even { background: lighten($darker-color,6%); }
-  .progress
-  {
-    white-space: nowrap;
-        padding: { left: 5px; right: 5px; }
   }
 }
 

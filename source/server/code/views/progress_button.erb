@@ -10,6 +10,8 @@
 'use strict';
 $(() => {
 
+  $('#progress-button').click(() => progressDialog());
+
   const progressDialog = () => {
 	  $.getJSON(`/dashboard/progress/${cd.id()}`, {}, (data) => {
       const node = $(progressTable(data.animals));
@@ -47,7 +49,7 @@ $(() => {
   const progressTr = (index, avatar) => {
     const parity = (index % 2 === 0) ? 'even' : 'odd';
     return '' +
-      `<tr class='${parity} animal'>` +
+      `<tr class='${parity} avatar'>` +
         "<td class='progress'>" +
           `<img src='/images/traffic-light/${avatar.colour}.png'` +
               ` alt='${avatar.colour} traffic-light'` +
@@ -71,8 +73,6 @@ $(() => {
   const dialogTitle = (title) => {
     return `<span class="large dialog title">${title}<span>`;
   };
-
-  $('#progress-button').click(() => progressDialog());
 
 });
 </script>
