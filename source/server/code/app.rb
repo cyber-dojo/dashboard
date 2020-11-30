@@ -18,7 +18,8 @@ class App < AppBase
 
   # - - - - - - - - - - - - - - -
 
-  get '/show', provides:[:html] do
+  get '/show/:id', provides:[:html] do
+    @id = params[:id]
     respond_to { |wants|
       wants.html {
         group # set @group
@@ -29,7 +30,7 @@ class App < AppBase
 
   # - - - - - - - - - - - - - - -
 
-  get '/heartbeat', provides:[:json] do
+  get '/heartbeat/:id', provides:[:json] do
     # Process all traffic-lights into minute columns here in Ruby
     # which can easily handle integers (unlike JS).
     # Then let browser do all rendering in JS.
@@ -45,7 +46,7 @@ class App < AppBase
 
   # - - - - - - - - - - - - - - -
 
-  get '/progress', provides:[:json] do
+  get '/progress/:id', provides:[:json] do
     respond_to { |wants|
       wants.json {
         json(animals:animals_progress)

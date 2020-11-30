@@ -31,7 +31,7 @@ curl_smoke_test()
   #Must not contain Uglifier::Error
   #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
   echo
-  curl_200           show?id=FxWwrr  dashboard-page
+  curl_200           show/FxWwrr  dashboard-page
   echo
 }
 
@@ -87,6 +87,6 @@ curl_smoke_test
 if [ "${1:-}" == '--no-browser' ]; then
   containers_down
 else
-  #open "http://$(ip_address):80/dashboard/show?id=REf1t8&auto_refresh=true&minute_columns=true"
-  open "http://$(ip_address):80/dashboard/show?id=FxWwrr&auto_refresh=true&minute_columns=true"
+  #open "http://$(ip_address)/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
+  open "http://$(ip_address)/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
 fi

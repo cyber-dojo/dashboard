@@ -11,8 +11,7 @@
 $(() => {
 
   const progressDialog = () => {
-    const groupId = cd.urlParam('id');
-	  $.getJSON('/dashboard/progress', { id:groupId }, (data) => {
+	  $.getJSON(`/dashboard/progress/${cd.id()}`, {}, (data) => {
       let html = '';
       let index = 0;
       html += '<div id="progress-dialog">';

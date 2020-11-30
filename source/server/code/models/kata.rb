@@ -14,7 +14,7 @@ class Kata
   end
 
   def id
-    @params['id']
+    @params[:id]
   end
 
   def exists?
