@@ -21,21 +21,15 @@ curl_smoke_test()
   curl_json_body_200 sha
   echo
 
-  curl_200           assets/app.css 'Content-Type: text/css'
-  #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-  #cat $(log_filename)
-  #Must not contain SassC::SyntaxError:
-  #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  curl_200 assets/app.css 'Content-Type: text/css'
+  cat $(log_filename) | grep 'SassC::SyntaxError:' && exit 42
   echo
 
-  curl_200           assets/app.js  'Content-Type: application/javascript'
-  #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-  #cat $(log_filename)
-  #Must not contain Uglifier::Error
-  #echo 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  curl_200 assets/app.js 'Content-Type: application/javascript'
+  cat $(log_filename) | grep 'Uglifier::Error' && exit 42
   echo
 
-  curl_200           show/FxWwrr  dashboard-page
+  curl_200 show/FxWwrr dashboard-page
   echo
 }
 
