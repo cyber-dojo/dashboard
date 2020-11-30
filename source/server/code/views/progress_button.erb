@@ -10,7 +10,11 @@
 'use strict';
 $(() => {
 
-  $('#progress-button').click(() => progressDialog());
+  const $progressButton = $('#progress-button');
+
+  $progressButton.click(() => progressDialog());
+  cd.createTip($progressButton, 'open progress dialog');
+
 
   const progressDialog = () => {
 	  $.getJSON(`/dashboard/progress/${cd.id()}`, {}, (data) => {
