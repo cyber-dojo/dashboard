@@ -92,5 +92,6 @@ if [ "${1:-}" == '--no-browser' ]; then
   containers_down
 else
   #open "http://$(ip_address)/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
-  open "http://$(ip_address)/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
+  #open "http://$(ip_address)/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
+  open "http://$(ip_address)/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
 fi
