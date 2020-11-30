@@ -12,11 +12,11 @@ $(() => {
 
   const $progressButton = $('#progress-button');
 
-  $progressButton.click(() => progressDialog());
+  $progressButton.click(() => openProgressDialog());
   cd.createTip($progressButton, 'open progress dialog');
 
 
-  const progressDialog = () => {
+  const openProgressDialog = () => {
 	  $.getJSON(`/dashboard/progress/${cd.id()}`, {}, (data) => {
       const node = $(progressTable(data.animals));
       $('.avatar-image', node).click(event => {
