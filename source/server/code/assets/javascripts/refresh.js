@@ -259,9 +259,13 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   const $trafficLightsCount = (args) => {
+    let total = 0;
+    Object.keys(args.counts).forEach((key) => {
+      total += args.counts[key];
+    });
     const $count = $('<div>', {
       class:`traffic-light-count ${args.lastColour}`
-    }).text(args.number);
+    }).text(total);
     cd.setupTrafficLightCountHoverTip($count, args.counts);
     return $count;
   };
