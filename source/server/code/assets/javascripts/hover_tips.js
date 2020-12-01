@@ -13,7 +13,7 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  cd.setupTrafficLightTip = ($light, colour, avatarIndex, kataId, wasIndex, nowIndex) => {
+  cd.setupTrafficLightTip = ($light, colour, avatarIndex, kataId, wasIndex, nowIndex) => {    
     setTip($light, () => {
       const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
       cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {

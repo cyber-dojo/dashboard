@@ -129,7 +129,6 @@ $(() => {
     // }
     const args = {
       'number':1,      // the UI traffic-light number
-      'wasIndex':0,    // the previously displayed element's git tag
       'parity':'even', // for columns
       'counts':{}      // of each traffic-light colour
     };
@@ -158,20 +157,23 @@ $(() => {
           class:'diff-traffic-light',
             alt:`${colour} traffic-light`
         });
-
-        cd.setupTrafficLightTip($light, colour, groupIndex, kataId, args.wasIndex, nowIndex);
-
-        args.wasIndex = nowIndex;
-        args.lastColour = colour; // (for colour of traffic-lights-count)
-
+        $light.click(() => window.open(showReviewUrl(kataId, nowIndex-1, nowIndex)));
         appendLightQualifierImg($minuteBox, light);
-
         $minuteBox.append($light);
+        cd.setupTrafficLightTip($light, colour, groupIndex, kataId, nowIndex-1, nowIndex);
         unless(args.counts[colour], () => args.counts[colour] = 0);
         args.counts[colour] += 1;
+        args.lastColour = colour; // (for colour of traffic-lights-count)
       }); // forEach
       args.parity = (args.parity === 'odd' ? 'even' : 'odd');
     } // else
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const showReviewUrl = (kataId, wasIndex, nowIndex) => {
+    return `/review/show/${kataId}` +
+      `?was_index=${wasIndex}` +
+      `&now_index=${nowIndex}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
