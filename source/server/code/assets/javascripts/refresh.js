@@ -35,7 +35,7 @@ $(() => {
           cd.createTip($th, cd.timeTick(minute));
         });
         $tHeadTr.append($th);
-      }); // forEach
+      });
       $tHeadTr.append($('<th>')); // to match scroll-marker
     }
     setAge();
@@ -104,7 +104,7 @@ $(() => {
       $fixedColumn.append($avatarImage(kataId, groupIndex));
       $fixedColumn.append($trafficLightsPieChart(args.counts, kataId));
       $fixedColumn.append($trafficLightsCount(args));
-    }); // forEach
+    });
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,27 +150,33 @@ $(() => {
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                      // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
-        const colour = light.colour;
-        const nowIndex = light.index;
-        const $light = $('<img>', {
-            src:`/images/traffic-light/${colour}.png`,
-          class:'diff-traffic-light',
-            alt:`${colour} traffic-light`
-        });
-        $light.click(() => window.open(showReviewUrl(kataId, nowIndex-1, nowIndex)));
+        appendLightImg($minuteBox, light, groupIndex, kataId);
         appendLightQualifierImg($minuteBox, light);
-        $minuteBox.append($light);
-        cd.setupTrafficLightTip($light, colour, groupIndex, kataId, nowIndex-1, nowIndex);
+        const colour = light.colour;
         unless(args.counts[colour], () => args.counts[colour] = 0);
         args.counts[colour] += 1;
         args.lastColour = colour; // (for colour of traffic-lights-count)
-      }); // forEach
+      });
       args.parity = (args.parity === 'odd' ? 'even' : 'odd');
-    } // else
+    }
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const showReviewUrl = (kataId, wasIndex, nowIndex) => {
+  const appendLightImg = ($lights, light, groupIndex, kataId) => {
+    const colour = light.colour;
+    const $light = $('<img>', {
+        src:`/images/traffic-light/${colour}.png`,
+      class:'diff-traffic-light',
+        alt:`${colour} traffic-light`
+    });
+    const nowIndex = light.index;
+    $light.click(() => window.open(reviewUrl(kataId, nowIndex-1, nowIndex)));
+    cd.setupTrafficLightTip($light, colour, groupIndex, kataId, nowIndex-1, nowIndex);
+    $lights.append($light);
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const reviewUrl = (kataId, wasIndex, nowIndex) => {
     return `/review/show/${kataId}` +
       `?was_index=${wasIndex}` +
       `&now_index=${nowIndex}`;
