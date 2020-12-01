@@ -1,7 +1,7 @@
 #!/bin/bash -Eeu
 
 #- - - - - - - - - - - - - - - - - - - - - -
-show_help_if_requested()
+exit_zero_if_show_help()
 {
   local -r MY_NAME=$(basename "${BASH_SOURCE[0]}")
   if [ "${1:-}" == '-h' ] || [ "${1:-}" == '--help' ]; then
