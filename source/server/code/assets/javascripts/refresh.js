@@ -150,8 +150,8 @@ $(() => {
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                      // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
-        appendLightImg($minuteBox, light, groupIndex, kataId);
         appendLightQualifierImg($minuteBox, light);
+        appendLightImg($minuteBox, light, groupIndex, kataId);
         const colour = light.colour;
         unless(args.counts[colour], () => args.counts[colour] = 0);
         args.counts[colour] += 1;
