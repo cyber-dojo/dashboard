@@ -22,6 +22,7 @@ services:
     container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER}
     depends_on:
       - dashboard_server
+    env_file: [ .env ]
     ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
     read_only: true
     restart: "no"
@@ -38,6 +39,7 @@ services:
     depends_on:
       - differ
       - saver
+    env_file: [ .env ]      
     ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
     restart: "no"
