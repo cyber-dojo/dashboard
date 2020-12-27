@@ -17,7 +17,7 @@ services:
     image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
     user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
     build:
-      args: [ COMMIT_SHA, CYBER_DOJO_DASHBOARD_CLIENT_PORT ]
+      args: [ COMMIT_SHA ]
       context: source/client
     container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER}
     depends_on:
@@ -33,13 +33,13 @@ services:
     image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
     user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
     build:
-      args: [ COMMIT_SHA, CYBER_DOJO_DASHBOARD_PORT ]
+      args: [ COMMIT_SHA ]
       context: source/server
     container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER}
     depends_on:
       - differ
       - saver
-    env_file: [ .env ]      
+    env_file: [ .env ]
     ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
     restart: "no"

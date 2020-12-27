@@ -7,10 +7,6 @@ COPY --chown=nobody:nogroup . .
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}
 
-ARG CYBER_DOJO_DASHBOARD_CLIENT_PORT
-ENV PORT=${CYBER_DOJO_DASHBOARD_CLIENT_PORT}
-
-EXPOSE ${PORT}
 USER nobody
 HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /app/config/healthcheck.sh
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
