@@ -1,0 +1,31 @@
+img.diff-traffic-light
+{
+  cursor: pointer;
+    width: 24px;
+   height: 24px;
+   border-radius: 12px;
+  padding: { left: 1px; right: 0px; }
+  margin : { left: 0px; right: 0px; }
+}
+
+#traffic-lights
+{
+  margin-top: 5px;
+
+  img.tick, img.cross
+  {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    position: relative;
+    left: 2px;
+  }
+  img.revert, img.checkout
+  {
+    width: 25px;
+    height: 25px;
+    border-radius: 13px;
+    position: relative;
+    left: 2px;
+  }
+}

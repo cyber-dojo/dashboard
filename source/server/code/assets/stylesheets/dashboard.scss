@@ -2,9 +2,9 @@
 @import "checkboxes";
 @import "panels";
 @import "avatar-image";
+@import "traffic-lights";
 @import "traffic-light-count";
 @import "time-tick";
-@import "diff-traffic-light";
 @import "age";
 @import "collapsed-columns";
 @import "minute-box";
@@ -56,27 +56,6 @@
       left: 0px;
     }
     thead th:nth-child(1) { z-index: 5; }
-  }
-
-  #traffic-lights
-  {
-    margin-top:5px;
-    img.revert, img.tick, img.cross
-    {
-      width:11px;
-      height:11px;
-      padding-top:11px;
-      position:relative;
-      left:2px;
-    }
-    img.checkout
-    {
-      width:25px;
-      height:25px;
-      border-radius:15px;
-      position:relative;
-      left:2px;
-    }
   }
 }
 
