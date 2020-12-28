@@ -150,9 +150,24 @@ $(() => {
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                      // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
-        appendLightQualifierImg($minuteBox, light);
-        appendLightImg($minuteBox, light, groupIndex, kataId);
         const colour = light.colour;
+
+        if (hasPrediction(light)) {
+          $minuteBox.append($predictImage(light));
+        }
+        let $light = undefined;
+        if (isCheckout(light)) {
+          $light = $checkoutImage();
+        }
+        else if (isRevert(light)) {
+          $light = $revertImage();
+        }
+        else {
+          $light = $ragImage(colour);
+        }
+        $minuteBox.append($light);
+        setupHandlers($light, light, groupIndex, kataId);
+
         unless(args.counts[colour], () => args.counts[colour] = 0);
         args.counts[colour] += 1;
         args.lastColour = colour; // (for colour of traffic-lights-count)
@@ -162,17 +177,11 @@ $(() => {
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const appendLightImg = ($lights, light, groupIndex, kataId) => {
+  const setupHandlers = ($light, light, groupIndex, kataId) => {
     const colour = light.colour;
-    const $light = $('<img>', {
-        src:`/images/traffic-light/${colour}.png`,
-      class:'diff-traffic-light',
-        alt:`${colour} traffic-light`
-    });
     const nowIndex = light.index;
     $light.click(() => window.open(reviewUrl(kataId, nowIndex-1, nowIndex)));
     cd.setupTrafficLightTip($light, colour, groupIndex, kataId, nowIndex-1, nowIndex);
-    $lights.append($light);
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,28 +192,25 @@ $(() => {
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const appendLightQualifierImg = ($lights, light) => {
-    // Older katas did not distinguish between
-    //   - an auto-revert, from an incorrect test prediction
-    //   - a [checkout], from the review page.
-    // Both were light.revert == [id,index]
-    if (isPredict(light)) {
-      $lights.append($imgForPredict(light));
-    }
-    else if (isCheckout(light)) {
-      $lights.append($imgForCheckout(light));
-    }
-    else if (isRevert(light)) {
-      $lights.append($imgForRevert(light));
-    }
-  };
+  // Older katas did not distinguish between
+  //   - an auto-revert, from an incorrect test prediction
+  //   - a [checkout], from the review page.
+  // Both were light.revert == [id,index]
 
-  const isPredict = (light) => light.predicted != undefined && light.predicted != 'none';
+  const hasPrediction = (light) => light.predicted != undefined && light.predicted != 'none';
   const isRevert = (light) => light.revert != undefined;
   const isCheckout = (light) => light.checkout != undefined;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const $imgForPredict = (light) => {
+  const $ragImage = (colour) => {
+    return $('<img>', {
+        src: `/images/traffic-light/${colour}.png`,
+      class: 'diff-traffic-light',
+        alt: `${colour} traffic-light`
+    });
+  };
+
+  const $predictImage = (light) => {
     const correct = (light.predicted === light.colour);
     const icon = correct ? 'tick' : 'cross';
     return $('<img>', {
@@ -213,19 +219,17 @@ $(() => {
     });
   };
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const $imgForRevert = (light) => {
+  const $revertImage = () => {
     return $('<img>', {
       class: 'revert',
         src: '/images/traffic-light/circle-revert.png'
     });
   };
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const $imgForCheckout = (light) => {
+  const $checkoutImage = () => {
     return $('<img>', {
-      class:'avatar-image checkout',
-        src:`/images/avatars/${light.checkout.avatarIndex}.jpg`
+      class: 'checkout',
+        src: '/images/traffic-light/circle-checkout.png'
     });
   };
 
