@@ -3,39 +3,28 @@
   margin-top: 5px;
 }
 
-img.XXX-diff-traffic-light
-{
-  cursor: pointer;
-    width: 24px;
-   height: 24px;
-   border-radius: 12px;
-  padding: { left: 1px; right: 0px; }
-  margin : { left: 0px; right: 0px; }
-}
-
 $traffic-light-size: 24px;
 
-/*@mixin circle-border($width)
+@mixin circle-border($width)
 {
   border-radius: $width / 2 + 1;
-}*/
+}
 
 img.diff-traffic-light
 {
   cursor: pointer;
-  width: 24px;
-  height: 24px;
-  border-radius: 12px;
+  width: $traffic-light-size;
+  height: $traffic-light-size;
+  @include circle-border($traffic-light-size);
   padding: { left:0px; right:0px; }
   margin: { left:0px; right:2px; }
 }
 
 img.revert, img.checkout
 {
-  width: 22px;
-  height: 22px;
-  //@include circle-border($traffic-light-size);
-  border-radius: 11px;
+  width: $traffic-light-size - 2px;
+  height: $traffic-light-size - 2px;
+  @include circle-border($traffic-light-size);
   position: relative;
   left: 2px;
 }
@@ -44,10 +33,9 @@ img.tick, img.cross
 {
   width: 11px;
   height: 11px;
-  border-radius: 6px;
-  //@include circle-border(11px);
+  @include circle-border(11px);
   position: relative;
-  left: 2px;
+  left: 1px;
 }
 
 img.revert, img.checkout, img.tick, img.cross
