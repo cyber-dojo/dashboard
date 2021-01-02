@@ -13,7 +13,7 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  cd.setupTrafficLightTip = ($light, colour, avatarIndex, kataId, wasIndex, nowIndex) => {    
+  cd.setupTrafficLightTip = ($light, colour, avatarIndex, kataId, wasIndex, nowIndex) => {
     setTip($light, () => {
       const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
       cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {
@@ -70,8 +70,8 @@
     const $td = $('<td>');
     if (avatarIndex != '') {
       const $img = $('<img>', {
-          src:`/images/avatars/${avatarIndex}.jpg`,
-        class:'traffic-light-diff-tip-avatar-image'
+          src: `/images/avatars/${avatarIndex}.jpg`,
+        class: 'traffic-light-diff-tip-avatar-image'
       });
       $td.append($img);
     }

@@ -150,17 +150,15 @@ $(() => {
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                      // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
-        const colour = light.colour;
-
         if (hasPrediction(light)) {
           $minuteBox.append($predictImage(light));
         }
-        let $light = undefined;
-        if (isCheckout(light)) {
-          $light = $checkoutImage();
+        const colour = light.colour;
+        if (isRevert(light)) {
+          $light = $revertImage(colour);
         }
-        else if (isRevert(light)) {
-          $light = $revertImage();
+        else if (isCheckout(light)) {
+          $light = $checkoutImage(colour);
         }
         else {
           $light = $ragImage(colour);
@@ -202,34 +200,34 @@ $(() => {
   const isCheckout = (light) => light.checkout != undefined;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const $predictImage = (light) => {
+    const correct = (light.predicted === light.colour);
+    const icon = correct ? 'tick' : 'cross';
+    return $('<img>', {
+      class: `${icon} ${light.predicted}`,
+        src: `/images/traffic-light/circle-${icon}.png`
+    });
+  };
+
+  const $revertImage = (colour) => {
+    return $('<img>', {
+      class: `diff-traffic-light revert ${colour}`,
+        src: '/images/traffic-light/circle-revert.png'
+    });
+  };
+
+  const $checkoutImage = (colour) => {
+    return $('<img>', {
+      class: `diff-traffic-light checkout ${colour}`,
+        src: '/images/traffic-light/circle-checkout.png'
+    });
+  };
+
   const $ragImage = (colour) => {
     return $('<img>', {
         src: `/images/traffic-light/${colour}.png`,
       class: 'diff-traffic-light',
         alt: `${colour} traffic-light`
-    });
-  };
-
-  const $predictImage = (light) => {
-    const correct = (light.predicted === light.colour);
-    const icon = correct ? 'tick' : 'cross';
-    return $('<img>', {
-      class: icon,
-        src: `/images/traffic-light/circle-${icon}.png`
-    });
-  };
-
-  const $revertImage = () => {
-    return $('<img>', {
-      class: 'revert',
-        src: '/images/traffic-light/circle-revert.png'
-    });
-  };
-
-  const $checkoutImage = () => {
-    return $('<img>', {
-      class: 'checkout',
-        src: '/images/traffic-light/circle-checkout.png'
     });
   };
 
