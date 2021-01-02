@@ -170,8 +170,8 @@ $(() => {
         args.counts[colour] += 1;
         args.lastColour = colour; // (for colour of traffic-lights-count)
       });
-      args.parity = (args.parity === 'odd' ? 'even' : 'odd');
     }
+    args.parity = (args.parity === 'odd' ? 'even' : 'odd');
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
