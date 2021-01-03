@@ -150,14 +150,14 @@ $(() => {
       $minuteBox.append($('<span>', { class:'collapsed-columns' }));
     } else {                      // eg lights === [ {"index":3,"colour":"red"},{...} ]
       lights.forEach((light) => { // eg light === {"index":3,"colour":"red"}
-        if (hasPrediction(light)) {
+        if (cd.lib.hasPrediction(light)) {
           $minuteBox.append($predictImage(light));
         }
         const colour = light.colour;
-        if (isRevert(light)) {
+        if (cd.lib.isRevert(light)) {
           $light = $revertImage(colour);
         }
-        else if (isCheckout(light)) {
+        else if (cd.lib.isCheckout(light)) {
           $light = $checkoutImage(colour);
         }
         else {
@@ -176,10 +176,10 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const setupHandlers = ($light, light, groupIndex, kataId) => {
-    const colour = light.colour;
+    //const colour = light.colour;
     const nowIndex = light.index;
     $light.click(() => window.open(reviewUrl(kataId, nowIndex-1, nowIndex)));
-    cd.setupTrafficLightTip($light, colour, groupIndex, kataId, nowIndex-1, nowIndex);
+    cd.setupTrafficLightTip($light, kataId, groupIndex, light, nowIndex-1, nowIndex);
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,16 +188,6 @@ $(() => {
       `?was_index=${wasIndex}` +
       `&now_index=${nowIndex}`;
   };
-
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // Older katas did not distinguish between
-  //   - an auto-revert, from an incorrect test prediction
-  //   - a [checkout], from the review page.
-  // Both were light.revert == [id,index]
-
-  const hasPrediction = (light) => light.predicted != undefined && light.predicted != 'none';
-  const isRevert = (light) => light.revert != undefined;
-  const isCheckout = (light) => light.checkout != undefined;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const $predictImage = (light) => {

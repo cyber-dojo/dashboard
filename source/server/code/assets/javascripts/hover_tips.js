@@ -13,56 +13,81 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  cd.setupTrafficLightTip = ($light, colour, avatarIndex, kataId, wasIndex, nowIndex) => {
+  cd.setupTrafficLightTip = ($light, kataId, avatarIndex, light, wasIndex, nowIndex) => {
     setTip($light, () => {
       const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
       cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {
-        const $tip = $trafficLightTip($light, colour, nowIndex, avatarIndex, diffSummary);
+        const $tip = $(document.createDocumentFragment());
+        $tip.append($trafficLightSummary($light, kataId, avatarIndex, light, nowIndex));
+        $tip.append($diffLinesTable(diffSummary));
         cd.showHoverTip($light, $tip);
       });
     });
   };
 
-  cd.showHoverTip = (node, tip, where) => {
-    if (where === undefined) {
-      where = {};
-    }
-    if (where.my === undefined) { where.my = 'top'; }
-    if (where.at === undefined) { where.at = 'bottom'; }
-    if (where.of === undefined) { where.of = node; }
-
-    if (!node.attr('disabled')) {
-      if (!node.hasClass('mouse-has-left')) {
-        // position() is the jQuery UI plug-in
-        // https://jqueryui.com/position/
-        const hoverTip = $('<div>', {
-          'class': 'hover-tip'
-        }).html(tip).position({
-          my: where.my,
-          at: where.at,
-          of: where.of,
-          collision: 'flip'
-        });
-        hoverTipContainer().html(hoverTip);
-      }
-    }
-  };
-
   // - - - - - - - - - - - - - - - - - - - -
-  const $trafficLightTip = ($light, colour, index, avatarIndex, diff) => {
-    const $holder = $(document.createDocumentFragment());
-    $holder.append($trafficLightSummary($light, colour, index, avatarIndex));
-    $holder.append($diffLinesTable(diff));
-    return $holder;
-  };
-
-  // - - - - - - - - - - - - - - - - - - - -
-  const $trafficLightSummary = ($light, colour, index, avatarIndex) => {
+  const $trafficLightSummary = ($light, kataId, avatarIndex, light, index) => {
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
-    $tr.append($trafficLightCountTd(colour, index));
-    $tr.append($trafficLightImageTd(colour));
+    $tr.append($trafficLightCountTd(light.colour, index));
+    $tr.append($trafficLightImageTd(light.colour));
+    $tr.append($trafficLightMiniTextTd(kataId, light));
     return $('<table>').append($tr);
+  };
+
+  const $trafficLightMiniTextTd = (kataId, light) => {
+    return $('<td class="mini-text">').html(miniTextInfo(kataId, light));
+  };
+
+  const miniTextInfo = (kataId, light) => {
+    if (light.colour === 'pulling') {
+      return 'image being prepared';
+    }
+    else if (light.colour === 'timed_out') {
+      return 'timed out';
+    }
+    else if (light.colour === 'faulty') {
+      return `fault! not ${cssColour('red')}, ${cssColour('amber')}, or ${cssColour('green')}`;
+    }
+    else if (cd.lib.hasPrediction(light)) {
+      return trafficLightPredictInfo(light);
+    }
+    else if (cd.lib.isRevert(light)) {
+      return trafficLightRevertInfo(light);
+    }
+    else if (cd.lib.isCheckout(light)) {
+      return trafficLightCheckoutInfo(kataId, light);
+    }
+    else {
+      return cssColour(light.colour);
+    }
+  };
+
+  const trafficLightPredictInfo = (light) => {
+    const colour = light.colour
+    const predicted = light.predicted;
+    return `predicted ${cssColour(predicted)}, got ${cssColour(colour)}`;
+  };
+
+  const trafficLightRevertInfo = (light) => {
+    const colour = cssColour(light.colour);
+    const index = cssColour(light.colour, light.index - 2)
+    return `auto-reverted to ${colour} ${index}`;
+  };
+
+  const trafficLightCheckoutInfo = (kataId, light) => {
+    const colour = cssColour(light.colour);
+    const index = cssColour(light.colour, light.checkout.index);
+    if (kataId === light.checkout.id) {
+      return `reverted to ${colour} ${index}`;
+    } else {
+      const name = cd.lib.avatarName(light.checkout.avatarIndex);
+      return `checked-out ${name}'s ${colour} ${index}`;
+    }
+  };
+
+  const cssColour = (colour, text = colour) => {
+    return `<span class="${colour}">${text}</span>`;
   };
 
   // - - - - - - - - - - - - - - - - - - - -
@@ -234,6 +259,32 @@
     html += '</table>';
 
     cd.createTip($count, html);
+  };
+
+  // - - - - - - - - - - - - - - - - - - - -
+  cd.showHoverTip = (node, tip, where) => {
+    if (where === undefined) {
+      where = {};
+    }
+    if (where.my === undefined) { where.my = 'top'; }
+    if (where.at === undefined) { where.at = 'bottom'; }
+    if (where.of === undefined) { where.of = node; }
+
+    if (!node.attr('disabled')) {
+      if (!node.hasClass('mouse-has-left')) {
+        // position() is the jQuery UI plug-in
+        // https://jqueryui.com/position/
+        const hoverTip = $('<div>', {
+          'class': 'hover-tip'
+        }).html(tip).position({
+          my: where.my,
+          at: where.at,
+          of: where.of,
+          collision: 'flip'
+        });
+        hoverTipContainer().html(hoverTip);
+      }
+    }
   };
 
   // - - - - - - - - - - - - - - - - - - - -
