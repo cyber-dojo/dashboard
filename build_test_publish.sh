@@ -23,7 +23,6 @@ exit_zero_if_show_help "$@"
 exit_non_zero_unless_installed docker
 exit_non_zero_unless_installed docker-compose
 remove_old_images
-build_tagged_images "$@"
 exit_zero_if_build_only "$@"
 server_up_healthy_and_clean "$@"
 client_up_healthy_and_clean "$@"

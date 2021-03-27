@@ -9,24 +9,24 @@ class GatheredTest < TestBase
   end
 
   include AppHelpers
-  
-  def params 
+
+  def params
     @params
   end
-  
+
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-  
+
   test 's46',
   'gather from saved cyber-dojo group v0' do
     @params = { id:'chy6BJ' }
-    
+
     gather
 
     expected = {
       'k5ZTk0' => 11,
     }
     assert_equal expected, @all_indexes
-    
+
     actual = {
       'k5ZTk0' => flat_lights('k5ZTk0'),
     }
@@ -39,21 +39,21 @@ class GatheredTest < TestBase
     }
     assert_equal expected, actual
   end
-  
+
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-  
+
   test 's47',
   'gather from saved cyber-dojo group v1' do
     @params = { id:'LyQpFr' }
 
     gather
-    
+
     expected = {
       'rUqcey' => 26,
       '38w9NC' => 27,
     }
     assert_equal expected, @all_indexes
-    
+
     actual = {
       'rUqcey' => flat_lights('rUqcey'),
       '38w9NC' => flat_lights('38w9NC'),
@@ -64,28 +64,28 @@ class GatheredTest < TestBase
         tcp([2020, 11, 30, 14, 6, 53, 941739], :green, 'none')
       ],
       '38w9NC' => [
-        tcp([2020, 11, 30, 14, 7, 28, 706554], :red, 'none'),        
+        tcp([2020, 11, 30, 14, 7, 28, 706554], :red, 'none'),
       ]
     }
     assert_equal expected, actual
   end
-  
+
   private
-  
+
   def tcp(time_a, colour, predicted)
     {
       'time_a' => time_a,
       'colour' => colour,
-      'predicted' => predicted      
+      'predicted' => predicted
     }
   end
-  
+
   def flat_lights(id)
     actual = []
     @all_lights[id].each do |light|
-      actual << tcp(light.time_a, light.colour, light.predicted)      
+      actual << tcp(light.time_a, light.colour, light.predicted)
     end
     actual
   end
-  
+
 end
