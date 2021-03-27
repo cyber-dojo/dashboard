@@ -14,6 +14,11 @@ class GroupEventsTest < TestBase
   end
 
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Intention: add a group_events() method to the model service API.
+  # Then run this as a contract-style test to test it has
+  # the same behaviour group.events() implemented in the model
+  # code duplicated in this dashboard repo.
+  # Then switch to using model.group_events()
 
   test 'G73',
   'group_events from saved cyber-dojo group v0' do
