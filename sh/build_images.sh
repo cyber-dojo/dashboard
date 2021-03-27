@@ -2,7 +2,6 @@
 
 source ${SH_DIR}/augmented_docker_compose.sh
 
-
 # - - - - - - - - - - - - - - - - - - - - - -
 build_images()
 {
@@ -25,7 +24,6 @@ build_images()
 # - - - - - - - - - - - - - - - - - - - - - -
 build_tagged_images()
 {
-  
   augmented_docker_compose \
     build \
     --build-arg COMMIT_SHA=$(git_commit_sha)
@@ -79,32 +77,3 @@ remove_all_but_latest()
   docker system prune --force
 }
 
-# - - - - - - - - - - - - - - - - - - - - - -
-git_commit_sha()
-{
-  echo $(cd "${SH_DIR}" && git rev-parse HEAD)
-}
-
-# - - - - - - - - - - - - - - - - - - - - - -
-image_name()
-{
-  echo "${CYBER_DOJO_DASHBOARD_IMAGE}"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - -
-image_tag()
-{
-  echo "${CYBER_DOJO_DASHBOARD_TAG}"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - -
-image_sha()
-{
-  echo "${CYBER_DOJO_DASHBOARD_SHA}"
-}
-
-# - - - - - - - - - - - - - - - - - - - - - -
-sha_in_image()
-{
-  docker run --rm $(image_name):$(image_tag) sh -c 'echo -n ${SHA}'
-}
