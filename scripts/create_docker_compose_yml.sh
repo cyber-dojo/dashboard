@@ -18,7 +18,7 @@ services:
 
   nginx:
     build:
-      context: source/nginx_stub
+      context: $(sources_dir)/nginx_stub
     container_name: test_dashboard_nginx
     depends_on:
       - client
@@ -31,7 +31,7 @@ services:
     user: $(client_user)
     build:
       args: [ COMMIT_SHA ]
-      context: source/client
+      context: $(sources_dir)/client
     container_name: $(client_container)
     depends_on:
       - server
@@ -41,15 +41,15 @@ services:
     restart: "no"
     tmpfs: /tmp
     volumes:
-      - ./source/client:/app:ro
-      - ./test:/test:ro
+      - ./$(sources_dir)/client:/app:ro
+      - ./$(tests_dir):/test:ro
 
   server:
     image: $(server_image):\${COMMIT_TAG}
     user: $(server_user)
     build:
       args: [ COMMIT_SHA ]
-      context: source/server
+      context: $(sources_dir)/server
     container_name: $(server_container)
     depends_on:
       - differ
@@ -60,7 +60,7 @@ services:
     restart: "no"
     tmpfs: /tmp
     volumes:
-      - ./source/server:/app:ro
-      - ./test:/test:ro
+      - ./$(sources_dir)/server:/app:ro
+      - ./$(tests_dir):/test:ro
 EOF
 }

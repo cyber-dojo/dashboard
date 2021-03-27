@@ -22,3 +22,5 @@ client_port()      { echo 9999; }
 client_user()      { echo nobody; }
 client_container() { echo test_${SERVICE_NAME_LOWER}_client; }
 
+sources_dir() { echo source; }
+tests_dir()   { echo test; }

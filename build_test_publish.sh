@@ -40,4 +40,4 @@ containers_down
 on_ci_publish_images
 
 t2=$(echo_seconds)
-echo "Script took $(( t2-t1)) seconds"
+echo "script took $(( t2-t1)) seconds"
