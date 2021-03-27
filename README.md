@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/cyber-dojo/creator.svg?style=svg)](https://circleci.com/gh/cyber-dojo/creator)
+[![CircleCI](https://circleci.com/gh/cyber-dojo/dashboard.svg?style=svg)](https://circleci.com/gh/cyber-dojo/dashboard)
 
 # cyberdojo/dashboard
 
