@@ -60,7 +60,7 @@ sha_in_image()
 remove_old_images()
 {
   echo Removing old images
-  local -r dil="${1}"
+  local -r dil="${1:-}"
   remove_all_but_latest "${dil}" "$(server_image)"
   remove_all_but_latest "${dil}" "$(client_image)"
 }
@@ -68,7 +68,7 @@ remove_old_images()
 # - - - - - - - - - - - - - - - - - - - - - -
 remove_all_but_latest()
 {
-  local -r docker_image_ls="${1}"
+  local -r docker_image_ls="${1:-}"
   local -r name="${2}"
   for v in `echo "${docker_image_ls}" | grep "${name}:"`
   do

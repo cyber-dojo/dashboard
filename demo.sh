@@ -1,17 +1,20 @@
 #!/bin/bash -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export SCRIPTS_DIR="${ROOT_DIR}/sh"
+export SCRIPTS_DIR="${ROOT_DIR}/scripts"
 
-source "${SCRIPTS_DIR}/build_tagged_images.sh"
+source "${SCRIPTS_DIR}/build_images.sh"
+source "${SCRIPTS_DIR}/config.sh"
 source "${SCRIPTS_DIR}/containers_down.sh"
 source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
 source "${SCRIPTS_DIR}/copy_in_saver_test_data.sh"
+source "${SCRIPTS_DIR}/create_docker_compose_yml.sh"
 source "${SCRIPTS_DIR}/ip_address.sh"
-source "${SCRIPTS_DIR}/remove_old_images.sh"
 
-source "${SCRIPTS_DIR}/echo_versioner_env_vars.sh"
-export $(echo_versioner_env_vars)
+#source "${SCRIPTS_DIR}/echo_versioner_env_vars.sh"
+#export $(echo_versioner_env_vars)
+
+export $(docker run --rm cyberdojo/versioner)
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_smoke_test()
@@ -76,6 +79,7 @@ port() { echo -n "${CYBER_DOJO_DASHBOARD_PORT}"; }
 log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
+create_docker_compose_yml
 remove_old_images
 build_tagged_images
 augmented_docker_compose up --detach nginx
