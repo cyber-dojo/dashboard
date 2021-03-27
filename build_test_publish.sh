@@ -1,21 +1,21 @@
 #!/bin/bash -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export SH_DIR="${ROOT_DIR}/sh"
+export SCRIPTS_DIR="${ROOT_DIR}/scripts"
 
-source "${SH_DIR}/config.sh"
-source "${SH_DIR}/create_docker_compose_yml.sh"
-source "${SH_DIR}/build_images.sh"
-source "${SH_DIR}/containers_down.sh"
-source "${SH_DIR}/containers_up_healthy_and_clean.sh"
-source "${SH_DIR}/copy_in_saver_test_data.sh"
-source "${SH_DIR}/echo_seconds.sh"
-source "${SH_DIR}/exit_non_zero_unless_installed.sh"
-source "${SH_DIR}/exit_zero_if_build_only.sh"
-source "${SH_DIR}/exit_zero_if_show_help.sh"
-source "${SH_DIR}/ip_address.sh"
-source "${SH_DIR}/on_ci_publish_images.sh"
-source "${SH_DIR}/test_in_containers.sh"
+source "${SCRIPTS_DIR}/config.sh"
+source "${SCRIPTS_DIR}/create_docker_compose_yml.sh"
+source "${SCRIPTS_DIR}/build_images.sh"
+source "${SCRIPTS_DIR}/containers_down.sh"
+source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
+source "${SCRIPTS_DIR}/copy_in_saver_test_data.sh"
+source "${SCRIPTS_DIR}/echo_seconds.sh"
+source "${SCRIPTS_DIR}/exit_non_zero_unless_installed.sh"
+source "${SCRIPTS_DIR}/exit_zero_if_build_only.sh"
+source "${SCRIPTS_DIR}/exit_zero_if_show_help.sh"
+source "${SCRIPTS_DIR}/ip_address.sh"
+source "${SCRIPTS_DIR}/on_ci_publish_images.sh"
+source "${SCRIPTS_DIR}/test_in_containers.sh"
 
 export $(docker run --rm cyberdojo/versioner)
 

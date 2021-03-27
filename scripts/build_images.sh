@@ -1,6 +1,6 @@
 #!/bin/bash -Eeu
 
-source ${SH_DIR}/augmented_docker_compose.sh
+source ${SCRIPTS_DIR}/augmented_docker_compose.sh
 
 # - - - - - - - - - - - - - - - - - - - - - -
 build_images()
@@ -8,17 +8,17 @@ build_images()
     local -r dil=$(docker image ls --format "{{.Repository}}:{{.Tag}}" --filter=reference="$(server_image)*:*")
 
     remove_old_images "${dil:-}"
-	
-	# Avoid building (even with caches) and rely on 
+
+	# Avoid building (even with caches) and rely on
 	# /source/ volume-mount in docker-compose.yml
 	# for big win on Mac M1
 
     if [[ "${dil:-}" == *"$(server_image)"* ]]; then
   	  if [[ "${dil:-}" == *"$(client_image)"* ]]; then
           return
-  	  fi 
+  	  fi
     fi
-	
+
 	build_tagged_images
 }
 
@@ -51,8 +51,8 @@ check_embedded_env_var()
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -
-sha_in_image() 
-{ 
+sha_in_image()
+{
   docker run --rm $(server_image):$(image_tag) sh -c 'echo -n ${SHA}'
 }
 
