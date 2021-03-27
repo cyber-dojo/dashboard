@@ -3,6 +3,7 @@ require 'simplecov'
 SimpleCov.start do
   #enable_coverage :branch
   filters.clear
+  add_filter "/usr/"
   coverage_dir(ENV['COVERAGE_ROOT'])
   #add_group('debug') { |source| puts source.filename; false }
   code_tab = ENV['COVERAGE_CODE_TAB_NAME']
