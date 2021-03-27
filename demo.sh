@@ -11,9 +11,6 @@ source "${SCRIPTS_DIR}/copy_in_saver_test_data.sh"
 source "${SCRIPTS_DIR}/create_docker_compose_yml.sh"
 source "${SCRIPTS_DIR}/ip_address.sh"
 
-#source "${SCRIPTS_DIR}/echo_versioner_env_vars.sh"
-#export $(echo_versioner_env_vars)
-
 export $(docker run --rm cyberdojo/versioner)
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,7 +45,7 @@ curl_json_body_200()
     --request GET \
     --silent \
     --verbose \
-      "http://$(ip_address):$(port)/${route}" \
+      "http://$(ip_address):$(server_port)/${route}" \
       > "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
@@ -66,7 +63,7 @@ curl_200()
     --request GET \
     --silent \
     --verbose \
-      "http://$(ip_address):$(port)/${route}" \
+      "http://$(ip_address):$(server_port)/${route}" \
       > "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
@@ -75,7 +72,6 @@ curl_200()
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-port() { echo -n "${CYBER_DOJO_DASHBOARD_PORT}"; }
 log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
