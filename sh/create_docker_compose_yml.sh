@@ -1,5 +1,10 @@
 #!/bin/bash -Eeu
 
+create_docker_compose_yml()
+{
+  echo_docker_compose_yml > ${ROOT_DIR}/docker-compose.yml
+}
+
 echo_docker_compose_yml()
 {
 cat <<-EOF
@@ -21,7 +26,7 @@ services:
     user: root
 
   client:
-    image: $(client_image):$(image_tag)
+    image: $(client_image):\${COMMIT_TAG}
     user: $(client_user)
     build:
       args: [ COMMIT_SHA ]
@@ -39,7 +44,7 @@ services:
       - ./test:/test:ro
 
   server:
-    image: $(server_image):$(image_tag)
+    image: $(server_image):\${COMMIT_TAG}
     user: $(server_user)
     build:
       args: [ COMMIT_SHA ]

@@ -16,7 +16,7 @@ services:
     user: root
 
   client:
-    image: cyberdojo/dashboard-client:53ef14b
+    image: cyberdojo/dashboard-client:${COMMIT_TAG}
     user: nobody
     build:
       args: [ COMMIT_SHA ]
@@ -34,7 +34,7 @@ services:
       - ./test:/test:ro
 
   server:
-    image: cyberdojo/dashboard:53ef14b
+    image: cyberdojo/dashboard:${COMMIT_TAG}
     user: nobody
     build:
       args: [ COMMIT_SHA ]
