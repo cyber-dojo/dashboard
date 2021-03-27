@@ -6,7 +6,7 @@ server_up_healthy_and_clean()
   export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER}"
   export CONTAINER_PORT="${CYBER_DOJO_DASHBOARD_PORT}"
   export CONTAINER_USER="${CYBER_DOJO_DASHBOARD_SERVER_USER}"
-  augmented_docker_compose up --no-build \
+  augmented_docker_compose up \
     --detach \
     "${SERVICE_NAME}"
   exit_non_zero_unless_healthy
@@ -21,7 +21,7 @@ client_up_healthy_and_clean()
     export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER}"
     export CONTAINER_PORT="${CYBER_DOJO_DASHBOARD_CLIENT_PORT}"
     export CONTAINER_USER="${CYBER_DOJO_DASHBOARD_CLIENT_USER}"
-    augmented_docker_compose up --no-build \
+    augmented_docker_compose up \
       --detach \
       "${SERVICE_NAME}"
     exit_non_zero_unless_healthy

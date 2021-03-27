@@ -4,7 +4,7 @@
 exit_zero_if_build_only()
 {
   if build_only_arg "${1:-}" ; then
-    build_tagged_images
+	  build_tagged_images
     exit 0
   fi
 }
