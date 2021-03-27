@@ -53,8 +53,8 @@ run_tests()
   local -r test_dir="${ROOT_DIR}/test/${TYPE}"
   local -r reports_dir=${test_dir}/${reports_dir_name}
   local -r test_log=test.log
-  local -r coverage_code_tab_name=tested
-  local -r coverage_test_tab_name=tester
+  local -r coverage_code_tab_name=code
+  local -r coverage_test_tab_name=test
 
   echo '=================================='
   echo "Running ${TYPE} tests"
