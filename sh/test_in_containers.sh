@@ -3,9 +3,6 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 test_in_containers()
 {
-  if on_ci; then
-    docker pull cyberdojo/check-test-results:latest
-  fi
   if [ "${1:-}" == 'client' ]; then
     shift
     run_client_tests "${@:-}"
@@ -20,31 +17,26 @@ test_in_containers()
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
-on_ci() { [ -n "${CIRCLECI:-}" ]; }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_client_tests()
 {
-  run_tests \
-    "${CYBER_DOJO_DASHBOARD_CLIENT_USER}" \
-    "${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER}" \
-    client "${@:-}";
+  local -r user="CYBER_DOJO_${SERVICE_NAME}_CLIENT_USER"
+  local -r container="CYBER_DOJO_${SERVICE_NAME}_CLIENT_CONTAINER"
+  run_tests "${!user}" "${!container}" client "${@:-}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_server_tests()
 {
-  run_tests \
-    "${CYBER_DOJO_DASHBOARD_SERVER_USER}" \
-    "${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER}" \
-    server "${@:-}";
+  local -r user="CYBER_DOJO_${SERVICE_NAME}_SERVER_USER"
+  local -r container="CYBER_DOJO_${SERVICE_NAME}_SERVER_CONTAINER"
+  run_tests "${!user}" "${!container}" server "${@:-}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_tests()
 {
   local -r USER="${1}"           # eg nobody
-  local -r CONTAINER_NAME="${2}" # eg test_dashboard_server
+  local -r CONTAINER_NAME="${2}" # eg test_X_server
   local -r TYPE="${3}"           # eg server
 
   local -r reports_dir_name=reports

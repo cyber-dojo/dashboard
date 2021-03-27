@@ -11,7 +11,7 @@ augmented_docker_compose()
                          differ \
                          model  \
                          saver  \
-    | tee /tmp/augmented-docker-compose.dashboard.peek.yml \
+    | tee "/tmp/augmented-docker-compose.${SERVICE_NAME_LOWER}.peek.yml" \
     | docker-compose \
       --file -       \
       "$@"

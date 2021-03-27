@@ -5,19 +5,20 @@ source ${SH_DIR}/augmented_docker_compose.sh
 # - - - - - - - - - - - - - - - - - - - - - -
 build_images()
 {
-    local -r dil=$(docker image ls --format "{{.Repository}}:{{.Tag}}" --filter=reference="${CYBER_DOJO_DASHBOARD_IMAGE}*:*")
-    local -r server_image="${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}"	
-    local -r client_image="${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}"	
+    local -r dil=$(docker image ls --format "{{.Repository}}:{{.Tag}}" --filter=reference="$(server_image)*:*")
 
-    remove_old_images "${dil}"
+    remove_old_images "${dil:-}"
 	
-	# Avoid building (even with caches) for big win on Mac M1
-    if [ $(echo "${dil}" | grep "${server_image}") ]; then
-  	  if [ $(echo "${dil}" | grep "${client_image}") ]; then
+	# Avoid building (even with caches) and rely on 
+	# /source/ volume-mount in docker-compose.yml
+	# for big win on Mac M1
+
+    if [[ "${dil:-}" == *"$(server_image)"* ]]; then
+  	  if [[ "${dil:-}" == *"$(client_image)"* ]]; then
           return
   	  fi 
     fi
-
+	
 	build_tagged_images
 }
 
@@ -26,24 +27,24 @@ build_tagged_images()
 {
   augmented_docker_compose \
     build \
-    --build-arg COMMIT_SHA=$(git_commit_sha)
+    --build-arg COMMIT_SHA=$(commit_sha)
 
-  docker tag ${CYBER_DOJO_DASHBOARD_IMAGE}:$(image_tag) ${CYBER_DOJO_DASHBOARD_IMAGE}:latest
-  docker tag ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:$(image_tag) ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:latest
+  docker tag $(server_image):$(image_tag) $(server_image):latest
+  docker tag $(client_image):$(image_tag) $(client_image):latest
 
   check_embedded_env_var
   echo
-  echo "echo CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
-  echo "echo CYBER_DOJO_DASHBOARD_TAG=${CYBER_DOJO_DASHBOARD_TAG}"
+  echo "echo CYBER_DOJO_${SERVICE_NAME}_SHA=$(image_sha)"
+  echo "echo CYBER_DOJO_${SERVICE_NAME}_TAG=$(image_tag)"
   echo
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -
 check_embedded_env_var()
 {
-  if [ "$(git_commit_sha)" != "$(sha_in_image)" ]; then
-    echo "ERROR: unexpected env-var inside image $(image_name):$(image_tag)"
-    echo "expected: 'SHA=$(git_commit_sha)'"
+  if [ "$(commit_sha)" != "$(sha_in_image)" ]; then
+    echo "ERROR: unexpected env-var inside image $(server_image):$(image_tag)"
+    echo "expected: 'SHA=$(commit_sha)'"
     echo "  actual: 'SHA=$(sha_in_image)'"
     exit 42
   fi
@@ -54,8 +55,8 @@ remove_old_images()
 {
   echo Removing old images
   local -r dil="${1}"
-  remove_all_but_latest "${dil}" "${CYBER_DOJO_DASHBOARD_IMAGE}"
-  remove_all_but_latest "${dil}" "${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}"
+  remove_all_but_latest "${dil}" "$(server_image)"
+  remove_all_but_latest "${dil}" "$(client_image)"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -
@@ -63,13 +64,12 @@ remove_all_but_latest()
 {
   local -r docker_image_ls="${1}"
   local -r name="${2}"
-  local -r tag="${CYBER_DOJO_DASHBOARD_TAG}"
-  for image_name in `echo "${docker_image_ls}" | grep "${name}:"`
+  for v in `echo "${docker_image_ls}" | grep "${name}:"`
   do
-    if [ "${image_name}" != "${name}:latest" ]; then
-      if [ "${image_name}" != "${name}:<none>" ]; then
-        if [ "${image_name}" != "${name}:${tag}" ]; then
-          docker image rm "${image_name}"
+    if [ "${v}" != "${name}:latest" ]; then
+      if [ "${v}" != "${name}:<none>" ]; then
+        if [ "${v}" != "${name}:$(image_tag)" ]; then
+          docker image rm "${v}"
         fi
       fi
     fi

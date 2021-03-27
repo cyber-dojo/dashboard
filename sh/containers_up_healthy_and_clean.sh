@@ -2,13 +2,13 @@
 # - - - - - - - - - - - - - - - - - - -
 server_up_healthy_and_clean()
 {
-  export SERVICE_NAME=dashboard_server
-  export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER}"
-  export CONTAINER_PORT="${CYBER_DOJO_DASHBOARD_PORT}"
-  export CONTAINER_USER="${CYBER_DOJO_DASHBOARD_SERVER_USER}"
-  augmented_docker_compose up \
-    --detach \
-    "${SERVICE_NAME}"
+  local -r container="CYBER_DOJO_${SERVICE_NAME}_SERVER_CONTAINER"
+  local -r port="CYBER_DOJO_${SERVICE_NAME}_PORT"
+  local -r user="CYBER_DOJO_${SERVICE_NAME}_SERVER_USER"
+  export CONTAINER_NAME="${!container}"
+  export CONTAINER_PORT="${!port}"
+  export CONTAINER_USER="${!user}"
+  augmented_docker_compose up --detach server
   exit_non_zero_unless_healthy
   exit_non_zero_unless_started_cleanly
 }
@@ -17,13 +17,13 @@ server_up_healthy_and_clean()
 client_up_healthy_and_clean()
 {
   if [ "${1:-}" != 'server' ]; then
-    export SERVICE_NAME=dashboard_client
-    export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER}"
-    export CONTAINER_PORT="${CYBER_DOJO_DASHBOARD_CLIENT_PORT}"
-    export CONTAINER_USER="${CYBER_DOJO_DASHBOARD_CLIENT_USER}"
-    augmented_docker_compose up \
-      --detach \
-      "${SERVICE_NAME}"
+	local -r container="CYBER_DOJO_${SERVICE_NAME}_CLIENT_CONTAINER"
+	local -r port="CYBER_DOJO_${SERVICE_NAME}_CLIENT_PORT"
+	local -r user="CYBER_DOJO_${SERVICE_NAME}_CLIENT_USER"
+    export CONTAINER_NAME="${!name}"
+    export CONTAINER_PORT="${!port}"
+    export CONTAINER_USER="${!user}"
+    augmented_docker_compose up --detach client
     exit_non_zero_unless_healthy
     exit_non_zero_unless_started_cleanly
   fi
@@ -34,18 +34,18 @@ exit_non_zero_unless_healthy()
 {
   echo
   local -r MAX_TRIES=50
-  printf "Waiting until ${SERVICE_NAME} is healthy"
+  printf "Waiting until ${CONTAINER_NAME} is healthy"
   for _ in $(seq ${MAX_TRIES})
   do
     if healthy; then
-      echo; echo "${SERVICE_NAME} is healthy."
+      echo; echo "${CONTAINER_NAME} is healthy."
       return
     else
       printf .
       sleep 0.1
     fi
   done
-  echo; echo "${SERVICE_NAME} not healthy after ${MAX_TRIES} tries."
+  echo; echo "${CONTAINER_NAME} not healthy after ${MAX_TRIES} tries."
   echo_docker_log
   echo
   exit 42
@@ -67,13 +67,13 @@ exit_non_zero_unless_started_cleanly()
   #local -r SHADOW_WARNING="server.rb:(.*): warning: shadowing outer local variable - filename"
   #DOCKER_LOG=$(strip_known_warning "${DOCKER_LOG}" "${SHADOW_WARNING}")
 
-  echo "Checking if ${SERVICE_NAME} started cleanly."
+  echo "Checking if ${CONTAINER_NAME} started cleanly."
   local -r top6=$(echo "${DOCKER_LOG}" | head -6)
   if [ "${top6}" == "$(clean_top_6)" ]; then
-    echo "${SERVICE_NAME} started cleanly."
+    echo "${CONTAINER_NAME} started cleanly."
     echo
   else
-    echo "${SERVICE_NAME} did not start cleanly."
+    echo "${CONTAINER_NAME} did not start cleanly."
     echo "First 10 lines of: docker logs ${CONTAINER_NAME}"
     echo
     echo "${DOCKER_LOG}" | head -10
