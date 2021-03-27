@@ -19,17 +19,13 @@ test_in_containers()
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_client_tests()
 {
-  local -r user="CYBER_DOJO_${SERVICE_NAME}_CLIENT_USER"
-  local -r container="CYBER_DOJO_${SERVICE_NAME}_CLIENT_CONTAINER"
-  run_tests "${!user}" "${!container}" client "${@:-}"
+  run_tests "$(client_user)" "$(client_container)" client "${@:-}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_server_tests()
 {
-  local -r user="CYBER_DOJO_${SERVICE_NAME}_SERVER_USER"
-  local -r container="CYBER_DOJO_${SERVICE_NAME}_SERVER_CONTAINER"
-  run_tests "${!user}" "${!container}" server "${@:-}"
+  run_tests "$(server_user)" "$(server_container)" server "${@:-}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,7 +52,7 @@ run_tests()
   docker exec \
     --env COVERAGE_CODE_TAB_NAME=${coverage_code_tab_name} \
     --env COVERAGE_TEST_TAB_NAME=${coverage_test_tab_name} \
-    --user "${CONTAINER_USER}" \
+    --user "${USER}" \
     "${CONTAINER_NAME}" \
       sh -c "/test/run.sh ${coverage_root} ${test_log} ${TYPE} ${*:4}"
   set -e

@@ -51,6 +51,12 @@ check_embedded_env_var()
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -
+sha_in_image() 
+{ 
+  docker run --rm $(server_image):$(image_tag) sh -c 'echo -n ${SHA}'
+}
+
+# - - - - - - - - - - - - - - - - - - - - - -
 remove_old_images()
 {
   echo Removing old images

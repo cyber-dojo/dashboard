@@ -3,9 +3,8 @@
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SH_DIR="${ROOT_DIR}/sh"
 
-source "${SH_DIR}/echo_versioner_env_vars.sh"
-export $(echo_versioner_env_vars)
-
+source "${SH_DIR}/config.sh"
+source "${SH_DIR}/echo_docker_compose_yml.sh"
 source "${SH_DIR}/build_images.sh"
 source "${SH_DIR}/containers_down.sh"
 source "${SH_DIR}/containers_up_healthy_and_clean.sh"
@@ -17,6 +16,9 @@ source "${SH_DIR}/exit_zero_if_show_help.sh"
 source "${SH_DIR}/ip_address.sh"
 source "${SH_DIR}/on_ci_publish_images.sh"
 source "${SH_DIR}/test_in_containers.sh"
+
+export $(docker run --rm cyberdojo/versioner)
+echo_docker_compose_yml > ${ROOT_DIR}/docker-compose.yml
 
 #- - - - - - - - - - - - - - - - - - - - - -
 t1=$(echo_seconds)

@@ -2,12 +2,9 @@
 # - - - - - - - - - - - - - - - - - - -
 server_up_healthy_and_clean()
 {
-  local -r container="CYBER_DOJO_${SERVICE_NAME}_SERVER_CONTAINER"
-  local -r port="CYBER_DOJO_${SERVICE_NAME}_PORT"
-  local -r user="CYBER_DOJO_${SERVICE_NAME}_SERVER_USER"
-  export CONTAINER_NAME="${!container}"
-  export CONTAINER_PORT="${!port}"
-  export CONTAINER_USER="${!user}"
+  export CONTAINER_NAME="$(server_container)"
+  export CONTAINER_PORT="$(server_port)"
+  export CONTAINER_USER="$(server_user)"
   augmented_docker_compose up --detach server
   exit_non_zero_unless_healthy
   exit_non_zero_unless_started_cleanly
@@ -17,12 +14,9 @@ server_up_healthy_and_clean()
 client_up_healthy_and_clean()
 {
   if [ "${1:-}" != 'server' ]; then
-	local -r container="CYBER_DOJO_${SERVICE_NAME}_CLIENT_CONTAINER"
-	local -r port="CYBER_DOJO_${SERVICE_NAME}_CLIENT_PORT"
-	local -r user="CYBER_DOJO_${SERVICE_NAME}_CLIENT_USER"
-    export CONTAINER_NAME="${!name}"
-    export CONTAINER_PORT="${!port}"
-    export CONTAINER_USER="${!user}"
+    export CONTAINER_NAME="$(client_container)"
+    export CONTAINER_PORT="$(client_port)"
+    export CONTAINER_USER="$(client_user)"
     augmented_docker_compose up --detach client
     exit_non_zero_unless_healthy
     exit_non_zero_unless_started_cleanly
