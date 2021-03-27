@@ -27,7 +27,9 @@ services:
     read_only: true
     restart: "no"
     tmpfs: /tmp
-    volumes: [ "./test:/test:ro" ]
+    volumes:
+      - ./source/client:/app:ro
+      - ./test:/test:ro
 
   dashboard_server:
     image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
@@ -44,4 +46,7 @@ services:
     read_only: true
     restart: "no"
     tmpfs: /tmp
-    volumes: [ "./test:/test:ro" ]
+    volumes:
+      - ./source/server:/app:ro
+      - ./test:/test:ro
+
