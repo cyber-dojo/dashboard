@@ -30,8 +30,10 @@ class GatheredTest < TestBase
       ]
     }
     @params = { id:id }    
-    old_gather_check(expected_indexes, expected_lights)
-    new_gather_check(expected_indexes, expected_lights)
+    gather
+    gather_check(expected_indexes, expected_lights)
+    gather2
+    gather_check(expected_indexes, expected_lights)
   end
 
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,12 +55,13 @@ class GatheredTest < TestBase
       ]
     }
     @params = { id:id }
-    old_gather_check(expected_indexes, expected_lights)
-    new_gather_check(expected_indexes, expected_lights)    
+    gather
+    gather_check(expected_indexes, expected_lights)
+    gather2
+    gather_check(expected_indexes, expected_lights)    
   end
 
-  def old_gather_check(expected_indexes, expected_lights)
-    gather
+  def gather_check(expected_indexes, expected_lights)
     assert_equal expected_indexes, @all_indexes
     actual_lights = {}
     expected_indexes.keys.each do |id|
@@ -67,41 +70,7 @@ class GatheredTest < TestBase
     assert_equal expected_lights, actual_lights  
   end
 
-  def new_gather_check(expected_indexes, expected_lights)
-    gather2
-    assert_equal expected_indexes, @all_indexes
-    actual_lights = {}
-    expected_indexes.keys.each do |id|
-      actual_lights[id] = flat_lights(id)
-    end
-    assert_equal expected_lights, actual_lights      
-  end
-
   private
-
-  def gather2
-    # Intention is to use this instead of gather() in helpers/gatherer.rb
-    # as part of switching away from saver and to model.
-    @all_lights = {}
-    @all_indexes = {}    
-    id = params[:id]
-    externals.model.group_joined(id).each do |index,o|
-      kata_id = o['id']
-      kata = katas[kata_id]
-      lights = o['events'].map{ |event| Event.new(kata, event) }.select(&:light?)      
-      unless lights == []
-        @all_lights[o['id']] = lights
-        @all_indexes[o['id']] = index.to_i
-      end
-    end  
-    manifest = externals.model.group_manifest(id)
-    created = Time.mktime(*manifest['created'])
-    args = [created, seconds_per_column, max_seconds_uncollapsed]
-    gapper = TdGapper.new(*args)
-    @gapped = gapper.fully_gapped(@all_lights, time.now)
-    @time_ticks = gapper.time_ticks(@gapped)
-    #set_footer_info    
-  end
 
   def tcpi(time_a, colour, predicted, index)
     {
