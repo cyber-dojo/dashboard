@@ -3,10 +3,10 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 test_in_containers()
 {
-  if [ "${1:-}" == 'client' ]; then
+  if [ "${1:-}" == "$(client_name)" ]; then
     shift
     run_client_tests "${@:-}"
-  elif [ "${1:-}" == 'server' ]; then
+  elif [ "${1:-}" == "$(server_name)" ]; then
     shift
     run_server_tests "${@:-}"
   else
@@ -19,13 +19,13 @@ test_in_containers()
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_client_tests()
 {
-  run_tests "$(client_user)" "$(client_container)" client "${@:-}"
+  run_tests "$(client_user)" "$(client_container)" "$(client_name)" "${@:-}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_server_tests()
 {
-  run_tests "$(server_user)" "$(server_container)" server "${@:-}"
+  run_tests "$(server_user)" "$(server_container)" "$(server_name)" "${@:-}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -

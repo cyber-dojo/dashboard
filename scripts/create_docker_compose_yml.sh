@@ -24,12 +24,12 @@ services:
       context: $(sources_dir)/nginx_stub
     container_name: test_dashboard_nginx
     depends_on:
-      - client
+      - $(client_name)
     image: cyberdojo/nginx_dashboard_stub
     ports: [ ${CYBER_DOJO_NGINX_PORT}:${CYBER_DOJO_NGINX_PORT} ]
     user: root
 
-  client:
+  $(client_name):
     image: $(client_image):\${COMMIT_TAG}
     user: $(client_user)
     build:
@@ -37,7 +37,7 @@ services:
       context: $(sources_dir)/client
     container_name: $(client_container)
     depends_on:
-      - server
+      - $(server_name)
     env_file: [ .env ]
     ports: [ $(client_port):$(client_port) ]
     read_only: true
@@ -47,7 +47,7 @@ services:
       - ./$(sources_dir)/client:/app:ro
       - ./$(tests_dir):/test:ro
 
-  server:
+  $(server_name):
     image: $(server_image):\${COMMIT_TAG}
     user: $(server_user)
     build:
