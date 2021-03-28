@@ -23,4 +23,4 @@ client_user()      { echo nobody; }
 client_container() { echo test_${SERVICE_NAME_LOWER}_client; }
 
 sources_dir() { echo sources; }
-tests_dir()   { echo test; }
+tests_dir()   { echo tests; }

@@ -1,0 +1,31 @@
+Run options: --seed 62349
+
+# Running:
+
+...............
+
+Finished in 0.099098s, 151.3646 runs/s, 544.9124 assertions/s.
+
+15 runs, 54 assertions, 0 failures, 0 errors, 0 skips
+Coverage report generated for MiniTest to //tmp/reports. 922 / 1329 LOC (69.38%) covered.
+
+Slowest 5 tests are...
+0.0423 - 450s46:gather_test.rb:19:gather from saved cyber-dojo group v0          
+0.0155 - 450s47:gather_test.rb:45:gather from saved cyber-dojo group v1          
+0.0146 - 47YG73:group_events_test.rb:23:group_events from saved cyber-dojo group v0
+0.0105 - 47YG74:group_events_test.rb:62:group_events from saved cyber-dojo group v1
+0.0015 - 4499F4:td_gapper_test.rb:193:fully gapped with collapsing and td-holes  
+0.0008 - 4499F5:td_gapper_test.rb:310:time-ticks with no collapsing and no td-holes
+
+
+            test:failures |       0   <=     0 | [32m true [0m
+              test:errors |       0   <=     0 | [32m true [0m
+            test:warnings |       0   <=     0 | [32m true [0m
+               test:skips |       0   <=     0 | [32m true [0m
+         test:duration(s) |     0.1   <=    10 | [32m true [0m
+               test:count |      15   >=     1 | [32m true [0m
+          lines(test/app) |    0.19   >=   0.1 | [32m true [0m
+           hits(app/test) |    1.25   >=   0.8 | [32m true [0m
+          app:coverage[%] |   61.66   >=    61 | [32m true [0m
+         test:coverage[%] |   100.0   >=   100 | [32m true [0m
+
