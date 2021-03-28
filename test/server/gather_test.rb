@@ -29,8 +29,9 @@ class GatheredTest < TestBase
         tcp([2019, 1, 19, 12, 45, 30, 656924], :green, 'none'),
       ]
     }
-    old_gather_check(id, expected_indexes, expected_lights)
-    new_gather_check(id, expected_indexes, expected_lights)
+    @params = { id:id }    
+    old_gather_check(expected_indexes, expected_lights)
+    new_gather_check(expected_indexes, expected_lights)
   end
 
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,12 +52,12 @@ class GatheredTest < TestBase
         tcp([2020, 11, 30, 14, 7, 28, 706554], :red, 'none'),
       ]
     }
-    old_gather_check(id, expected_indexes, expected_lights)
-    new_gather_check(id, expected_indexes, expected_lights)    
+    @params = { id:id }
+    old_gather_check(expected_indexes, expected_lights)
+    new_gather_check(expected_indexes, expected_lights)    
   end
 
-  def old_gather_check(id, expected_indexes, expected_lights)
-    @params = { id:id }
+  def old_gather_check(expected_indexes, expected_lights)
     gather
     assert_equal expected_indexes, @all_indexes
     actual_lights = {}
@@ -66,17 +67,20 @@ class GatheredTest < TestBase
     assert_equal expected_lights, actual_lights    
   end
 
-  def new_gather_check(id, expected_indexes, expected_lights)
-    gather2(id)
+  def new_gather_check(expected_indexes, expected_lights)
+    gather2
     assert_equal expected_indexes, @all_indexes
     assert_equal expected_lights, @all_lights    
   end
 
-  def gather2(id)
+  private
+
+  def gather2
     # Intention is to use this instead of gather() in helpers/gatherer.rb
     # as part of switching away from saver and to model.
     @all_lights = {}
     @all_indexes = {}    
+    id = params[:id]
     externals.model.group_joined(id).each do |index,o|
       lights = []
       o['events'].each do |event|
@@ -95,9 +99,12 @@ class GatheredTest < TestBase
         @all_lights[o['id']] = lights
       end
     end  
+    args = [group.created, seconds_per_column, max_seconds_uncollapsed]
+    gapper = TdGapper.new(*args)
+    @gapped = gapper.fully_gapped(@all_lights, time.now)
+    @time_ticks = gapper.time_ticks(@gapped)
+    #set_footer_info    
   end
-
-  private
 
   def tcp(time_a, colour, predicted)
     {
