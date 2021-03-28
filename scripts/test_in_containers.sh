@@ -33,13 +33,13 @@ run_tests()
 {
   local -r USER="${1}"           # eg nobody
   local -r CONTAINER_NAME="${2}" # eg test_X_server
-  local -r TYPE="${3}"           # eg server
+  local -r TYPE="${3}"           # eg client|server
 
   local -r reports_dir_name=reports
   local -r tmp_dir=/tmp
   local -r coverage_root=/${tmp_dir}/${reports_dir_name}
-  local -r tests_dir="${ROOT_DIR}/$(tests_dir)/${TYPE}"
-  local -r reports_dir=${tests_dir}/${reports_dir_name}
+  local -r tests_type_dir="${ROOT_DIR}/$(tests_dir)/${TYPE}"
+  local -r reports_dir=${tests_type_dir}/${reports_dir_name}
   local -r test_log=test.log
   local -r coverage_code_tab_name=code
   local -r coverage_test_tab_name=test
@@ -63,7 +63,7 @@ run_tests()
     tar Ccf \
       "$(dirname "${coverage_root}")" \
       - "$(basename "${coverage_root}")" \
-        | tar Cxf "${tests_dir}/" -
+        | tar Cxf "${tests_type_dir}/" -
 
   set +e
   docker run \
@@ -72,7 +72,7 @@ run_tests()
     --rm \
     --volume ${reports_dir}/${test_log}:${tmp_dir}/${test_log}:ro \
     --volume ${reports_dir}/index.html:${tmp_dir}/index.html:ro \
-    --volume ${tests_dir}/metrics.rb:/app/metrics.rb:ro \
+    --volume ${tests_type_dir}/metrics.rb:/app/metrics.rb:ro \
     cyberdojo/check-test-results:latest \
     sh -c "ruby /app/check_test_results.rb ${tmp_dir}/${test_log} ${tmp_dir}/index.html" \
       | tee -a ${reports_dir}/${test_log}
