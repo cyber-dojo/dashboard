@@ -17,16 +17,16 @@ class GatheredTest < TestBase
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 's46',
-  'gather from saved cyber-dojo group v0' do
+  'contract-test for gather from saved cyber-dojo group v0' do
     id = 'chy6BJ'
     expected_indexes = {
       'k5ZTk0' => 11,
     }
     expected_lights = {
       'k5ZTk0' => [
-        tcp([2019, 1, 19, 12, 45, 19, 994317], :red,   'none'),
-        tcp([2019, 1, 19, 12, 45, 26,  76791], :amber, 'none'),
-        tcp([2019, 1, 19, 12, 45, 30, 656924], :green, 'none'),
+        tcpi([2019, 1, 19, 12, 45, 19, 994317], :red,   'none', 1),
+        tcpi([2019, 1, 19, 12, 45, 26,  76791], :amber, 'none', 2),
+        tcpi([2019, 1, 19, 12, 45, 30, 656924], :green, 'none', 3),
       ]
     }
     @params = { id:id }    
@@ -37,7 +37,7 @@ class GatheredTest < TestBase
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 's47',
-  'gather from saved cyber-dojo group v1' do
+  'contract-test for gather from saved cyber-dojo group v1' do
     id = 'LyQpFr'
     expected_indexes = {
       'rUqcey' => 26,
@@ -45,11 +45,11 @@ class GatheredTest < TestBase
     }
     expected_lights = {
       'rUqcey' => [
-        tcp([2020, 11, 30, 14, 6, 39, 366362], :green, 'none'),
-        tcp([2020, 11, 30, 14, 6, 53, 941739], :green, 'none')
+        tcpi([2020, 11, 30, 14, 6, 39, 366362], :green, 'none', 1),
+        tcpi([2020, 11, 30, 14, 6, 53, 941739], :green, 'none', 2)
       ],
       '38w9NC' => [
-        tcp([2020, 11, 30, 14, 7, 28, 706554], :red, 'none'),
+        tcpi([2020, 11, 30, 14, 7, 28, 706554], :red, 'none', 1),
       ]
     }
     @params = { id:id }
@@ -75,7 +75,6 @@ class GatheredTest < TestBase
       actual_lights[id] = flat_lights(id)
     end
     assert_equal expected_lights, actual_lights      
-    #assert_equal expected_lights, @all_lights    
   end
 
   private
@@ -95,25 +94,33 @@ class GatheredTest < TestBase
         @all_indexes[o['id']] = index.to_i
       end
     end  
-    args = [group.created, seconds_per_column, max_seconds_uncollapsed]
+    manifest = externals.model.group_manifest(id)
+    created = Time.mktime(*manifest['created'])
+    args = [created, seconds_per_column, max_seconds_uncollapsed]
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
     #set_footer_info    
   end
 
-  def tcp(time_a, colour, predicted)
+  def tcpi(time_a, colour, predicted, index)
     {
       'time_a' => time_a,
       'colour' => colour,
-      'predicted' => predicted
+      'predicted' => predicted,
+      'index' => index
     }
   end
 
   def flat_lights(id)
     actual = []
     @all_lights[id].each do |light|
-      actual << tcp(light.time_a, light.colour, light.predicted)
+      actual << tcpi(
+        light.time_a, 
+        light.colour, 
+        light.predicted, 
+        light.index
+      )
     end
     actual
   end
