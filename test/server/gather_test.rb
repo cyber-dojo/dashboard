@@ -25,7 +25,7 @@ class GatheredTest < TestBase
     expected_lights = {
       'k5ZTk0' => [
         tcp([2019, 1, 19, 12, 45, 19, 994317], :red,   'none'),
-        tcp([2019, 1, 19, 12, 45, 26, 76791],  :amber, 'none'),
+        tcp([2019, 1, 19, 12, 45, 26,  76791], :amber, 'none'),
         tcp([2019, 1, 19, 12, 45, 30, 656924], :green, 'none'),
       ]
     }
@@ -64,13 +64,18 @@ class GatheredTest < TestBase
     expected_indexes.keys.each do |id|
       actual_lights[id] = flat_lights(id)
     end
-    assert_equal expected_lights, actual_lights    
+    assert_equal expected_lights, actual_lights  
   end
 
   def new_gather_check(expected_indexes, expected_lights)
     gather2
     assert_equal expected_indexes, @all_indexes
-    assert_equal expected_lights, @all_lights    
+    actual_lights = {}
+    expected_indexes.keys.each do |id|
+      actual_lights[id] = flat_lights(id)
+    end
+    assert_equal expected_lights, actual_lights      
+    #assert_equal expected_lights, @all_lights    
   end
 
   private
@@ -82,21 +87,12 @@ class GatheredTest < TestBase
     @all_indexes = {}    
     id = params[:id]
     externals.model.group_joined(id).each do |index,o|
-      lights = []
-      o['events'].each do |event|
-        if event.has_key?('colour')
-          event.delete('index')
-          event.delete('duration')
-          colour = event.delete('colour')
-          event['colour'] = colour.to_sym
-          time = event.delete('time')
-          event['time_a'] = time
-          lights << event
-        end
-      end
+      kata_id = o['id']
+      kata = katas[kata_id]
+      lights = o['events'].map{ |event| Event.new(kata, event) }.select(&:light?)      
       unless lights == []
-        @all_indexes[o['id']] = index.to_i
         @all_lights[o['id']] = lights
+        @all_indexes[o['id']] = index.to_i
       end
     end  
     args = [group.created, seconds_per_column, max_seconds_uncollapsed]

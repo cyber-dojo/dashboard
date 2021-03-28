@@ -177,12 +177,7 @@ class TdGapper
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def number(light)
-    if light.is_a?(Hash)
-      time = Time.mktime(*light['time_a'])
-    else
-      time = light.time
-    end
-    n(time)
+    n(light.time)
   end
 
   def n(now)
