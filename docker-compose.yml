@@ -34,7 +34,7 @@ services:
     tmpfs: /tmp
     volumes:
       - ./sources/client:/app:ro
-      - ./tests:/test:ro
+      - ./test:/test:ro
 
   server:
     image: cyberdojo/dashboard:${COMMIT_TAG}
@@ -53,4 +53,4 @@ services:
     tmpfs: /tmp
     volumes:
       - ./sources/server:/app:ro
-      - ./tests:/test:ro
+      - ./test:/test:ro

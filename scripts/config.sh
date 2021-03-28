@@ -25,4 +25,4 @@ client_user()      { echo -n nobody; }
 client_container() { echo -n test_${SERVICE_NAME_LOWER}_client; }
 
 sources_dir() { echo -n sources; }
-tests_dir()   { echo -n tests; }
+tests_dir()   { echo -n test; }
