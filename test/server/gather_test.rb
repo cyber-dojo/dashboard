@@ -29,7 +29,7 @@ class GatheredTest < TestBase
         tcpi([2019, 1, 19, 12, 45, 30, 656924], :green, 'none', 3),
       ]
     }
-    @params = { id:id }    
+    @params = { id:id }
     gather
     gather_check(expected_indexes, expected_lights)
     gather2
@@ -58,8 +58,10 @@ class GatheredTest < TestBase
     gather
     gather_check(expected_indexes, expected_lights)
     gather2
-    gather_check(expected_indexes, expected_lights)    
+    gather_check(expected_indexes, expected_lights)
   end
+
+  private
 
   def gather_check(expected_indexes, expected_lights)
     assert_equal expected_indexes, @all_indexes
@@ -67,10 +69,8 @@ class GatheredTest < TestBase
     expected_indexes.keys.each do |id|
       actual_lights[id] = flat_lights(id)
     end
-    assert_equal expected_lights, actual_lights  
+    assert_equal expected_lights, actual_lights
   end
-
-  private
 
   def tcpi(time_a, colour, predicted, index)
     {
@@ -85,9 +85,9 @@ class GatheredTest < TestBase
     actual = []
     @all_lights[id].each do |light|
       actual << tcpi(
-        light.time_a, 
-        light.colour, 
-        light.predicted, 
+        light.time_a,
+        light.colour,
+        light.predicted,
         light.index
       )
     end

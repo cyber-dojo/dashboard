@@ -5,7 +5,8 @@ module AppHelpers # mixin
 
   module_function
 
-  def gather
+  def gather2
+    # The original gather function. Does not use model service.
     @all_lights = {}
     @all_indexes = {}
     e = group.events
@@ -27,28 +28,27 @@ module AppHelpers # mixin
     #set_footer_info
   end
 
-  def gather2
-    # Intention is to use this instead of gather() in helpers/gatherer.rb
-    # as part of switching away from saver and to model.
+  def gather
+    # The new gather function. Uses the model service.
     @all_lights = {}
-    @all_indexes = {}    
+    @all_indexes = {}
     id = params[:id]
     externals.model.group_joined(id).each do |index,o|
       kata_id = o['id']
       kata = katas[kata_id]
-      lights = o['events'].map{ |event| Event.new(kata, event) }.select(&:light?)      
+      lights = o['events'].map{ |event| Event.new(kata, event) }.select(&:light?)
       unless lights == []
         @all_lights[o['id']] = lights
         @all_indexes[o['id']] = index.to_i
       end
-    end  
+    end
     manifest = externals.model.group_manifest(id)
     created = Time.mktime(*manifest['created'])
     args = [created, seconds_per_column, max_seconds_uncollapsed]
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
-    #set_footer_info    
+    #set_footer_info
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
