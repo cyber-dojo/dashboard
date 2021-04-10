@@ -7,18 +7,21 @@ build_images()
 {
   local -r dil=$(docker image ls --format "{{.Repository}}:{{.Tag}}" --filter=reference="$(server_image)*:*")
   remove_old_images "${dil:-}"
-	build_tagged_images
+	build_tagged_images "$@"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -
 build_tagged_images()
 {
+  local -r target="${1:-}"
   augmented_docker_compose \
     build \
-    --build-arg COMMIT_SHA=$(commit_sha)
+    --build-arg COMMIT_SHA=$(commit_sha) "${target}"
 
   docker tag $(server_image):$(image_tag) $(server_image):latest
-  docker tag $(client_image):$(image_tag) $(client_image):latest
+  if [ "${target}" != server ]; then
+    docker tag $(client_image):$(image_tag) $(client_image):latest
+  fi
 
   check_embedded_env_var
   echo

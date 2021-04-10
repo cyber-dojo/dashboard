@@ -30,7 +30,7 @@ exit_non_zero_unless_installed docker
 exit_non_zero_unless_installed docker-compose
 
 create_docker_compose_yml
-build_images
+build_images "$@"
 exit_zero_if_build_only "$@"
 
 server_up_healthy_and_clean "$@"

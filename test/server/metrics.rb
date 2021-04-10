@@ -1,6 +1,6 @@
 
-# Values are low; legacy models/ code is being phased out.
-# Instead browser will make via $.getJSON() calls and run JS.
+# Values are low; legacy models/ code is being phased
+# out in favour of external.models micro-service.
 
 MIN = {
   test_count:1,
