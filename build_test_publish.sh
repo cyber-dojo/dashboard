@@ -19,9 +19,6 @@ source "${SCRIPTS_DIR}/test_in_containers.sh"
 
 export $(docker run --rm cyberdojo/versioner)
 
-export CYBER_DOJO_MODEL_SHA=d67cbf7a91384e1c277e6bc781250540985316ca
-export CYBER_DOJO_MODEL_TAG=d67cbf7
-
 #- - - - - - - - - - - - - - - - - - - - - -
 t1=$(echo_seconds)
 
