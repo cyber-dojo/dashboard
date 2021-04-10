@@ -12,13 +12,17 @@ class ExternalModel
   def ready?
     @http.get(__method__, {})
   end
-  
+
   def group_manifest(id)
     @http.get(__method__, { id:id })
   end
-  
+
   def group_joined(id)
     @http.get(__method__, { id:id })
-  end  
+  end
+
+  def katas_events(ids, indexes)
+    @http.get(__method__, { ids:ids, indexes:indexes })
+  end
 
 end

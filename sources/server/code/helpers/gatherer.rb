@@ -73,43 +73,4 @@ module AppHelpers # mixin
     seconds_per_column * 5
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def animals_progress
-    group.katas
-         .select(&:active?)
-         .map { |kata| animal_progress(kata) }
-         .to_h
-  end
-
-  def animal_progress(kata)
-    [kata.avatar_name, {
-        colour: kata.lights[-1].colour,
-      progress: most_recent_progress(kata),
-         index: Avatars.index(kata.avatar_name),
-            id: kata.id
-    }]
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def most_recent_progress(kata)
-    non_amber = kata.lights.reverse.find { |light|
-      [:red,:green].include?(light.colour)
-    }
-    if non_amber
-      output = non_amber.stdout['content'] + non_amber.stderr['content']
-    else
-      output = ''
-    end
-
-    regexs = kata.manifest.progress_regexs
-    matches = regexs.map { |regex| Regexp.new(regex).match(output) }
-
-    {
-        text: matches.join,
-      colour: (matches[0] != nil ? 'red' : 'green')
-    }
-  end
-
 end

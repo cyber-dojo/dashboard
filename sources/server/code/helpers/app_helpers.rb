@@ -1,4 +1,5 @@
 require_relative 'gatherer'
+require_relative 'animals_progress'
 require_relative '../models/group'
 require_relative '../models/katas'
 
