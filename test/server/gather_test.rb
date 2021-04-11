@@ -1,6 +1,5 @@
 require_relative 'test_base'
 require_source 'helpers/app_helpers'
-require_source 'helpers/gatherer'
 
 class GatheredTest < TestBase
 
