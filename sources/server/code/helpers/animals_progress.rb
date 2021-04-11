@@ -11,12 +11,34 @@ module AppHelpers # mixin
   end
 
   def animals_progress2
-    # Placeholder ready for using externals.model.katas_events()
-    #id = params[:id]
-    #katas = externals.model.group_joined(id).map do |_index,o|
-    #  katas[o['id']]
-    #end
+    # The new animals_progress function.
+    # Uses only the external model service.
+    all_ids = []
+    all_lights = []
+    all_indexes = []
+
+    gid = params[:id]
+    externals.model.group_joined(gid).map do |index,o|
+
+      lights = o['events'].map{ |event|
+        Light.new(event)
+      }.select(&:light?)
+
+      unless lights == []
+        all_ids << o['id']
+        all_lights << lights
+        all_indexes << index
+      end
+    end
+    manifest = externals.model.group_manifest(gid)
+    regexs = manifest['progress_regexs']
+    output = '...to do...'
+    _matches = regexs.map { |regex| Regexp.new(regex).match(output) }
+
+    # Now need externals.model.katas_events()
+
     #katas.map { |kata| animal_progress(kata) }
+
     animals_progress
   end
 

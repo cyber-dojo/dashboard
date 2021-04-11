@@ -8,11 +8,13 @@ module AppHelpers # mixin
   module_function
 
   def gather
-    # The new gather function. Uses only the external model service.
+    # The new gather function.
+    # Uses only the external model service.
     @all_lights = {}
     @all_indexes = {}
-    id = params[:id]
-    externals.model.group_joined(id).each do |index,o|
+
+    gid = params[:id]
+    externals.model.group_joined(gid).each do |index,o|
 
       lights = o['events'].map{ |event|
         Light.new(event)
@@ -23,7 +25,7 @@ module AppHelpers # mixin
         @all_indexes[o['id']] = index.to_i
       end
     end
-    manifest = externals.model.group_manifest(id)
+    manifest = externals.model.group_manifest(gid)
     created = Time.mktime(*manifest['created'])
     args = [created, seconds_per_column, max_seconds_uncollapsed]
     gapper = TdGapper.new(*args)
