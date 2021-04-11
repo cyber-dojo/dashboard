@@ -1,31 +1,10 @@
+# frozen_string_literal: true
 require_relative '../models/event'
 require_relative 'td_gapper'
 
 module AppHelpers # mixin
 
   module_function
-
-  def gather2
-    # The original gather function. Does not use model service.
-    @all_lights = {}
-    @all_indexes = {}
-    e = group.events
-    e.each do |kata_id,o|
-      kata = katas[kata_id]
-      lights = o['events'].each.with_index.map{ |event,index|
-        event['index'] = index
-        Event.new(kata, event)
-      }.select(&:light?)
-      unless lights === []
-        @all_lights[kata_id] = lights
-        @all_indexes[kata_id] = o['index']
-      end
-    end
-    args = [group.created, seconds_per_column, max_seconds_uncollapsed]
-    gapper = TdGapper.new(*args)
-    @gapped = gapper.fully_gapped(@all_lights, time.now)
-    @time_ticks = gapper.time_ticks(@gapped)
-  end
 
   def gather
     # The new gather function. Uses the model service.
@@ -44,6 +23,28 @@ module AppHelpers # mixin
     manifest = externals.model.group_manifest(id)
     created = Time.mktime(*manifest['created'])
     args = [created, seconds_per_column, max_seconds_uncollapsed]
+    gapper = TdGapper.new(*args)
+    @gapped = gapper.fully_gapped(@all_lights, time.now)
+    @time_ticks = gapper.time_ticks(@gapped)
+  end
+
+  def gather2
+    # The original gather function. Does not use model service.
+    @all_lights = {}
+    @all_indexes = {}
+    e = group.events
+    e.each do |kata_id,o|
+      kata = katas[kata_id]
+      lights = o['events'].each.with_index.map{ |event,index|
+        event['index'] = index
+        Event.new(kata, event)
+      }.select(&:light?)
+      unless lights === []
+        @all_lights[kata_id] = lights
+        @all_indexes[kata_id] = o['index']
+      end
+    end
+    args = [group.created, seconds_per_column, max_seconds_uncollapsed]
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
