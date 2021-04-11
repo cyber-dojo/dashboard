@@ -12,6 +12,11 @@ module AppHelpers # mixin
 
   def animals_progress2
     # Placeholder ready for using externals.model.katas_events()
+    #id = params[:id]
+    #katas = externals.model.group_joined(id).map do |_index,o|
+    #  katas[o['id']]
+    #end
+    #katas.map { |kata| animal_progress(kata) }
     animals_progress
   end
 

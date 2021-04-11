@@ -7,14 +7,18 @@ module AppHelpers # mixin
   module_function
 
   def gather
-    # The new gather function. Uses the model service.
+    # The new gather function. Uses external model service.
     @all_lights = {}
     @all_indexes = {}
     id = params[:id]
     externals.model.group_joined(id).each do |index,o|
       kata_id = o['id']
       kata = katas[kata_id]
-      lights = o['events'].map{ |event| Event.new(kata, event) }.select(&:light?)
+
+      lights = o['events'].map{ |event|
+        Event.new(kata, event)
+      }.select(&:light?)
+
       unless lights == []
         @all_lights[o['id']] = lights
         @all_indexes[o['id']] = index.to_i
@@ -29,7 +33,7 @@ module AppHelpers # mixin
   end
 
   def gather2
-    # The original gather function. Does not use model service.
+    # The original gather function. Does not use external model service.
     @all_lights = {}
     @all_indexes = {}
     e = group.events

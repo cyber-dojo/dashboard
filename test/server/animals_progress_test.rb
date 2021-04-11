@@ -17,7 +17,7 @@ class AnimalsProgressTest < TestBase
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'b46',
-  'contract-test for animals_progress from saved cyber-dojo group v0' do
+  'contract-test for animals_progress v0' do
     @params = { id:V0_GROUP_ID }
     expected = [
       {
@@ -40,7 +40,7 @@ class AnimalsProgressTest < TestBase
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'b47',
-  'contract-test for animals_progress from saved cyber-dojo group v1' do
+  'contract-test for animals_progress v1' do
     @params = { id:V1_GROUP_ID }
     expected = [
       {
