@@ -13,13 +13,14 @@ build_images()
 # - - - - - - - - - - - - - - - - - - - - - -
 build_tagged_images()
 {
-  local -r target="${1:-}"
+  local -r target="${1:-server}"
+
   augmented_docker_compose \
     build \
-    --build-arg COMMIT_SHA=$(commit_sha) "${target}"
+    --build-arg COMMIT_SHA=$(commit_sha) "$@"
 
   docker tag $(server_image):$(image_tag) $(server_image):latest
-  if [ "${target}" != server ]; then
+  if [ "${1:-}" != server ]; then
     docker tag $(client_image):$(image_tag) $(client_image):latest
   fi
 

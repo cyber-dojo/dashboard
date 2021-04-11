@@ -76,8 +76,7 @@ log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 create_docker_compose_yml
-remove_old_images
-build_tagged_images
+build_images server client nginx
 augmented_docker_compose up --detach nginx
 server_up_healthy_and_clean
 copy_in_saver_test_data
