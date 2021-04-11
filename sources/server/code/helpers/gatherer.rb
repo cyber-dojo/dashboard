@@ -7,16 +7,14 @@ module AppHelpers # mixin
   module_function
 
   def gather
-    # The new gather function. Uses external model service.
+    # The new gather function. Uses only the external model service.
     @all_lights = {}
     @all_indexes = {}
     id = params[:id]
     externals.model.group_joined(id).each do |index,o|
-      kata_id = o['id']
-      kata = katas[kata_id]
 
       lights = o['events'].map{ |event|
-        Event.new(kata, event)
+        Light.new(event)
       }.select(&:light?)
 
       unless lights == []
@@ -30,6 +28,46 @@ module AppHelpers # mixin
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  class Light
+    def initialize(summary)
+      @summary = summary
+    end
+    def index
+      @summary['index']
+    end
+    def time_a
+      @summary['time']
+    end
+    def time
+      Time.mktime(*time_a)
+    end
+    def predicted
+      @summary['predicted'] || 'none'
+    end
+    def colour
+      (@summary['colour'] || '').to_sym
+    end
+    def light?
+      colour != :""
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def seconds_per_column
+    flag = params['minute_columns']
+    return 60 if flag.nil? || flag == 'true'
+    return 60*60*24*365*1000
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def max_seconds_uncollapsed
+    seconds_per_column * 5
   end
 
   def gather2
@@ -52,20 +90,6 @@ module AppHelpers # mixin
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def seconds_per_column
-    flag = params['minute_columns']
-    return 60 if flag.nil? || flag == 'true'
-    return 60*60*24*365*1000
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def max_seconds_uncollapsed
-    seconds_per_column * 5
   end
 
 end

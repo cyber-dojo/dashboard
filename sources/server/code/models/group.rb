@@ -55,7 +55,7 @@ class Group
   end
 
   def age(e = events)
-    e.map{|kata_id,o| age_of(o['events']) }.max || 0
+    e.map{ |kata_id,o| age_of(o['events']) }.max || 0
   end
 
   def manifest
