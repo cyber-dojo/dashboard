@@ -10,6 +10,12 @@ module AppHelpers # mixin
          .map { |kata| animal_progress(kata) }
   end
 
+  def animals_progress2
+    # Placeholder ready for using externals.model.katas_events()
+    animals_progress
+  end
+
+
   def animal_progress(kata)
     {   colour: kata.lights[-1].colour,
       progress: most_recent_progress(kata),
