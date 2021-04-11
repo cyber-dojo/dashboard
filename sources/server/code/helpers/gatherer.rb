@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_relative '../models/event'
 require_relative 'td_gapper'
+require_relative 'light'
 
 module AppHelpers # mixin
 
@@ -28,32 +29,6 @@ module AppHelpers # mixin
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  class Light
-    def initialize(summary)
-      @summary = summary
-    end
-    def index
-      @summary['index']
-    end
-    def time_a
-      @summary['time']
-    end
-    def time
-      Time.mktime(*time_a)
-    end
-    def predicted
-      @summary['predicted'] || 'none'
-    end
-    def colour
-      (@summary['colour'] || '').to_sym
-    end
-    def light?
-      colour != :""
-    end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
