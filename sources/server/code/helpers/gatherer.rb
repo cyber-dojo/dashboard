@@ -25,7 +25,6 @@ module AppHelpers # mixin
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
-    #set_footer_info
   end
 
   def gather
@@ -48,15 +47,6 @@ module AppHelpers # mixin
     gapper = TdGapper.new(*args)
     @gapped = gapper.fully_gapped(@all_lights, time.now)
     @time_ticks = gapper.time_ticks(@gapped)
-    #set_footer_info
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def set_footer_info
-    @group_id = group.id
-    @display_name = group.manifest.display_name
-    @exercise = group.manifest.exercise
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
