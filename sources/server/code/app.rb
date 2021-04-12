@@ -10,7 +10,7 @@ class App < AppBase
     @externals = externals
   end
 
-  attr_reader :externals # TODO: Drop when using model-http-proxy
+  attr_reader :externals
 
   get_delegate(Prober, :alive?)
   get_delegate(Prober, :ready?)
@@ -22,7 +22,6 @@ class App < AppBase
     @id = params[:id]
     respond_to { |wants|
       wants.html {
-        group # set @group
         erb :show
       }
     }

@@ -32,9 +32,6 @@ class AnimalsProgressTest < TestBase
     ]
     actual = animals_progress
     animals_progress_check(expected, actual)
-
-    actual = animals_progress2
-    animals_progress_check(expected, actual)
   end
 
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,9 +60,6 @@ class AnimalsProgressTest < TestBase
       }
     ]
     actual = animals_progress
-    animals_progress_check(expected, actual)
-
-    actual = animals_progress2
     animals_progress_check(expected, actual)
   end
 

@@ -10,17 +10,8 @@ module HttpJsonHash
       @requester = requester
     end
 
-    # - - - - - - - - - - - - - - - - - - - - -
-
     def get(path, args)
       response = @requester.get(path, args)
-      unpacked(response.body, path.to_s, args)
-    end
-
-    # - - - - - - - - - - - - - - - - - - - - -
-
-    def post(path, args)
-      response = @requester.post(path, args)
       unpacked(response.body, path.to_s, args)
     end
 
@@ -41,8 +32,6 @@ module HttpJsonHash
     rescue JSON::ParserError
       service_error(path, args, body, 'body is not JSON')
     end
-
-    # - - - - - - - - - - - - - - - - - - - - -
 
     def service_error(path, args, body, message)
       fail ::HttpJsonHash::ServiceError.new(path, args, @name, body, message)

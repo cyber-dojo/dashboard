@@ -31,8 +31,6 @@ class GatheredTest < TestBase
     @params = { id:id }
     gather
     gather_check(expected_indexes, expected_lights)
-    gather2
-    gather_check(expected_indexes, expected_lights)
   end
 
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,8 +53,6 @@ class GatheredTest < TestBase
     }
     @params = { id:id }
     gather
-    gather_check(expected_indexes, expected_lights)
-    gather2
     gather_check(expected_indexes, expected_lights)
   end
 

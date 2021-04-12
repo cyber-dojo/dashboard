@@ -11,7 +11,7 @@ class Prober # k8s/curl probing + identity
   end
 
   def ready?(_args)
-    model.ready? and saver.ready?
+    model.ready?
   end
 
   def sha(_args)
@@ -22,10 +22,6 @@ class Prober # k8s/curl probing + identity
 
   def model
     @externals.model
-  end
-
-  def saver
-    @externals.saver
   end
 
 end

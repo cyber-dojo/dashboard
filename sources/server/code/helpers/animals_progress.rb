@@ -75,7 +75,7 @@ module AppHelpers # mixin
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+=begin
   def animals_progress2
     # The original animals_progress function.
     # Does not use external model service.
@@ -110,5 +110,6 @@ module AppHelpers # mixin
       colour: (matches[0] != nil ? 'red' : 'green')
     }
   end
+=end
 
 end
