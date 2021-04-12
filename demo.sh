@@ -80,7 +80,7 @@ build_images server
 build_images client
 build_images nginx
 augmented_docker_compose up --detach nginx
-server_up_healthy_and_clean
+server_up_healthy_and_clean $(server_name)
 copy_in_saver_test_data
 curl_smoke_test
 if [ "${1:-}" == '--no-browser' ]; then

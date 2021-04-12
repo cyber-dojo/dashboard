@@ -5,12 +5,6 @@ module AppHelpers # mixin
   module_function
 
   def animals_progress
-    group.katas
-         .select(&:active?)
-         .map { |kata| animal_progress(kata) }
-  end
-
-  def animals_progress2
     # The new animals_progress function.
     # Uses only the external model service.
     all_ids = []
@@ -50,27 +44,55 @@ module AppHelpers # mixin
     end
 
     manifest = externals.model.group_manifest(gid)
-    _regexs = manifest['progress_regexs']
+    regexs = manifest['progress_regexs']
 
-    #_matches = regexs.map { |regex| Regexp.new(regex).match(output) }
-
-    #katas.map { |kata| animal_progress(kata) }
-
-    animals_progress
+    result = []
+    (0...all_ids.size).each do |i|
+      id = all_ids[i]
+      avatar_index = all_avatar_indexes[i]
+      colour = all_colours[i]
+      output = all_outputs[i]
+      result << animal_progress(regexs, id, avatar_index, colour, output)
+    end
+    result
   end
 
+  def animal_progress(regexs, id, avatar_index, colour, output)
+    {
+        colour: colour.to_sym,
+      progress: most_recent_progress(regexs, output),
+         index: avatar_index.to_i,
+            id: id
+    }
+  end
 
-  def animal_progress(kata)
-    {   colour: kata.lights[-1].colour,
-      progress: most_recent_progress(kata),
-         index: kata.avatar_index,
-            id: kata.id
+  def most_recent_progress(regexs, output)
+    matches = regexs.map { |regex| Regexp.new(regex).match(output) }
+    {
+        text: matches.join,
+      colour: (matches[0] != nil ? 'red' : 'green')
     }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def most_recent_progress(kata)
+  def animals_progress2
+    # The original animals_progress function.
+    # Does not use external model service.
+    group.katas
+         .select(&:active?)
+         .map { |kata| animal_progress2(kata) }
+  end
+
+  def animal_progress2(kata)
+    {   colour: kata.lights[-1].colour,
+      progress: most_recent_progress2(kata),
+         index: kata.avatar_index,
+            id: kata.id
+    }
+  end
+
+  def most_recent_progress2(kata)
     non_amber = kata.lights.reverse.find { |light|
       [:red,:green].include?(light.colour)
     }
