@@ -30,4 +30,12 @@ class Light
     colour != :""
   end
 
+  def revert
+    @summary['revert']
+  end
+
+  def checkout
+    @summary['checkout']
+  end
+
 end

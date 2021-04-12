@@ -33,22 +33,21 @@ module AppHelpers # mixin
     @time_ticks = gapper.time_ticks(@gapped)
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def seconds_per_column
     flag = params['minute_columns']
     return 60 if flag.nil? || flag == 'true'
     return 60*60*24*365*1000
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def max_seconds_uncollapsed
     seconds_per_column * 5
   end
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   def gather2
-    # The original gather function. Does not use external model service.
+    # The original gather function.
+    # Does not use external model service.
     @all_lights = {}
     @all_indexes = {}
     e = group.events
