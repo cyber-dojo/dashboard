@@ -37,7 +37,7 @@ module AppHelpers # mixin
       id = all_ids[i]
       index = all_indexes[i]
       event = katas_events[id][index.to_s]
-      output = event['stdout']['content'] + event['stderr']['content']
+      output = stdout(event)['content'] + stderr(event)['content']
       all_outputs << output
     end
 
@@ -53,6 +53,22 @@ module AppHelpers # mixin
       result << avatar_progress(regexs, id, avatar_index, colour, output)
     end
     result
+  end
+
+  def stdout(event)
+    if event.has_key?('stdout')
+      event['stdout']
+    else
+      { 'content' => '' }
+    end
+  end
+
+  def stderr(event)
+    if event.has_key?('stderr')
+      event['stderr']
+    else
+      { 'content' => '' }
+    end
   end
 
   def avatar_progress(regexs, id, avatar_index, colour, output)
