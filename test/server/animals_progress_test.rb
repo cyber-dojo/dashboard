@@ -21,13 +21,10 @@ class AnimalsProgressTest < TestBase
     @params = { id:V0_GROUP_ID }
     expected = [
       {
-        :colour => :green,
-        :progress => {
-          :text => "",
-          :colour => "green"
-        },
+        :id => "k5ZTk0",
         :index => 11,
-        :id => "k5ZTk0"
+        :colour => :green,
+        :progress => "",
       }
     ]
     actual = animals_progress
@@ -41,22 +38,16 @@ class AnimalsProgressTest < TestBase
     @params = { id:V1_GROUP_ID }
     expected = [
       {
-        :colour => :green,
-        :progress => {
-          :text => "OK",
-          :colour => "green"
-        },
+        :id => "rUqcey",
         :index => 26,
-        :id => "rUqcey"
+        :colour => :green,
+        :progress => "OK",
       },
       {
-        :colour => :red,
-        :progress => {
-          :text => "FAILED (failures=4)",
-          :colour => "red"
-        },
+        :id => "38w9NC",
         :index => 27,
-        :id => "38w9NC"
+        :colour => :red,
+        :progress => "FAILED (failures=4)",
       }
     ]
     actual = animals_progress
