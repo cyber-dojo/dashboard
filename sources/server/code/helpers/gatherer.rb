@@ -7,8 +7,6 @@ module AppHelpers # mixin
   module_function
 
   def gather
-    # The new gather function.
-    # Uses only the external model service.
     @all_lights = {}
     @all_indexes = {}
 

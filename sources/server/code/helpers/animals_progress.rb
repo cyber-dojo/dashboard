@@ -5,8 +5,6 @@ module AppHelpers # mixin
   module_function
 
   def animals_progress
-    # The new animals_progress function.
-    # Uses only the external model service.
     all_ids = []
     all_indexes = []
     all_avatar_indexes = []
