@@ -4,7 +4,7 @@ module AppHelpers # mixin
 
   module_function
 
-  def animals_progress
+  def avatars_progress
     all_ids = []
     all_indexes = []
     all_avatar_indexes = []
@@ -50,12 +50,12 @@ module AppHelpers # mixin
       avatar_index = all_avatar_indexes[i]
       colour = all_colours[i]
       output = all_outputs[i]
-      result << animal_progress(regexs, id, avatar_index, colour, output)
+      result << avatar_progress(regexs, id, avatar_index, colour, output)
     end
     result
   end
 
-  def animal_progress(regexs, id, avatar_index, colour, output)
+  def avatar_progress(regexs, id, avatar_index, colour, output)
     {
         colour: colour.to_sym,
       progress: most_recent_progress(regexs, output),

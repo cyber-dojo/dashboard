@@ -2,7 +2,7 @@ require_relative 'test_base'
 require_relative '../data/cyber-dojo/kata_test_data'
 require_source 'helpers/app_helpers'
 
-class AnimalsProgressTest < TestBase
+class AvatarsProgressTest < TestBase
 
   def self.id58_prefix
     '0D6'
@@ -17,7 +17,7 @@ class AnimalsProgressTest < TestBase
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'b46',
-  'contract-test for animals_progress v0' do
+  'contract-test v0' do
     @params = { id:V0_GROUP_ID }
     expected = [
       {
@@ -27,14 +27,14 @@ class AnimalsProgressTest < TestBase
         :progress => "",
       }
     ]
-    actual = animals_progress
-    animals_progress_check(expected, actual)
+    actual = avatars_progress
+    assert_equal expected, actual
   end
 
   #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'b47',
-  'contract-test for animals_progress v1' do
+  'contract-test v1' do
     @params = { id:V1_GROUP_ID }
     expected = [
       {
@@ -50,16 +50,12 @@ class AnimalsProgressTest < TestBase
         :progress => "FAILED (failures=4)",
       }
     ]
-    actual = animals_progress
-    animals_progress_check(expected, actual)
+    actual = avatars_progress
+    assert_equal expected, actual
   end
 
   private
 
   include KataTestData
-
-  def animals_progress_check(expected, actual)
-    assert_equal expected, actual
-  end
 
 end

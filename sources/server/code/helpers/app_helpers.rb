@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require_relative 'gatherer'
-require_relative 'animals_progress'
+require_relative 'avatars_progress'
 
 module AppHelpers
 
