@@ -37,6 +37,7 @@ module AppHelpers # mixin
       id = all_ids[i]
       index = all_indexes[i]
       event = katas_events[id][index.to_s]
+      print(JSON.pretty_generate(event))
       output = stdout(event)['content'] + stderr(event)['content']
       all_outputs << output
     end
