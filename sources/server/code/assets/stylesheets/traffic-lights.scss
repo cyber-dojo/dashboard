@@ -10,7 +10,7 @@ $traffic-light-size: 24px;
   border-radius: $width / 2 + 1;
 }
 
-img.diff-traffic-light
+img.diff-traffic-light, img.progress-traffic-light
 {
   cursor: pointer;
   width: $traffic-light-size;
