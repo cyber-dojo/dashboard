@@ -15,7 +15,7 @@ module AppHelpers # mixin
     gid = params[:id]
     externals.model.group_joined(gid).map do |index,o|
 
-      lights = o['events'].select{ |event| event['colour'] != '' }
+      lights = o['events'].select{ |event| event.has_key?('colour') }
       unless lights == []
         all_ids << o['id']
         all_avatar_indexes << index
