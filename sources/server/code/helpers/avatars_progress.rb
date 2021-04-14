@@ -6,31 +6,20 @@ module AppHelpers # mixin
 
   def avatars_progress
     all_ids = []
-    all_indexes = []
     all_avatar_indexes = []
+    all_indexes = []
     all_colours = []
-    oldest_non_ambers = []
 
     gid = params[:id]
-    externals.model.group_joined(gid).map do |index,o|
-
+    externals.model.group_joined(gid).map do |avatar_index,o|
       lights = o['events'].select{ |event| event.has_key?('colour') }
       unless lights == []
         all_ids << o['id']
-        all_avatar_indexes << index
+        all_avatar_indexes << avatar_index
+        all_indexes << most_recent_non_amber_index(lights)
         all_colours << lights[-1]['colour']
-        oldest_non_amber = lights.reverse.find { |light|
-          ['red','green'].include?(light['colour'])
-        }
-        oldest_non_ambers << oldest_non_amber
-        if oldest_non_amber.nil?
-          all_indexes << lights[-1]['index']
-        else
-          all_indexes << oldest_non_amber['index']
-        end
       end
     end
-
     katas_events = externals.model.katas_events(all_ids, all_indexes)
 
     manifest = externals.model.group_manifest(gid)
@@ -45,12 +34,23 @@ module AppHelpers # mixin
 
       progress << {
           colour: all_colours[i].to_sym,
-         progress: regexs.map{ |regex| regex.match(output) }.join,
+        progress: regexs.map{ |regex| regex.match(output) }.join,
            index: all_avatar_indexes[i].to_i,
               id: id
       }
     end
     progress
+  end
+
+  def most_recent_non_amber_index(lights)
+    oldest_non_amber = lights.reverse.find { |light|
+      ['red','green'].include?(light['colour'])
+    }
+    if oldest_non_amber.nil?
+      lights[-1]['index']
+    else
+      oldest_non_amber['index']
+    end
   end
 
 end
