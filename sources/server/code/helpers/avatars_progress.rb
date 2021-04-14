@@ -9,7 +9,6 @@ module AppHelpers # mixin
     all_indexes = []
     all_avatar_indexes = []
     all_colours = []
-    all_outputs = []
     oldest_non_ambers = []
 
     gid = params[:id]
@@ -33,13 +32,6 @@ module AppHelpers # mixin
     end
 
     katas_events = externals.model.katas_events(all_ids, all_indexes)
-    (0...all_ids.size).each do |i|
-      id = all_ids[i]
-      index = all_indexes[i]
-      event = katas_events[id][index.to_s]
-      output = event['stdout']['content'] + event['stderr']['content']
-      all_outputs << output
-    end
 
     manifest = externals.model.group_manifest(gid)
     regexs = manifest['progress_regexs'].map { |pattern| Regexp.new(pattern) }
@@ -47,13 +39,14 @@ module AppHelpers # mixin
     progress = []
     (0...all_ids.size).each do |i|
       id = all_ids[i]
-      avatar_index = all_avatar_indexes[i]
-      colour = all_colours[i]
-      output = all_outputs[i]
+      index = all_indexes[i]
+      event = katas_events[id][index.to_s]
+      output = event['stdout']['content'] + event['stderr']['content']
+
       progress << {
-          colour: colour.to_sym,
+          colour: all_colours[i].to_sym,
          progress: regexs.map{ |regex| regex.match(output) }.join,
-           index: avatar_index.to_i,
+           index: all_avatar_indexes[i].to_i,
               id: id
       }
     end
