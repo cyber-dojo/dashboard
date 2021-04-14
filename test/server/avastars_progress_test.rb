@@ -22,7 +22,7 @@ class AvatarsProgressTest < TestBase
     expected = [
       {
         :id => "k5ZTk0",
-        :index => 11,
+        :avatar_index => 11,
         :colour => :green,
         :progress => "",
       }
@@ -39,13 +39,13 @@ class AvatarsProgressTest < TestBase
     expected = [
       {
         :id => "rUqcey",
-        :index => 26,
+        :avatar_index => 26,
         :colour => :green,
         :progress => "OK",
       },
       {
         :id => "38w9NC",
-        :index => 27,
+        :avatar_index => 27,
         :colour => :red,
         :progress => "FAILED (failures=4)",
       }

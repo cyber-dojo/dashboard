@@ -48,7 +48,7 @@ class App < AppBase
   get '/progress/:id', provides:[:json] do
     respond_to { |wants|
       wants.json {
-        json(avatars:avatars_progress)
+        json(katas:avatars_progress)
       }
     }
   end

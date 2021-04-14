@@ -11,10 +11,10 @@ module AppHelpers # mixin
       lights = o['events'].select{ |event| event.has_key?('colour') }
       unless lights == []
         data << {
-          id: o['id'],
+                    id: o['id'],
           avatar_index: avatar_index,
-          index: most_recent_non_amber_index(lights),
-          colour: lights[-1]['colour']
+                colour: lights[-1]['colour'],
+                 index: most_recent_non_amber_index(lights),
         }
       end
     end
@@ -30,10 +30,10 @@ module AppHelpers # mixin
       event = katas_events[d[:id]][d[:index].to_s]
       output = event['stdout']['content'] + event['stderr']['content']
       progress << {
-          colour: d[:colour].to_sym,
-        progress: regexs.map{ |regex| regex.match(output) }.join,
-           index: d[:avatar_index].to_i,
-              id: d[:id]
+                  id: d[:id],
+        avatar_index: d[:avatar_index].to_i,
+              colour: d[:colour].to_sym,
+            progress: regexs.map{ |regex| regex.match(output) }.join,
       }
     end
     progress
