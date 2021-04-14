@@ -37,52 +37,27 @@ module AppHelpers # mixin
       id = all_ids[i]
       index = all_indexes[i]
       event = katas_events[id][index.to_s]
-      output = stdout(event)['content'] + stderr(event)['content']
+      output = event['stdout']['content'] + event['stderr']['content']
       all_outputs << output
     end
 
     manifest = externals.model.group_manifest(gid)
-    regexs = manifest['progress_regexs']
+    regexs = manifest['progress_regexs'].map { |pattern| Regexp.new(pattern) }
 
-    result = []
+    progress = []
     (0...all_ids.size).each do |i|
       id = all_ids[i]
       avatar_index = all_avatar_indexes[i]
       colour = all_colours[i]
       output = all_outputs[i]
-      result << avatar_progress(regexs, id, avatar_index, colour, output)
+      progress << {
+          colour: colour.to_sym,
+         progress: regexs.map{ |regex| regex.match(output) }.join,
+           index: avatar_index.to_i,
+              id: id
+      }
     end
-    result
-  end
-
-  def stdout(event)
-    if event.has_key?('stdout')
-      event['stdout']
-    else
-      { 'content' => '' }
-    end
-  end
-
-  def stderr(event)
-    if event.has_key?('stderr')
-      event['stderr']
-    else
-      { 'content' => '' }
-    end
-  end
-
-  def avatar_progress(regexs, id, avatar_index, colour, output)
-    {
-        colour: colour.to_sym,
-      progress: most_recent_progress(regexs, output),
-         index: avatar_index.to_i,
-            id: id
-    }
-  end
-
-  def most_recent_progress(regexs, output)
-    matches = regexs.map { |regex| Regexp.new(regex).match(output) }
-    matches.join
+    progress
   end
 
 end
