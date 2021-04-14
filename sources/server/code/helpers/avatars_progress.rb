@@ -5,38 +5,35 @@ module AppHelpers # mixin
   module_function
 
   def avatars_progress
-    all_ids = []
-    all_avatar_indexes = []
-    all_indexes = []
-    all_colours = []
-
+    data = []
     gid = params[:id]
     externals.model.group_joined(gid).map do |avatar_index,o|
       lights = o['events'].select{ |event| event.has_key?('colour') }
       unless lights == []
-        all_ids << o['id']
-        all_avatar_indexes << avatar_index
-        all_indexes << most_recent_non_amber_index(lights)
-        all_colours << lights[-1]['colour']
+        data << {
+          id: o['id'],
+          avatar_index: avatar_index,
+          index: most_recent_non_amber_index(lights),
+          colour: lights[-1]['colour']
+        }
       end
     end
+    all_ids = data.map{ |d| d[:id] }
+    all_indexes = data.map{ |d| d[:index] }
     katas_events = externals.model.katas_events(all_ids, all_indexes)
 
     manifest = externals.model.group_manifest(gid)
     regexs = manifest['progress_regexs'].map { |pattern| Regexp.new(pattern) }
 
     progress = []
-    (0...all_ids.size).each do |i|
-      id = all_ids[i]
-      index = all_indexes[i]
-      event = katas_events[id][index.to_s]
+    data.each do |d|
+      event = katas_events[d[:id]][d[:index].to_s]
       output = event['stdout']['content'] + event['stderr']['content']
-
       progress << {
-          colour: all_colours[i].to_sym,
+          colour: d[:colour].to_sym,
         progress: regexs.map{ |regex| regex.match(output) }.join,
-           index: all_avatar_indexes[i].to_i,
-              id: id
+           index: d[:avatar_index].to_i,
+              id: d[:id]
       }
     end
     progress
