@@ -16,8 +16,8 @@ source "${SCRIPTS_DIR}/exit_zero_if_show_help.sh"
 source "${SCRIPTS_DIR}/ip_address.sh"
 source "${SCRIPTS_DIR}/on_ci_publish_images.sh"
 source "${SCRIPTS_DIR}/test_in_containers.sh"
-
-export $(docker run --rm cyberdojo/versioner)
+source "${SCRIPTS_DIR}/echo_versioner_env_vars.sh"
+export $(echo_versioner_env_vars)
 
 #- - - - - - - - - - - - - - - - - - - - - -
 t1=$(echo_seconds)
