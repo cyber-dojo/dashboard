@@ -7,7 +7,7 @@ module AppHelpers # mixin
   def avatars_progress
     data = []
     gid = params[:id]
-    externals.model.group_joined(gid).map do |avatar_index,o|
+    externals.saver.group_joined(gid).map do |avatar_index,o|
       lights = o['events'].select{ |event| event.has_key?('colour') }
       unless lights == []
         data << {
@@ -20,9 +20,9 @@ module AppHelpers # mixin
     end
     all_ids = data.map{ |d| d[:id] }
     all_indexes = data.map{ |d| d[:index] }
-    katas_events = externals.model.katas_events(all_ids, all_indexes)
+    katas_events = externals.saver.katas_events(all_ids, all_indexes)
 
-    manifest = externals.model.group_manifest(gid)
+    manifest = externals.saver.group_manifest(gid)
     regexs = manifest['progress_regexs'].map { |pattern| Regexp.new(pattern) }
 
     progress = []

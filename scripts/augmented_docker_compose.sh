@@ -10,10 +10,12 @@ augmented_docker_compose()
   #   Docker Compose is now in the Docker CLI, try `docker compose up`
   # But that doesn't work. Currently, you still need docker-compose
   cd "${ROOT_DIR}" && cat "./docker-compose.yml" \
-    | docker run --rm --interactive cyberdojo/service-yaml \
-                         differ \
-                         model  \
-                         saver  \
+    | docker run \
+        --rm \
+        --interactive \
+          cyberdojo/service-yaml \
+              differ \
+              saver  \
     | tee "/tmp/augmented-docker-compose.${SERVICE_NAME_LOWER}.peek.yml" \
     | docker-compose \
       --file -       \

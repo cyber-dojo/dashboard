@@ -7,7 +7,7 @@ create_docker_compose_yml()
 
 echo_docker_compose_yml()
 {
-# Use un-expanded ${COMMIT_TAG} to avoid needless git churn.
+# Use un-expanded ${COMMIT_TAG} to avoid needless git diff churn.
 # Note tests/ is volume-mapped to test/ because
 # of an implementation dependency in cyberdojo/check-test-results
 # See scripts/test_in_containers.sh

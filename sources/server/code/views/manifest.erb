@@ -7,7 +7,7 @@ $(() => {
   cd.extensionFilenames = () => [];
   cd.progressRegexs = () => [];
 
-  cd.getJSON('model', 'group_manifest', {id:cd.id()}, (manifest) => {
+  cd.getJSON('saver', 'group_manifest', {id:cd.id()}, (manifest) => {
     cd.highlightFilenames = () => manifest.highlight_filenames;
     cd.extensionFilenames = () => manifest.filename_extension;
     cd.progressRegexs     = () => manifest.progress_regexs;

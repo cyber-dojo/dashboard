@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require_relative 'http_json_hash/service'
 
-class ExternalModel
+class ExternalSaver
 
   def initialize(http)
-    hostname = 'model'
-    port = 4528
+    hostname = 'saver'
+    port = 4537
     @http = HttpJsonHash::service(self.class.name, http, hostname, port)
   end
 

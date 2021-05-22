@@ -1,6 +1,6 @@
 
 # Values are low; legacy models/ code is being phased
-# out in favour of external.models micro-service.
+# out in favour of external.saver micro-service.
 
 MIN = {
   test_count:1,

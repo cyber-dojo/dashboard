@@ -11,7 +11,7 @@ module AppHelpers # mixin
     @all_indexes = {}
 
     gid = params[:id]
-    externals.model.group_joined(gid).each do |index,o|
+    externals.saver.group_joined(gid).each do |index,o|
 
       lights = o['events'].map{ |event|
         Light.new(event)
@@ -22,7 +22,7 @@ module AppHelpers # mixin
         @all_indexes[o['id']] = index.to_i
       end
     end
-    manifest = externals.model.group_manifest(gid)
+    manifest = externals.saver.group_manifest(gid)
     created = Time.mktime(*manifest['created'])
     args = [created, seconds_per_column, max_seconds_uncollapsed]
     gapper = TdGapper.new(*args)
