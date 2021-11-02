@@ -8,13 +8,13 @@ merkely_log_deployment()
   local -r MERKELY_OWNER=cyber-dojo
   local -r MERKELY_PIPELINE=dashboard
 
-  # Set CYBER_DOJO_DIFFER_IMAGE, CYBER_DOJO_DIFFER_TAG
+  # Set CYBER_DOJO_DASHBOARD_IMAGE, CYBER_DOJO_DASHBOARD_TAG
   local -r VERSIONER_URL=https://raw.githubusercontent.com/cyber-dojo/versioner/master
   export $(curl "${VERSIONER_URL}/app/.env")
   local -r CYBER_DOJO_DASHBOARD_TAG="${CIRCLE_SHA1:0:7}"
 
   # Pull image so merkely_fingerprint() works
-  docker pull ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DASHBOARD_DASHBOARD_TAG}
+  docker pull ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
 
 	docker run \
     --env MERKELY_COMMAND=log_deployment \
