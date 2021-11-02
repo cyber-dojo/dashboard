@@ -13,6 +13,18 @@ jobs:
             ./build_test_publish.sh server
             docker logout
 
+  log-beta-deployment-to-merkely:
+    machine:
+      image: ubuntu-2004:202008-01
+    steps:
+      - checkout
+      - run:
+          name: Log beta deployment to Merkely
+          command: |
+            source ./.circleci/merkely_log_deployment.sh
+            merkely_log_deployment beta https://staging.app.merkely.com
+            merkely_log_deployment beta https://app.merkely.com
+
   deploy-to-beta:
     docker:
       - image: cyberdojo/gcloud-kubectl-helm
@@ -21,6 +33,18 @@ jobs:
       - run:
           name: Authenticate with gcloud, deploy to beta with helm
           command: ./.circleci/deploy_to_namespace.sh beta
+
+  log-prod-deployment-to-merkely:
+    machine:
+      image: ubuntu-2004:202008-01
+    steps:
+      - checkout
+      - run:
+          name: Log prod deployment to Merkely
+          command: |
+            source ./.circleci/merkely_log_deployment.sh
+            merkely_log_deployment prod https://staging.app.merkely.com
+            merkely_log_deployment prod https://app.merkely.com
 
   deploy-to-prod:
     docker:
@@ -40,12 +64,23 @@ workflows:
           filters:
             branches:
               only: [ master ]
+
+      - log-beta-deployment-to-merkely:
+          context: cyberdojo-context
+          requires: [ build-test-publish ]
+
       - deploy-to-beta:
           context: cyberdojo-context
-          requires: [ build-publish ]
+          requires: [ log-beta-deployment-to-merkely ]
+
       - approve-to-prod:
           type: approval
           requires: [ deploy-to-beta ]
+
+      - log-prod-deployment-to-merkely:
+          context: cyberdojo-context
+          requires: [ approve-to-prod-env ]
+
       - deploy-to-prod:
           context: cyberdojo-context
-          requires: [ approve-to-prod ]
+          requires: [ log-prod-deployment-to-merkely ]
