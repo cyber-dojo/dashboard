@@ -15,7 +15,7 @@ source "${SCRIPTS_DIR}/exit_zero_if_build_only.sh"
 source "${SCRIPTS_DIR}/exit_zero_if_show_help.sh"
 source "${SCRIPTS_DIR}/ip_address.sh"
 source "${SCRIPTS_DIR}/on_ci_publish_images.sh"
-source "${SH_DIR}/merkely.sh"
+source "${SCRIPTS_DIR}/merkely.sh"
 source "${SCRIPTS_DIR}/test_in_containers.sh"
 source "${SCRIPTS_DIR}/echo_versioner_env_vars.sh"
 export $(echo_versioner_env_vars)
