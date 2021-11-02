@@ -67,7 +67,7 @@ workflows:
 
       - log-beta-deployment-to-merkely:
           context: cyberdojo-context
-          requires: [ build-test-publish ]
+          requires: [ build-publish ]
 
       - deploy-to-beta:
           context: cyberdojo-context
