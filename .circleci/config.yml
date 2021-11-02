@@ -79,7 +79,7 @@ workflows:
 
       - log-prod-deployment-to-merkely:
           context: cyberdojo-context
-          requires: [ approve-to-prod-env ]
+          requires: [ approve-to-prod ]
 
       - deploy-to-prod:
           context: cyberdojo-context
