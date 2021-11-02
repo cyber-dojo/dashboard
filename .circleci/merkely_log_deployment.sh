@@ -14,7 +14,7 @@ merkely_log_deployment()
   local -r CYBER_DOJO_DASHBOARD_TAG="${CIRCLE_SHA1:0:7}"
 
   # Pull image so merkely_fingerprint() works
-  docker pull ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DASHBOARD_DIFFER_TAG}
+  docker pull ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DASHBOARD_DASHBOARD_TAG}
 
 	docker run \
     --env MERKELY_COMMAND=log_deployment \
