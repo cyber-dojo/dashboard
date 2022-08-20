@@ -34,8 +34,8 @@ on_ci_kosli_declare_pipeline()
   if ! on_ci ; then
     return
   fi
-  merkely_declare_pipeline https://staging.app.merkely.com
-  merkely_declare_pipeline https://app.merkely.com
+  kosli_declare_pipeline https://staging.app.merkely.com
+  kosli_declare_pipeline https://app.merkely.com
 }
 
 # - - - - - - - - - - - - - - - - - - -
