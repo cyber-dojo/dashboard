@@ -1,5 +1,9 @@
 #!/bin/bash -Eeu
 
+readonly MERKELY_CHANGE=merkely/change:latest
+readonly MERKELY_OWNER=cyber-dojo
+readonly MERKELY_PIPELINE=dashboard
+
 # - - - - - - - - - - - - - - - - - - -
 kosli_fingerprint()
 {
@@ -11,16 +15,6 @@ kosli_log_deployment()
 {
   local -r MERKELY_ENVIRONMENT="${1}"
   local -r MERKELY_HOST="${2}"
-  local -r MERKELY_OWNER=cyber-dojo
-  local -r MERKELY_PIPELINE=dashboard
-
-  # Set CYBER_DOJO_DASHBOARD_IMAGE, CYBER_DOJO_DASHBOARD_TAG
-  local -r VERSIONER_URL=https://raw.githubusercontent.com/cyber-dojo/versioner/master
-  export $(curl "${VERSIONER_URL}/app/.env")
-  local -r CYBER_DOJO_DASHBOARD_TAG="${CIRCLE_SHA1:0:7}"
-
-  # Pull image so merkely_fingerprint() works
-  docker pull ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
 
 	docker run \
     --env MERKELY_COMMAND=log_deployment \
@@ -39,6 +33,11 @@ kosli_log_deployment()
 
 
 # - - - - - - - - - - - - - - - - - - -
+VERSIONER_URL=https://raw.githubusercontent.com/cyber-dojo/versioner/master
+export $(curl "${VERSIONER_URL}/app/.env")
+export CYBER_DOJO_DASHBOARD_TAG="${CIRCLE_SHA1:0:7}"
+docker pull ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+
 readonly ENVIRONMENT="${1}"
 readonly HOSTNAME="${2}"
 kosli_log_deployment "${ENVIRONMENT}" "${HOSTNAME}"
