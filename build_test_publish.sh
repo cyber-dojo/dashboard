@@ -15,7 +15,7 @@ source "${SCRIPTS_DIR}/exit_zero_if_build_only.sh"
 source "${SCRIPTS_DIR}/exit_zero_if_show_help.sh"
 source "${SCRIPTS_DIR}/ip_address.sh"
 source "${SCRIPTS_DIR}/on_ci_publish_images.sh"
-source "${SCRIPTS_DIR}/merkely.sh"
+source "${SCRIPTS_DIR}/kosli.sh"
 source "${SCRIPTS_DIR}/test_in_containers.sh"
 source "${SCRIPTS_DIR}/echo_versioner_env_vars.sh"
 export $(echo_versioner_env_vars)
@@ -28,7 +28,7 @@ exit_non_zero_unless_installed docker
 exit_non_zero_unless_installed docker-compose
 
 create_docker_compose_yml
-on_ci_merkely_declare_pipeline
+on_ci_kosli_declare_pipeline
 build_images "$@"
 exit_zero_if_build_only "$@"
 
@@ -40,7 +40,7 @@ test_in_containers "$@"
 
 containers_down
 on_ci_publish_images
-on_ci_merkely_log_artifact
+on_ci_kosli_log_artifact
 
 t2=$(echo_seconds)
 echo "script took $(( t2-t1)) seconds"
