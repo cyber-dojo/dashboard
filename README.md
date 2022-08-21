@@ -1,6 +1,4 @@
-![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main.yml/badge.svg)
-
-# cyberdojo/dashboard
+[![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/cyber-dojo/dashboard/actions)
 
 - The source for the [cyberdojo/dashboard](https://hub.docker.com/r/cyberdojo/dashboard/tags) Docker image.
 - A docker-containerized stateless http micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
