@@ -1,7 +1,8 @@
-#!/bin/bash -Eeu
+#!/usr/bin/env bash
+set -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export SCRIPTS_DIR="${ROOT_DIR}/scripts"
+export SCRIPTS_DIR="${ROOT_DIR}/sh"
 
 source "${SCRIPTS_DIR}/build_images.sh"
 source "${SCRIPTS_DIR}/config.sh"
@@ -29,18 +30,19 @@ exit_non_zero_unless_installed docker-compose
 
 create_docker_compose_yml
 on_ci_kosli_declare_pipeline
-build_images "$@"
+build_images
 exit_zero_if_build_only "$@"
 
-server_up_healthy_and_clean "$@"
-client_up_healthy_and_clean "$@"
+server_up_healthy_and_clean
+client_up_healthy_and_clean
 copy_in_saver_test_data
 
 test_in_containers "$@"
 
 containers_down
 on_ci_publish_images
-on_ci_kosli_log_artifact
+on_ci_kosli_report_artifact_creation
+on_ci_kosli_assert_artifact
 
 t2=$(echo_seconds)
 echo "script took $(( t2-t1)) seconds"

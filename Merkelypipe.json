@@ -1,9 +1,0 @@
-{
-    "owner": "cyber-dojo",
-    "name": "dashboard",
-    "description": "UX for a group practice dashboard",
-    "visibility": "public",
-    "template": [
-        "artifact"
-    ]
-}

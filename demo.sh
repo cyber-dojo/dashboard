@@ -1,7 +1,8 @@
-#!/bin/bash -Eeu
+#!/usr/bin/env bash
+set -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export SCRIPTS_DIR="${ROOT_DIR}/scripts"
+export SCRIPTS_DIR="${ROOT_DIR}/sh"
 
 source "${SCRIPTS_DIR}/build_images.sh"
 source "${SCRIPTS_DIR}/config.sh"

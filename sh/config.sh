@@ -1,4 +1,5 @@
-#!/bin/bash -Eeu
+#!/usr/bin/env bash
+set -Eeu
 
 commit_sha() { echo -n $(cd "${ROOT_DIR}" && git rev-parse HEAD); }
 

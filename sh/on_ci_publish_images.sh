@@ -1,4 +1,5 @@
-#!/bin/bash -Ee
+#!/usr/bin/env bash
+set -Eeu
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 on_ci()

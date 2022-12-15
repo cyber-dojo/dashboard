@@ -2,27 +2,23 @@
 # - - - - - - - - - - - - - - - - - - -
 server_up_healthy_and_clean()
 {
-  if [ "${1}" == $(server_name) ]; then
-    export CONTAINER_NAME="$(server_container)"
-    export CONTAINER_PORT="$(server_port)"
-    export CONTAINER_USER="$(server_user)"
-    augmented_docker_compose up --detach $(server_name)
-    exit_non_zero_unless_healthy
-    exit_non_zero_unless_started_cleanly
-  fi
+  export CONTAINER_NAME="$(server_container)"
+  export CONTAINER_PORT="$(server_port)"
+  export CONTAINER_USER="$(server_user)"
+  augmented_docker_compose up --detach $(server_name)
+  exit_non_zero_unless_healthy
+  exit_non_zero_unless_started_cleanly
 }
 
 # - - - - - - - - - - - - - - - - - - -
 client_up_healthy_and_clean()
 {
-  if [ "${1}" == $(client_name) ]; then
-    export CONTAINER_NAME="$(client_container)"
-    export CONTAINER_PORT="$(client_port)"
-    export CONTAINER_USER="$(client_user)"
-    augmented_docker_compose up --detach $(client_name)
-    exit_non_zero_unless_healthy
-    exit_non_zero_unless_started_cleanly
-  fi
+  export CONTAINER_NAME="$(client_container)"
+  export CONTAINER_PORT="$(client_port)"
+  export CONTAINER_USER="$(client_user)"
+  augmented_docker_compose up --detach $(client_name)
+  exit_non_zero_unless_healthy
+  exit_non_zero_unless_started_cleanly
 }
 
 # - - - - - - - - - - - - - - - - - - -
