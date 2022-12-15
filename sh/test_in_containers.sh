@@ -4,8 +4,13 @@ set -Eeu
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 test_in_containers()
 {
-  run_tests "$(server_user)" "$(server_container)" "$(server_name)" "${@:-}"
-  # run_tests "$(client_user)" "$(client_container)" "$(client_name)" "${@:-}"
+  if [ "${1}" == "$(server_name)" ]; then
+    shift
+    run_tests "$(server_user)" "$(server_container)" "$(server_name)" "${@:-}"
+  elif [ "${1}" == "$(client_name)" ]; then
+    shift
+    run_tests "$(client_user)" "$(client_container)" "$(client_name)" "${@:-}"
+  fi
   echo All passed
 }
 

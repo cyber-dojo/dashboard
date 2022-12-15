@@ -6,27 +6,33 @@ source ${SCRIPTS_DIR}/augmented_docker_compose.sh
 # - - - - - - - - - - - - - - - - - - - - - -
 build_images()
 {
+  if [ "${1:-}" == "" ]; then
+    echo
+    echo "ERROR: no argument supplied"
+    exit_zero_if_show_help --help
+  fi
   local -r dil=$(docker image ls --format "{{.Repository}}:{{.Tag}}" --filter=reference="$(server_image)*:*")
   remove_old_images "${dil:-}"
-	build_tagged_images
+	build_tagged_images "$@"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - -
 build_tagged_images()
 {
-  augmented_docker_compose \
-    build \
-    --build-arg COMMIT_SHA=$(commit_sha) server
+  local -r target="${1}"
 
   augmented_docker_compose \
     build \
-    --build-arg COMMIT_SHA=$(commit_sha) client
+    --build-arg COMMIT_SHA=$(commit_sha) "${target}"
 
-  docker tag $(server_image):$(image_tag) $(server_image):latest
-  check_embedded_env_var "$(server_image):latest"
-
-  docker tag $(client_image):$(image_tag) $(client_image):latest
-  check_embedded_env_var "$(client_image):latest"
+  if [ "${target}" == $(server_name) ]; then
+    docker tag $(server_image):$(image_tag) $(server_image):latest
+    check_embedded_env_var "$(server_image):latest"
+  fi
+  if [ "${target}" == $(client_name) ]; then
+    docker tag $(client_image):$(image_tag) $(client_image):latest
+    check_embedded_env_var "$(client_image):latest"
+  fi
 
   echo
   echo "echo CYBER_DOJO_${SERVICE_NAME}_SHA=$(image_sha)"

@@ -30,11 +30,11 @@ exit_non_zero_unless_installed docker-compose
 
 create_docker_compose_yml
 on_ci_kosli_declare_pipeline
-build_images
+build_images "$@"
 exit_zero_if_build_only "$@"
 
-server_up_healthy_and_clean
-client_up_healthy_and_clean
+server_up_healthy_and_clean "$@"
+client_up_healthy_and_clean "$@"
 copy_in_saver_test_data
 
 test_in_containers "$@"
