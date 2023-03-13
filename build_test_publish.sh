@@ -29,7 +29,7 @@ exit_non_zero_unless_installed docker
 exit_non_zero_unless_installed docker-compose
 
 create_docker_compose_yml
-on_ci_kosli_declare_pipeline
+on_ci_kosli_create_flow
 build_images "$@"
 exit_zero_if_build_only "$@"
 

@@ -2,21 +2,21 @@
 set -Eeu
 
 export KOSLI_OWNER=cyber-dojo
-export KOSLI_PIPELINE=dashboard
+export KOSLI_FLOW=dashboard
 
 readonly KOSLI_HOST_STAGING=https://staging.app.kosli.com
 readonly KOSLI_HOST_PRODUCTION=https://app.kosli.com
 
 # - - - - - - - - - - - - - - - - - - -
-kosli_declare_pipeline()
+kosli_create_flow()
 {
   local -r hostname="${1}"
 
-  kosli pipeline declare \
+  kosli create flow "${KOSLI_FLOW}" \
     --description "UX for a group practice dashboard" \
-    --visibility public \
+    --host "${hostname}" \
     --template artifact \
-    --host "${hostname}"
+    --visibility public
 }
 
 # - - - - - - - - - - - - - - - - - - -
@@ -26,8 +26,7 @@ kosli_report_artifact_creation()
 
   cd "$(root_dir)"  # So we don't need --repo-root flag
 
-  kosli pipeline artifact report creation \
-    "$(artifact_name)" \
+  kosli report artifact "$(artifact_name)" \
       --artifact-type docker \
       --host "${hostname}"
 }
@@ -37,8 +36,7 @@ kosli_assert_artifact()
 {
   local -r hostname="${1}"
 
-  kosli assert artifact \
-    "$(artifact_name)" \
+  kosli assert artifact "$(artifact_name)" \
       --artifact-type docker \
       --host "${hostname}"
 }
@@ -53,8 +51,7 @@ kosli_expect_deployment()
   # and the image must be present to get its sha256 fingerprint.
   docker pull "$(artifact_name)"
 
-  kosli expect deployment \
-    "$(artifact_name)" \
+  kosli expect deployment "$(artifact_name)" \
     --artifact-type docker \
     --description "Deployed to ${environment} in Github Actions pipeline" \
     --environment "${environment}" \
@@ -62,11 +59,11 @@ kosli_expect_deployment()
 }
 
 # - - - - - - - - - - - - - - - - - - -
-on_ci_kosli_declare_pipeline()
+on_ci_kosli_create_flow()
 {
   if on_ci ; then
-    kosli_declare_pipeline "${KOSLI_HOST_STAGING}"
-    kosli_declare_pipeline "${KOSLI_HOST_PRODUCTION}"
+    kosli_create_flow "${KOSLI_HOST_STAGING}"
+    kosli_create_flow "${KOSLI_HOST_PRODUCTION}"
   fi
 }
 
