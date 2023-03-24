@@ -56,36 +56,33 @@ healthy()
 # - - - - - - - - - - - - - - - - - - -
 exit_non_zero_unless_started_cleanly()
 {
-  echo
-  local DOCKER_LOG=$(echo_docker_log)
-
   # Handle known warnings (eg waiting on Gem upgrade)
   #local -r SHADOW_WARNING="server.rb:(.*): warning: shadowing outer local variable - filename"
   #DOCKER_LOG=$(strip_known_warning "${DOCKER_LOG}" "${SHADOW_WARNING}")
 
+  echo
   echo "Checking if ${SERVICE_NAME} started cleanly."
-  local -r top5=$(echo "${DOCKER_LOG}" | head -5)
-  if [ "${top5}" == "$(clean_top_5)" ]; then
+  if [ "$(top_5)" == "$(clean_top_5)" ]; then
     echo "${SERVICE_NAME} started cleanly."
   else
-    echo "${SERVICE_NAME} did not start cleanly."
+    echo "${SERVICE_NAME} did not start cleanly: docker log..."
     echo 'expected------------------'
-    echo
     echo "$(clean_top_5)"
     echo
     echo 'actual--------------------'
-    echo
-    echo "${top5}"
+    echo "$(top_5)"
     echo
     echo 'diff--------------------'
-    #echo "First 10 lines of: docker logs ${CONTAINER_NAME}"
-    #echo
-    #echo "${DOCKER_LOG}" | head -10
-    #echo
-    grep -Fxvf <(echo "${clean_top_5}") <(echo "${top_5}")
+    grep -Fxvf <(clean_top_5) <(top_5)
     echo
     exit 42
   fi
+}
+
+# - - - - - - - - - - - - - - - - - - -
+top_5()
+{
+  echo_docker_log | head -5
 }
 
 # - - - - - - - - - - - - - - - - - - -
@@ -98,8 +95,8 @@ clean_top_5()
   local -r L4="*  Max threads: 5"
   local -r L5="*  Environment: production"
   #
-  local -r top5="$(printf "%s\n%s\n%s\n%s\n%s" "${L1}" "${L2}" "${L3}" "${L4}" "${L5}")"
-  echo "${top5}"
+  local -r all5="$(printf "%s\n%s\n%s\n%s\n%s" "${L1}" "${L2}" "${L3}" "${L4}" "${L5}")"
+  echo "${all5}"
 }
 
 # - - - - - - - - - - - - - - - - - - -
