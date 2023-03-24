@@ -71,7 +71,7 @@ exit_non_zero_unless_started_cleanly()
     echo "${SERVICE_NAME} did not start cleanly."
     echo 'expected------------------'
     echo
-    echo "${clean_top_5}"
+    echo "$(clean_top_5)"
     echo
     echo 'actual--------------------'
     echo
