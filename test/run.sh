@@ -1,4 +1,5 @@
 #!/bin/bash -Eeu
+# dashboard
 
 readonly MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 export COVERAGE_ROOT="${1}" # /tmp/coverage

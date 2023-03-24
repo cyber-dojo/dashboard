@@ -37,7 +37,7 @@ server_up_healthy_and_clean "$@"
 client_up_healthy_and_clean "$@"
 copy_in_saver_test_data
 
-test_in_containers "$@"
+test_in_containers server  # no client tests
 
 containers_down
 on_ci_publish_images

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeu
 
-export KOSLI_OWNER=cyber-dojo
+export KOSLI_ORG=cyber-dojo
 export KOSLI_FLOW=dashboard
 
 readonly KOSLI_HOST_STAGING=https://staging.app.kosli.com
@@ -61,7 +61,7 @@ kosli_expect_deployment()
 # - - - - - - - - - - - - - - - - - - -
 on_ci_kosli_create_flow()
 {
-  if on_ci ; then
+  if on_ci; then
     kosli_create_flow "${KOSLI_HOST_STAGING}"
     kosli_create_flow "${KOSLI_HOST_PRODUCTION}"
   fi
@@ -70,7 +70,7 @@ on_ci_kosli_create_flow()
 # - - - - - - - - - - - - - - - - - - -
 on_ci_kosli_report_artifact_creation()
 {
-  if on_ci ; then
+  if on_ci; then
     kosli_report_artifact_creation "${KOSLI_HOST_STAGING}"
     kosli_report_artifact_creation "${KOSLI_HOST_PRODUCTION}"
   fi
@@ -79,11 +79,10 @@ on_ci_kosli_report_artifact_creation()
 # - - - - - - - - - - - - - - - - - - -
 on_ci_kosli_assert_artifact()
 {
-  if ! on_ci ; then
-    return
+  if on_ci; then
+    kosli_assert_artifact "${KOSLI_HOST_STAGING}"
+    kosli_assert_artifact "${KOSLI_HOST_PRODUCTION}"
   fi
-  kosli_assert_artifact "${KOSLI_HOST_STAGING}"
-  kosli_assert_artifact "${KOSLI_HOST_PRODUCTION}"
 }
 
 # - - - - - - - - - - - - - - - - - - -
