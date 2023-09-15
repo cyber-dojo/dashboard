@@ -4,11 +4,9 @@ require_relative 'simplecov_json'
 SimpleCov.start do
   enable_coverage :branch
   filters.clear
-
-  add_filter("/usr/")
-
+  # add_filter("test/id58_test_base.rb")
   coverage_dir(ENV['COVERAGE_ROOT'])
-  #add_group('debug') { |source| puts source.filename; false }
+  # add_group('debug') { |source| puts source.filename; false }
   code_tab = ENV['COVERAGE_CODE_TAB_NAME']
   test_tab = ENV['COVERAGE_TEST_TAB_NAME']
   add_group(code_tab) { |source| source.filename =~ %r"^/app/" }

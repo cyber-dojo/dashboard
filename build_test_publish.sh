@@ -32,7 +32,6 @@ create_docker_compose_yml
 on_ci_kosli_create_flow
 build_images "$@"
 exit_zero_if_build_only "$@"
-
 server_up_healthy_and_clean "$@"
 client_up_healthy_and_clean "$@"
 copy_in_saver_test_data

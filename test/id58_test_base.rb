@@ -5,7 +5,7 @@ def require_source(required)
   require_relative "../app/code/#{required}"
 end
 
-class Id58TestBase < MiniTest::Test
+class Id58TestBase < Minitest::Test
 
   def initialize(arg)
     @id58 = nil
@@ -57,8 +57,7 @@ class Id58TestBase < MiniTest::Test
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  # :nocov:
-  ObjectSpace.define_finalizer(self, proc {
+  Minitest.after_run do
     slow = @@timings.select{ |_name,secs| secs > 0.000 }
     sorted = slow.sort_by{ |name,secs| -secs }.to_h
     size = sorted.size < 5 ? sorted.size : 5
@@ -69,8 +68,7 @@ class Id58TestBase < MiniTest::Test
       break if index === size
     }
     puts
-  })
-  # :nocov:
+  end
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
