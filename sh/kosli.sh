@@ -41,7 +41,7 @@ kosli_report_snyk_evidence()
       --artifact-type=docker \
       --host="${hostname}" \
       --name=snyk-scan \
-      --scan-results=snyk.json
+      --scan-results="$(repo_root)/snyk.json"
 }
 
 # - - - - - - - - - - - - - - - - - - -
@@ -95,7 +95,7 @@ on_ci_kosli_report_snyk_scan_evidence()
   if on_ci; then
     set +e
     snyk container test "$(artifact_name)" \
-      --json-file-output=snyk.json \
+      --json-file-output="$(root_dir)/snyk.json" \
       --policy-path="$(root_dir)/.snyk"
     set -e
 
