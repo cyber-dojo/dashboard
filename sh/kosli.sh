@@ -96,7 +96,7 @@ on_ci_kosli_report_snyk_scan_evidence()
     set +e
     snyk container test "$(artifact_name)" \
       --json-file-output=snyk.json \
-      --policy-path=.snyk
+      --policy-path="$(root_dir)/.snyk"
     set -e
 
     kosli_report_snyk_evidence "${KOSLI_HOST_STAGING}"
