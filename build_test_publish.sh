@@ -41,6 +41,7 @@ test_in_containers server  # no client tests
 containers_down
 on_ci_publish_images
 on_ci_kosli_report_artifact_creation
+on_ci_kosli_report_snyk_scan_evidence
 on_ci_kosli_assert_artifact
 
 t2=$(echo_seconds)
