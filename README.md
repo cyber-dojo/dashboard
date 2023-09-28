@@ -1,9 +1,9 @@
 [![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/cyber-dojo/dashboard/actions)
 
 
-- A docker-containerized micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
+- A [docker-containerized](https://registry.hub.docker.com/r/cyberdojo/dashboard) micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
 - The HTTP UI for a group-exercise dashboard.
-- A [Kolsi](https://www.kosli.com/) showcase for a [CI flow](https://app.kosli.com/cyber-dojo/flows/dashboard/artifacts/) and an [aws production environment](https://app.kosli.com/cyber-dojo/environments/aws-prod/snapshots/)
+- A [Kosli](https://www.kosli.com/) showcase for a [CI flow](https://app.kosli.com/cyber-dojo/flows/dashboard/artifacts/) and an [aws production environment](https://app.kosli.com/cyber-dojo/environments/aws-prod/snapshots/)
 
 - - - -
 * [GET alive](docs/api.md#get-alive)  
