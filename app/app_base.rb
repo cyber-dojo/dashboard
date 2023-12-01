@@ -20,7 +20,7 @@ class AppBase < Sinatra::Base
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  environment.append_path('code/assets/images')
+  environment.append_path('app/assets/images')
 
   def self.jquery_dialog_image(name)
     get "/assets/images/#{name}", provides:[:png] do
@@ -35,7 +35,7 @@ class AppBase < Sinatra::Base
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  environment.append_path('code/assets/stylesheets')
+  environment.append_path('app/assets/stylesheets')
   environment.css_compressor = :sassc
 
   get '/assets/app.css', provides:[:css] do
@@ -49,7 +49,7 @@ class AppBase < Sinatra::Base
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  environment.append_path('code/assets/javascripts')
+  environment.append_path('app/assets/javascripts')
   environment.js_compressor  = Uglifier.new(harmony: true)
 
   get '/assets/app.js', provides:[:js] do
