@@ -1,0 +1,38 @@
+name: Sub - SDLC gate
+
+on:
+  workflow_call:
+    secrets:
+      KOSLI_API_TOKEN:
+        required: true
+    inputs:
+      KOSLI_HOST:
+        default: https://app.kosli.com
+        required: false
+        type: string
+      IMAGE_TAG:
+        required: true
+        type: string
+
+env: 
+  KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
+  KOSLI_HOST: ${{ inputs.KOSLI_HOST }}
+  KOSLI_ORG: ${{ vars.KOSLI_ORG }}
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
+  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+
+jobs:
+  sdlc-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Kosli SDLC gate to short-circuit-the-flow
+        run: |
+          ARTIFACT_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}          
+          docker pull ${ARTIFACT_NAME}
+          kosli assert artifact ${ARTIFACT_NAME} \
+            --artifact-type=docker          

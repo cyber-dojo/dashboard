@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeu
 
-commit_sha() { echo -n $(cd "${ROOT_DIR}" && git rev-parse HEAD); }
+commit_sha() { echo -n $(cd "$(repo_root)" && git rev-parse HEAD); }
 
 image_sha() { commit_sha; }
 image_tag() { image_sha | cut -c1-7; }

@@ -1,0 +1,90 @@
+name: Sub - test image
+
+on:
+  workflow_call:
+    secrets:
+      KOSLI_API_TOKEN:
+        required: true
+      SNYK_TOKEN:
+        required: true
+    inputs:
+      KOSLI_HOST:
+        default: https://app.kosli.com
+        required: false
+        type: string
+      IMAGE_TAG:
+        required: true
+        type: string
+
+env: 
+  KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
+  KOSLI_HOST: ${{ inputs.KOSLI_HOST }}
+  KOSLI_ORG: ${{ vars.KOSLI_ORG }}
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
+  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+jobs:
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: |
+          ./sh/run_tests_with_coverage.sh          
+
+  snyk-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk to check Docker image for vulnerabilities
+        continue-on-error: true
+        run:
+           snyk container test cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }} 
+            --file=Dockerfile 
+            --json-file-output=snyk.json 
+            --policy-path=.snyk
+
+      - name: Report Snyk results to Kosli flow
+        run: |
+          ARTIFACT_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
+          docker pull ${ARTIFACT_NAME}
+          kosli report evidence artifact snyk ${ARTIFACT_NAME} \
+            --artifact-type=docker  \
+            --name=snyk-scan  \
+            --scan-results=snyk.json
+
+  pull-request:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report pull-request evidence to Kosli
+        run: |
+          ARTIFACT_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}          
+          docker pull ${ARTIFACT_NAME}
+          kosli report evidence artifact pullrequest github ${ARTIFACT_NAME} \
+            --artifact-type=docker \
+            --github-token ${{ secrets.GITHUB_TOKEN }} \
+            --name=pull-request

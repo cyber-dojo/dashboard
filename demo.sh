@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeu
 
-export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export SCRIPTS_DIR="${ROOT_DIR}/sh"
+export MY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export SCRIPTS_DIR="${MY_DIR}/sh"
 
 source "${SCRIPTS_DIR}/build_images.sh"
 source "${SCRIPTS_DIR}/config.sh"
@@ -10,7 +10,6 @@ source "${SCRIPTS_DIR}/containers_down.sh"
 source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
 source "${SCRIPTS_DIR}/copy_in_saver_test_data.sh"
 source "${SCRIPTS_DIR}/create_docker_compose_yml.sh"
-source "${SCRIPTS_DIR}/ip_address.sh"
 
 export $(docker run --rm cyberdojo/versioner)
 
@@ -46,7 +45,7 @@ curl_json_body_200()
     --request GET \
     --silent \
     --verbose \
-      "http://$(ip_address):$(server_port)/${route}" \
+      "http://localhost:$(server_port)/${route}" \
       > "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
@@ -64,7 +63,7 @@ curl_200()
     --request GET \
     --silent \
     --verbose \
-      "http://$(ip_address):$(server_port)/${route}" \
+      "http://localhost:$(server_port)/${route}" \
       > "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
@@ -87,7 +86,7 @@ curl_smoke_test
 if [ "${1:-}" == '--no-browser' ]; then
   containers_down
 else
-  #open "http://$(ip_address)/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
-  #open "http://$(ip_address)/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
-  open "http://$(ip_address)/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
+  #open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
+  #open "http://localhost/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
+  open "http://localhost/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
 fi
