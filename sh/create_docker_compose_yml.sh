@@ -25,7 +25,7 @@ services:
 
   nginx:
     build:
-      context: $(sources_dir)/nginx_stub
+      context: test/nginx_stub
     container_name: test_dashboard_nginx
     depends_on:
       - $(client_name)
@@ -38,7 +38,7 @@ services:
     user: $(client_user)
     build:
       args: [ COMMIT_SHA ]
-      context: $(sources_dir)/$(client_name)
+      context: test/$(client_name)
     container_name: $(client_container)
     depends_on:
       - $(server_name)
@@ -48,7 +48,7 @@ services:
     restart: "no"
     tmpfs: /tmp
     volumes:
-      - ./$(sources_dir)/$(client_name):/app:ro
+      - ./test/$(client_name):/dashboard:ro
       - ./$(tests_dir):/test:ro
 
   $(server_name):
