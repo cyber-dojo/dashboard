@@ -205,7 +205,7 @@ end
 # The start time will be the start time of the dojo.
 # The end time will be the current time.
 #
-# If there's lots of empty td's in a row (for all avatars)
+# If there's lots of empty td's in a sequence (for all avatars)
 # I collapse them all into a single td (for all avatars).
 # This ensures that the display never shows just empty td's
 # except if the dojo has just started.
