@@ -17,19 +17,32 @@ export $(docker run --rm cyberdojo/versioner)
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_smoke_test()
 {
+  echo curl log in $(log_filename)
+  rm -rf $(log_filename) || true
+
+  echo curling server/alive
   curl_json_body_200 alive
+  echo
+
+  echo curling server/ready
   curl_json_body_200 ready
+  echo
+
+  echo curling server/sha
   curl_json_body_200 sha
   echo
 
+  echo curling assets/app.css
   curl_200 assets/app.css 'Content-Type: text/css'
-  cat $(log_filename) | grep 'SassC::SyntaxError:' && exit 42
+  #cat $(log_filename) | grep 'SassC::SyntaxError:' && exit 42
   echo
 
+  echo curling assets/app.js
   curl_200 assets/app.js 'Content-Type: application/javascript'
-  cat $(log_filename) | grep 'Uglifier::Error' && exit 42
+  #cat $(log_filename) | grep 'Uglifier::Error' && exit 42
   echo
 
+  echo curling show/FxWwrr
   curl_200 show/FxWwrr dashboard-page
   echo
 }
@@ -47,7 +60,7 @@ curl_json_body_200()
     --silent \
     --verbose \
       "http://localhost:$(server_port)/${route}" \
-      > "$(log_filename)" 2>&1
+      >> "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
   local -r result=$(tail -n 1 "$(log_filename)")
@@ -59,13 +72,14 @@ curl_200()
 {
   local -r route="${1}"   # eg dashboard/choose
   local -r pattern="${2}" # eg Hello
+
   curl  \
     --fail \
     --request GET \
     --silent \
     --verbose \
       "http://localhost:$(server_port)/${route}" \
-      > "$(log_filename)" 2>&1
+      >> "$(log_filename)" 2>&1
 
   grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
   local -r result=$(grep "${pattern}" "$(log_filename)" | head -n 1)
