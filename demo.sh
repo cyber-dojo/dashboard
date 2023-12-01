@@ -20,31 +20,13 @@ curl_smoke_test()
   echo curl log in $(log_filename)
   rm -rf $(log_filename) || true
 
-  echo curling server/alive
   curl_json_body_200 alive
-  echo
-
-  echo curling server/ready
   curl_json_body_200 ready
-  echo
-
-  echo curling server/sha
   curl_json_body_200 sha
-  echo
 
-  echo curling assets/app.css
   curl_200 assets/app.css 'Content-Type: text/css'
-  #cat $(log_filename) | grep 'SassC::SyntaxError:' && exit 42
-  echo
-
-  echo curling assets/app.js
   curl_200 assets/app.js 'Content-Type: application/javascript'
-  #cat $(log_filename) | grep 'Uglifier::Error' && exit 42
-  echo
-
-  echo curling show/FxWwrr
   curl_200 show/FxWwrr dashboard-page
-  echo
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
