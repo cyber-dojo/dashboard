@@ -46,10 +46,14 @@ services:
     ports: [ $(client_port):$(client_port) ]
     read_only: true
     restart: "no"
-    tmpfs: /tmp
     volumes:
       - ./test/$(client_name):/dashboard:ro
       - ./$(tests_dir):/test:ro
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          mode: 01777
+          size: 10485760  # 10MB
 
   $(server_name):
     image: $(server_image):\${COMMIT_TAG}
@@ -65,9 +69,13 @@ services:
     ports: [ $(server_port):$(server_port) ]
     read_only: true
     restart: "no"
-    tmpfs: /tmp
     volumes:
       - ./app:/app:ro
       - ./$(tests_dir):/test:ro
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          mode: 01777
+          size: 10485760  # 10MB
 EOF
 }
