@@ -7,9 +7,3 @@ repo_root()
 }
 export -f repo_root
 
-on_ci()
-{
-  [ -n "${CI:-}" ]
-}
-export -f on_ci
-
