@@ -28,7 +28,12 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Create Kosli flow
-        run:
+        run: |
+          echo Do not deploy using this workflow until you can do a local demo
+          echo The server tests pass, but client tests would fail, if run,
+          echo Because the js and css assets are not being served. I think
+          echo The reason for this is new stricter mime type checking.
+          exit 42
           kosli create flow ${{ env.KOSLI_FLOW }} 
             --description="Diff files from two traffic-lights" 
             --template=artifact,snyk-scan,pull-request
