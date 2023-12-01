@@ -4,6 +4,7 @@ set -Eeu
 export MY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SCRIPTS_DIR="${MY_DIR}/sh"
 
+source "${SCRIPTS_DIR}/lib.sh"
 source "${SCRIPTS_DIR}/build_images.sh"
 source "${SCRIPTS_DIR}/config.sh"
 source "${SCRIPTS_DIR}/containers_down.sh"
