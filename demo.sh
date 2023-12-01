@@ -24,13 +24,13 @@ curl_smoke_test()
   curl_json_body_200 ready
   curl_json_body_200 sha
 
-  curl_200 assets/app.css 'Content-Type: text/css'
-  curl_200 assets/app.js 'Content-Type: application/javascript'
-  curl_200 show/FxWwrr dashboard-page
+  curl_plain_200 assets/app.css 'Content-Type: text/css'
+  curl_plain_200 assets/app.js 'Content-Type: application/javascript'
+  curl_plain_200 show/FxWwrr dashboard-page
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-curl_json_body_200()
+curl_json()
 {
   local -r route="${1}"  # eg ready
   curl  \
@@ -42,30 +42,53 @@ curl_json_body_200()
     --silent \
     --verbose \
       "http://localhost:$(server_port)/${route}" \
-      >> "$(log_filename)" 2>&1
-
-  grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
-  local -r result=$(tail -n 1 "$(log_filename)")
-  echo "GET ${route} => 200 ...|${result}"
+      > "$(log_filename)" 2>&1
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-curl_200()
+curl_json_body_200()
+{
+  local -r route="${1}"  # eg ready
+  echo -n "GET ${route} => 200 ...|"
+  if curl_json "${route}" && grep --quiet 200 "$(log_filename)"; then
+    local -r result=$(tail -n 1 "$(log_filename)")
+    echo "${result}"
+  else
+    echo FAILED
+    echo
+    cat "$(log_filename)"
+    exit 42
+  fi
+}
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - -
+curl_plain()
 {
   local -r route="${1}"   # eg dashboard/choose
-  local -r pattern="${2}" # eg Hello
-
   curl  \
     --fail \
     --request GET \
     --silent \
     --verbose \
       "http://localhost:$(server_port)/${route}" \
-      >> "$(log_filename)" 2>&1
+      > "$(log_filename)" 2>&1
+}
 
-  grep --quiet 200 "$(log_filename)" # eg HTTP/1.1 200 OK
-  local -r result=$(grep "${pattern}" "$(log_filename)" | head -n 1)
-  echo "GET ${route} => 200 ...|${result}"
+#- - - - - - - - - - - - - - - - - - - - - - - - - - -
+curl_plain_200()
+{
+  local -r route="${1}"   # eg dashboard/choose
+  local -r pattern="${2}" # eg Hello
+  echo -n "GET ${route} => 200 ...|${pattern} "
+
+  if curl_plain "${route}" && grep --quiet 200 "$(log_filename)" && grep --quiet "${pattern}" "$(log_filename)"; then
+    echo SUCCESS
+  else
+    echo FAILED
+    echo
+    cat "$(log_filename)"
+    exit 42
+  fi
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,7 +106,7 @@ curl_smoke_test
 if [ "${1:-}" == '--no-browser' ]; then
   containers_down
 else
-  #open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
-  #open "http://localhost/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
+  open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
+  open "http://localhost/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
   open "http://localhost/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
 fi
