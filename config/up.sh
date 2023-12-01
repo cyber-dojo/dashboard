@@ -1,6 +1,6 @@
-#!/bin/bash -Eeu
+#!/usr/bin/env bash
+set -Eeu
 
-#readonly PORT="${CYBER_DOJO_K8S_PORT:-${CYBER_DOJO_DASHBOARD_PORT}}"
 readonly PORT="${CYBER_DOJO_DASHBOARD_PORT}"
 readonly MY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

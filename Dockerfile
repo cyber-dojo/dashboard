@@ -2,7 +2,7 @@ ARG BASE_IMAGE=cyberdojo/sinatra-base:ad4c29a
 FROM ${BASE_IMAGE}
 LABEL maintainer=jon@jaggersoft.com
 
-WORKDIR /app
+WORKDIR /dashboard
 COPY --chown=nobody:nogroup . .
 
 ARG COMMIT_SHA
@@ -14,6 +14,6 @@ ARG BASE_IMAGE
 ENV BASE_IMAGE=${BASE_IMAGE}
 
 USER nobody
-HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /app/config/healthcheck.sh
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /dashboard/config/healthcheck.sh
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
-CMD [ "/app/config/up.sh" ]
+CMD [ "/dashboard/config/up.sh" ]

@@ -8,7 +8,7 @@ if ENV['CYBER_DOJO_PROMETHEUS'] === 'true'
   use Prometheus::Middleware::Exporter
 end
 
-require_relative '../code/app'
-require_relative '../code/externals'
+require_relative '../app/app'
+require_relative '../app/externals'
 externals = Externals.new
 run App.new(externals)

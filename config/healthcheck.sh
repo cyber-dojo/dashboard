@@ -3,16 +3,14 @@
 # Default Alpine image has wget (but not curl)
 
 # Dockerfile has this
-# HEALTHCHECK \
-#    --interval=1s --timeout=1s --retries=5 --start-period=5s \
-#    CMD ./config/heathcheck.sh
+# HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s
+# CMD ./config/heathcheck.sh
 
 # --interval=S     time until 1st healthcheck
 # --timeout=S      fail if single healthcheck takes longer than this
 # --retries=N      number of tries until container considered unhealthy
-# --start-period=S grace period when healthcheck fails dont count towards --retries
+# --start-period=S grace period when healthcheck fails don't count towards --retries
 
-#readonly PORT="${CYBER_DOJO_K8S_PORT:-${CYBER_DOJO_DASHBOARD_PORT}}"
 readonly PORT="${CYBER_DOJO_DASHBOARD_PORT}"
 readonly READY_LOG_FILENAME=/tmp/ready.log
 

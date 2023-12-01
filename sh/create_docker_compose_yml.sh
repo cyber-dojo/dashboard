@@ -55,8 +55,8 @@ services:
     image: $(server_image):\${COMMIT_TAG}
     user: $(server_user)
     build:
+      context: .
       args: [ COMMIT_SHA ]
-      context: $(sources_dir)/$(server_name)
     container_name: $(server_container)
     depends_on:
       - differ
@@ -67,7 +67,7 @@ services:
     restart: "no"
     tmpfs: /tmp
     volumes:
-      - ./$(sources_dir)/$(server_name):/app:ro
+      - ./app:/app:ro
       - ./$(tests_dir):/test:ro
 EOF
 }

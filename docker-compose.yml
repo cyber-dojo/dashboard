@@ -40,8 +40,8 @@ services:
     image: cyberdojo/dashboard:${COMMIT_TAG}
     user: nobody
     build:
+      context: .
       args: [ COMMIT_SHA ]
-      context: sources/server
     container_name: test_dashboard_server
     depends_on:
       - differ
@@ -52,5 +52,5 @@ services:
     restart: "no"
     tmpfs: /tmp
     volumes:
-      - ./sources/server:/app:ro
+      - ./app:/app:ro
       - ./test:/test:ro
