@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Light
-
   def initialize(summary)
     @summary = summary
   end
@@ -37,5 +36,4 @@ class Light
   def checkout
     @summary['checkout']
   end
-
 end

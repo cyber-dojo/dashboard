@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class TdGapper
-
   def initialize(start, seconds_per_td, max_seconds_uncollapsed)
     @start = start
     @seconds_per_td = seconds_per_td
@@ -15,7 +14,7 @@ class TdGapper
     vertical_bleed(s)
     collapsed_table(s[:td_nos]).each do |td, gi|
       count = gi[1]
-      s[:katas].each do |_id, td_map|
+      s[:katas].each_value do |td_map|
         count.times { |n| td_map[td + n + 1] = [] } if gi[0] == :dont_collapse
         td_map[td + 1] = { collapsed: count } if gi[0] == :collapse
       end
@@ -65,14 +64,15 @@ class TdGapper
 
   def time_ticks(gapped)
     return {} if gapped == {}
+
     ticks = {}
     kata_id = gapped.keys.sample
-    gapped[kata_id].each do |td,content|
-      if content.is_a?(Array)
-        ticks[td] = (td+1) * @seconds_per_td
-      else
-        ticks[td] = content # { collapsed:N }
-      end
+    gapped[kata_id].each do |td, content|
+      ticks[td] = if content.is_a?(Array)
+                    (td + 1) * @seconds_per_td
+                  else
+                    content # { collapsed:N }
+                  end
     end
     ticks
   end
@@ -104,7 +104,7 @@ class TdGapper
 
   def vertical_bleed(s)
     s[:td_nos].each do |n|
-      s[:katas].each do |_kata_id, td_map|
+      s[:katas].each_value do |td_map|
         td_map[n] ||= []
       end
     end
@@ -151,25 +151,21 @@ class TdGapper
     # remove lightless columns from both ends
     return gapped if gapped == {}
 
-        empty_column = ->(td) { gapped.all? { |_, h| h[td] == [] } }
+    empty_column = ->(td) { gapped.all? { |_, h| h[td] == [] } }
     collapsed_column = ->(td) { gapped.all? { |_, h| h[td].is_a?(Hash) } }
     lightless_column = ->(td) { empty_column.call(td) || collapsed_column.call(td) }
-       delete_column = ->(td) { gapped.each { |_, h| h.delete(td) } }
+    delete_column = ->(td) { gapped.each_value { |h| h.delete(td) } }
 
     kata_id = gapped.keys[0]
     gapped[kata_id].keys.sort.reverse_each do |td|
-      if lightless_column.call(td)
-        delete_column.call(td)
-      else
-        break
-      end
+      break unless lightless_column.call(td)
+
+      delete_column.call(td)
     end
     gapped[kata_id].keys.sort.each do |td|
-      if lightless_column.call(td)
-        delete_column.call(td)
-      else
-        break
-      end
+      break unless lightless_column.call(td)
+
+      delete_column.call(td)
     end
     gapped
   end
@@ -187,7 +183,6 @@ class TdGapper
   def ordinal(o)
     ((o - @start) / @seconds_per_td).to_i
   end
-
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

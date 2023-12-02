@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'English'
+
 require_relative 'silently'
 require 'sinatra/base'
 silently { require 'sinatra/contrib' } # N x "warning: method redefined"
@@ -8,7 +11,6 @@ require 'sprockets'
 require 'uglifier'
 
 class AppBase < Sinatra::Base
-
   def initialize(externals)
     @externals = externals
     super(nil)
@@ -23,7 +25,7 @@ class AppBase < Sinatra::Base
   environment.append_path('app/assets/images')
 
   def self.jquery_dialog_image(name)
-    get "/assets/images/#{name}", provides:[:png] do
+    get "/assets/images/#{name}", provides: [:png] do
       env['PATH_INFO'].sub!('/assets/images', '')
       settings.environment.call(env)
     end
@@ -38,7 +40,7 @@ class AppBase < Sinatra::Base
   environment.append_path('app/assets/stylesheets')
   environment.css_compressor = :sassc
 
-  get '/assets/app.css', provides:[:css] do
+  get '/assets/app.css', provides: [:css] do
     respond_to do |format|
       format.css do
         env['PATH_INFO'].sub!('/assets', '')
@@ -50,9 +52,9 @@ class AppBase < Sinatra::Base
   # - - - - - - - - - - - - - - - - - - - - - -
 
   environment.append_path('app/assets/javascripts')
-  environment.js_compressor  = Uglifier.new(harmony: true)
+  environment.js_compressor = Uglifier.new(harmony: true)
 
-  get '/assets/app.js', provides:[:js] do
+  get '/assets/app.js', provides: [:js] do
     respond_to do |format|
       format.js do
         env['PATH_INFO'].sub!('/assets', '')
@@ -64,13 +66,13 @@ class AppBase < Sinatra::Base
   private
 
   def self.get_delegate(klass, name)
-    get "/#{name}", provides:[:json] do
+    get "/#{name}", provides: [:json] do
       respond_to do |format|
-        format.json {
+        format.json do
           target = klass.new(@externals)
           result = target.public_send(name, params)
           json({ name => result })
-        }
+        end
       end
     end
   end
@@ -83,7 +85,7 @@ class AppBase < Sinatra::Base
 
   def symbolized(h)
     # named-args require symbolization
-    Hash[h.map{ |key,value| [key.to_sym, value] }]
+    h.transform_keys(&:to_sym)
   end
 
   def json_payload
@@ -91,13 +93,12 @@ class AppBase < Sinatra::Base
   end
 
   def json_hash_parse(body)
-    json = (body === '') ? {} : JSON.parse!(body)
-    unless json.instance_of?(Hash)
-      fail 'body is not JSON Hash'
-    end
+    json = body === '' ? {} : JSON.parse!(body)
+    raise 'body is not JSON Hash' unless json.instance_of?(Hash)
+
     json
   rescue JSON::ParserError
-    fail 'body is not JSON'
+    raise 'body is not JSON'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - -
@@ -105,14 +106,14 @@ class AppBase < Sinatra::Base
   set :show_exceptions, false
 
   error do
-    error = $!
+    error = $ERROR_INFO
     status(500)
     content_type('application/json')
     info = {
       exception: {
         request: {
-          path:request.path,
-          body:request.body.read
+          path: request.path,
+          body: request.body.read
         },
         backtrace: error.backtrace
       }
@@ -120,11 +121,11 @@ class AppBase < Sinatra::Base
     exception = info[:exception]
     if error.instance_of?(::HttpJsonHash::ServiceError)
       exception[:http_service] = {
-        path:error.path,
-        args:error.args,
-        name:error.name,
-        body:error.body,
-        message:error.message
+        path: error.path,
+        args: error.args,
+        name: error.name,
+        body: error.body,
+        message: error.message
       }
     else
       exception[:message] = error.message
@@ -133,5 +134,4 @@ class AppBase < Sinatra::Base
     puts diagnostic
     body diagnostic
   end
-
 end

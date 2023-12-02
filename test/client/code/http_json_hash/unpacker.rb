@@ -1,10 +1,10 @@
 # frozen_string_literal: true
+
 require_relative 'service_error'
 require 'json'
 
 module HttpJsonHash
   class Unpacker
-
     def initialize(name, requester)
       @name = name
       @requester = requester
@@ -28,15 +28,9 @@ module HttpJsonHash
 
     def unpacked(body, path, args)
       json = JSON.parse!(body)
-      unless json.instance_of?(Hash)
-        service_error(path, args, body, 'body is not JSON Hash')
-      end
-      if json.has_key?('exception')
-        service_error(path, args, body, 'body has embedded exception')
-      end
-      unless json.has_key?(path)
-        service_error(path, args, body, 'body is missing :path key')
-      end
+      service_error(path, args, body, 'body is not JSON Hash') unless json.instance_of?(Hash)
+      service_error(path, args, body, 'body has embedded exception') if json.key?('exception')
+      service_error(path, args, body, 'body is missing :path key') unless json.key?(path)
       json[path]
     rescue JSON::ParserError
       service_error(path, args, body, 'body is not JSON')
@@ -45,8 +39,7 @@ module HttpJsonHash
     # - - - - - - - - - - - - - - - - - - - - -
 
     def service_error(path, args, body, message)
-      fail ::HttpJsonHash::ServiceError.new(path, args, @name, body, message)
+      raise ::HttpJsonHash::ServiceError.new(path, args, @name, body, message)
     end
-
   end
 end

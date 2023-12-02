@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 require_relative 'td_gapper'
 require_relative 'light'
 
-module AppHelpers # mixin
-
+# mixin
+module AppHelpers
   module_function
 
   def gather
@@ -11,11 +12,10 @@ module AppHelpers # mixin
     @all_indexes = {}
 
     gid = params[:id]
-    externals.saver.group_joined(gid).each do |index,o|
-
-      lights = o['events'].map{ |event|
+    externals.saver.group_joined(gid).each do |index, o|
+      lights = o['events'].map do |event|
         Light.new(event)
-      }.select(&:light?)
+      end.select(&:light?)
 
       unless lights == []
         @all_lights[o['id']] = lights
@@ -33,11 +33,11 @@ module AppHelpers # mixin
   def seconds_per_column
     flag = params['minute_columns']
     return 60 if flag.nil? || flag == 'true'
-    return 60*60*24*365*1000
+
+    60 * 60 * 24 * 365 * 1000
   end
 
   def max_seconds_uncollapsed
     seconds_per_column * 5
   end
-
 end

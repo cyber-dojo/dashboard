@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Dashboard
-
   def initialize(externals)
     @externals = externals
   end
@@ -17,5 +16,4 @@ class Dashboard
   def dashboard
     @externals.dashboard
   end
-
 end

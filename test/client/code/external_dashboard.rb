@@ -1,10 +1,10 @@
 # frozen_string_literal: true
+
 require_relative 'http_json_hash/service'
 
 class ExternalDashboard
-
   def initialize(http)
-    @http = HttpJsonHash::service(self.class.name, http, 'server', 4527)
+    @http = HttpJsonHash.service(self.class.name, http, 'server', 4527)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -20,5 +20,4 @@ class ExternalDashboard
   def sha
     @http.get(__method__, {})
   end
-
 end
