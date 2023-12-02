@@ -46,7 +46,9 @@ class Id58TestBase < Minitest::Test
       end
     }
     name = "#{id58_suffix}:#{name58}"
-    define_method("test_\n\n#{name}".to_sym, &execute_around)
+    define_method(:"test_
+
+#{name}", &execute_around)
   end
 
   def trimmed(s)
@@ -62,7 +64,7 @@ class Id58TestBase < Minitest::Test
   Minitest.after_run do
     slow = @@timings.select { |_name, secs| secs > 0.000 }
     sorted = slow.sort_by { |_name, secs| -secs }.to_h
-    size = sorted.size < 5 ? sorted.size : 5
+    size = [sorted.size, 5].min
     puts
     puts "Slowest #{size} tests are..." if size != 0
     sorted.each_with_index do |(name, secs), index|
