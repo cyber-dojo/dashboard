@@ -4,9 +4,9 @@ require_relative 'http_json_hash/service'
 
 class ExternalSaver
   def initialize(http)
-    hostname = ENV['CYBER_DOJO_SAVER_HOSTNAME']
+    hostname = ENV.fetch('CYBER_DOJO_SAVER_HOSTNAME', nil)
     hostname = 'saver' if hostname.nil?
-    port = ENV['CYBER_DOJO_SAVER_PORT']
+    port = ENV.fetch('CYBER_DOJO_SAVER_PORT', nil)
     port = 4537 if port.nil?
     @http = HttpJsonHash.service(self.class.name, http, hostname, port)
   end
