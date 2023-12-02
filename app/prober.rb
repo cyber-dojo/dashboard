@@ -15,7 +15,7 @@ class Prober
   end
 
   def sha(_args)
-    ENV['SHA']
+    ENV.fetch('SHA', nil)
   end
 
   private

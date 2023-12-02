@@ -17,7 +17,7 @@ class AppBase < Sinatra::Base
   end
 
   silently { register Sinatra::Contrib }
-  set :port, ENV['PORT']
+  set :port, ENV.fetch('PORT', nil)
   set :environment, Sprockets::Environment.new
 
   # - - - - - - - - - - - - - - - - - - - - - -

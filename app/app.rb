@@ -58,12 +58,12 @@ class App < AppBase
   helpers AppHelpers
 
   def altered(indexes, gapped)
-    Hash[indexes.map do |kata_id, group_index|
+    indexes.to_h do |kata_id, group_index|
       [group_index, {
-        'kata_id': kata_id,
-        'lights': lights_json(gapped[kata_id])
+        kata_id: kata_id,
+        lights: lights_json(gapped[kata_id])
       }]
-    end]
+    end
   end
 
   def lights_json(minutes)
@@ -76,10 +76,10 @@ class App < AppBase
   end
 
   def minute_json(minute)
-    if !collapsed?(minute)
-      minute.map { |light| light_json(light) }
-    else
+    if collapsed?(minute)
       minute
+    else
+      minute.map { |light| light_json(light) }
     end
   end
 
@@ -89,8 +89,8 @@ class App < AppBase
 
   def light_json(light)
     element = {
-      'index': light.index,
-      'colour': light.colour
+      index: light.index,
+      colour: light.colour
     }
     element['predicted'] = light.predicted if light.predicted && light.predicted != 'none'
     element['revert'] = light.revert if light.revert
