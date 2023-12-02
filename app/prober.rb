@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Prober # k8s/curl probing + identity
-
+# k8s/curl probing + identity
+class Prober
   def initialize(externals)
     @externals = externals
   end
@@ -23,5 +23,4 @@ class Prober # k8s/curl probing + identity
   def saver
     @externals.saver
   end
-
 end

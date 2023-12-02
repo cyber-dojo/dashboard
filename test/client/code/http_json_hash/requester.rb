@@ -1,10 +1,10 @@
 # frozen_string_literal: true
+
 require 'json'
 require 'uri'
 
 module HttpJsonHash
   class Requester
-
     def initialize(http, hostname, port)
       @http = http
       @hostname = hostname
@@ -32,6 +32,5 @@ module HttpJsonHash
       req.body = JSON.fast_generate(args)
       @http.start(@hostname, @port, req)
     end
-
   end
 end
