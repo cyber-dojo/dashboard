@@ -1,0 +1,12 @@
+version: 1
+
+trail:
+  artifacts:
+    - name: dashboard
+      attestations:
+        - name: snyk-scan
+          type: snyk
+        - name: lint
+          type: generic
+        - name: pull-request
+          type: pullrequest
