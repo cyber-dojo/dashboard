@@ -77,6 +77,16 @@ jobs:
             --name=snyk-scan  \
             --scan-results=snyk.json
 
+#      - name: Report Snyk results to Kosli Trail
+#        run: |
+#          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
+#          docker pull ${IMAGE_NAME}
+#          kosli attest snyk \
+#            --fingerprint-docker=${IMAGE_NAME} \
+#            --name=dashboard.snyk-scan \
+#            --scan-results=snyk.json \
+#            --trail-name="${GITHUB_SHA}"
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -110,6 +120,25 @@ jobs:
             --evidence-paths="${LINT_EVIDENCE_DIR}" \
             --name=lint
 
+#      - name: Report Lint results to Kosli Trail
+#        run: |
+#          repo_root() { git rev-parse --show-toplevel; }
+#          export LINT_EVIDENCE_DIR=/tmp/evidence/lint
+#          mkdir -p "${LINT_EVIDENCE_DIR}"
+#          cp "$(repo_root)/.rubocop.yml" "${LINT_EVIDENCE_DIR}"
+#          gem install rubocop
+#          if [ rubocop "$(repo_root)" | tee "${LINT_EVIDENCE_DIR}"/rubocop.log ]; then
+#            export KOSLI_LINT_COMPLIANT=true
+#          else
+#            export KOSLI_LINT_COMPLIANT=false
+#          fi
+#
+#          kosli attest generic \
+#            --compliant="${KOSLI_LINT_COMPLIANT}" \
+#            --evidence-paths="${LINT_EVIDENCE_DIR}" \
+#            --name=dashboard.lint \
+#            --trail-name="${GITHUB_SHA}"
+
   pull-request:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -133,3 +162,14 @@ jobs:
             --artifact-type=docker \
             --github-token ${{ secrets.GITHUB_TOKEN }} \
             --name=pull-request
+
+#      - name: Report pull-request evidence to Kosli
+#        run: |
+#          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
+#          docker pull ${IMAGE_NAME}
+#          kosli attest pullrequest github \
+#            --fingerprint-docker=${IMAGE_NAME} \
+#            --github-token ${{ secrets.GITHUB_TOKEN }} \
+#            --name=dashboard.pull-request \
+#            --trail-name="${GITHUB_SHA}"
+

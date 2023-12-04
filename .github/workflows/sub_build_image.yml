@@ -56,3 +56,12 @@ jobs:
           IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}                    
           kosli report artifact ${IMAGE_NAME} \
             --artifact-type=docker
+
+#      - name: Report image to Kosli flow
+#        run: |
+#          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
+#          kosli attest artifact
+#            --fingerprint-docker=${IMAGE_NAME} \
+#            --name=dashboard \
+#            --trail-name="${GITHUB_SHA}"
+

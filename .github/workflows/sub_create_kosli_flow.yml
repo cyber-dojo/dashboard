@@ -27,8 +27,14 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Create Kosli flow
+      - name: Create Kosli Flow
         run:
           kosli create flow ${{ env.KOSLI_FLOW }} 
             --description="Diff files from two traffic-lights" 
             --template=artifact,snyk-scan,lint,pull-request
+
+#      - name: Report Kosli Trail
+#        run:
+#          kosli report trail ${GITHUB_SHA}
+#            --flow="${{ env.KOSLI_FLOW }}
+#            --attestation_file=.kosli.yml
