@@ -34,7 +34,7 @@ jobs:
       - name: Create Kosli Flow
         run:
           kosli create flow ${{ env.KOSLI_FLOW }} 
-            --description="Diff files from two traffic-lights" 
+            --description="UX for a group practice dashboard" 
             --template=artifact,snyk-scan,lint,pull-request
 
 #      - name: Report Kosli Trail
