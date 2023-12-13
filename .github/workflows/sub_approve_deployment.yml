@@ -14,10 +14,10 @@ on:
         default: cyber-dojo
         required: false
         type: string
-      IMAGE_TAG:
+      KOSLI_ENVIRONMENT:
         required: true
         type: string
-      KOSLI_ENVIRONMENT:
+      IMAGE_TAG:
         required: true
         type: string
 
