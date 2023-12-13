@@ -19,19 +19,23 @@ jobs:
     outputs:
       image_tag: ${{ steps.vars.outputs.image_tag }}
       kosli_host: ${{ steps.vars.outputs.kosli_host }}
+      kosli_org: ${{ steps.vars.outputs.kosli_org }}
     steps:
     - name: Prepare
       id: vars
       run: |
         echo "image_tag=$(echo $GITHUB_SHA | head -c7)" >> ${GITHUB_OUTPUT}
         echo "kosli_host=${{ env.KOSLI_HOST }}"         >> ${GITHUB_OUTPUT}
+        echo "kosli_org=${{ env.KOSLI_ORG }}"           >> ${GITHUB_OUTPUT}        
 
   create-kosli-flow:
+    needs: [variables]
     uses: ./.github/workflows/sub_create_kosli_flow.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
+      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
 
   wait-for-image:
     needs: [create-kosli-flow]
