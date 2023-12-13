@@ -33,7 +33,10 @@ jobs:
 
       - name: Create Kosli Flow
         run:
-          kosli create flow ${{ env.KOSLI_FLOW }} 
+          kosli create flow2 ${{ env.KOSLI_FLOW }} 
             --description="UX for a group practice dashboard" 
-            --template=artifact,snyk-scan,lint,pull-request
+            --template-file=.kosli.yml
 
+      - name: Begin Kosli Trail
+        run:
+          kosli begin trail "${GITHUB_SHA}"
