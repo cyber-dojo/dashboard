@@ -1,4 +1,4 @@
-name: Main - reports to https://staging.app.kosli.com
+name: Main - reports Trails to https://staging.app.kosli.com
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
   KOSLI_HOST: https://staging.app.kosli.com
-  KOSLI_ORG: ${{ vars.KOSLI_ORG }}
+  KOSLI_ORG: cyber-dojo-trails
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
 
@@ -30,7 +30,7 @@ jobs:
 
   create-kosli-flow:
     needs: [variables]
-    uses: ./.github/workflows/sub_create_kosli_flow.yml
+    uses: ./.github/workflows/trails/sub_create_kosli_flow.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
     with:
@@ -57,12 +57,14 @@ jobs:
           IMAGE_TAG="$(echo $GITHUB_SHA | head -c7)"
           IMAGE_NAME="cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}"
           docker pull "${IMAGE_NAME}"     
-          kosli report artifact "${IMAGE_NAME}" \
-            --artifact-type=docker
+          kosli attest artifact "${IMAGE_NAME}" \
+            --artifact-type=docker \
+            --name=dashboard \
+            --trail="${GITHUB_SHA}"
 
   test:
     needs: [variables, wait-for-image]
-    uses: ./.github/workflows/sub_test.yml
+    uses: ./.github/workflows/trails/sub_test.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

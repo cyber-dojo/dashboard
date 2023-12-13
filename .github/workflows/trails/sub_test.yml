@@ -72,14 +72,15 @@ jobs:
             --json-file-output=snyk.json 
             --policy-path=.snyk
 
-      - name: Report Snyk results to Kosli flow
+      - name: Report Snyk results to Kosli Trail
         run: |
           IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
           docker pull ${IMAGE_NAME}
-          kosli report evidence artifact snyk ${IMAGE_NAME} \
-            --artifact-type=docker  \
-            --name=snyk-scan  \
-            --scan-results=snyk.json
+          kosli attest snyk ${IMAGE_NAME} \
+            --artifact-type=docker \
+            --name=dashboard.snyk-scan \
+            --scan-results=snyk.json \
+            --trail="${GITHUB_SHA}"
 
   lint:
     runs-on: ubuntu-latest
@@ -96,7 +97,7 @@ jobs:
           ruby-version: 3.2.0
           bundler-cache: true
 
-      - name: Run Rubocop linter on source, report results to Kosli flow
+      - name: Run Rubocop linter on source, report results to Kosli Trail
         run: |
           repo_root() { git rev-parse --show-toplevel; }
           export LINT_EVIDENCE_DIR=/tmp/evidence/lint
@@ -109,10 +110,11 @@ jobs:
             export KOSLI_LINT_COMPLIANT=false
           fi
 
-          kosli report evidence commit generic \
+          kosli attest generic \
             --compliant="${KOSLI_LINT_COMPLIANT}" \
             --evidence-paths="${LINT_EVIDENCE_DIR}" \
-            --name=lint
+            --name=dashboard.lint \
+            --trail="${GITHUB_SHA}"
 
   pull-request:
     if: ${{ github.ref == 'refs/heads/main' }}
@@ -131,9 +133,11 @@ jobs:
 
       - name: Report pull-request evidence to Kosli
         run: |
-          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}          
+          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
           docker pull ${IMAGE_NAME}
-          kosli report evidence artifact pullrequest github ${IMAGE_NAME} \
+          kosli attest pullrequest github ${IMAGE_NAME} \
             --artifact-type=docker \
-            --github-token ${{ secrets.GITHUB_TOKEN }} \
-            --name=pull-request
+            --github-token=${{ secrets.GITHUB_TOKEN }} \
+            --name=dashboard.pull-request \
+            --trail="${GITHUB_SHA}"
+
