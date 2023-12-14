@@ -30,7 +30,7 @@ jobs:
 
   create-kosli-flow:
     needs: [variables]
-    uses: ./.github/workflows/trails/sub_create_kosli_flow.yml
+    uses: ./.github/workflows/sub_create_kosli_flow_trails.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
     with:
@@ -64,7 +64,7 @@ jobs:
 
   test:
     needs: [variables, wait-for-image]
-    uses: ./.github/workflows/trails/sub_test.yml
+    uses: ./.github/workflows/sub_test_trails.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
