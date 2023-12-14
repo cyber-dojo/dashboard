@@ -80,7 +80,8 @@ jobs:
             --artifact-type=docker \
             --name=dashboard.snyk-scan \
             --scan-results=snyk.json \
-            --trail="${GITHUB_SHA}"
+            --trail="${GITHUB_SHA}" \
+            --dry-run
 
   lint:
     runs-on: ubuntu-latest
@@ -114,8 +115,7 @@ jobs:
             --compliant="${KOSLI_LINT_COMPLIANT}" \
             --evidence-paths="${LINT_EVIDENCE_DIR}" \
             --name=dashboard.lint \
-            --trail="${GITHUB_SHA}" \
-            --dry-run
+            --trail="${GITHUB_SHA}"
 
   pull-request:
     if: ${{ github.ref == 'refs/heads/main' }}
@@ -140,5 +140,6 @@ jobs:
             --artifact-type=docker \
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --name=dashboard.pull-request \
-            --trail="${GITHUB_SHA}"
+            --trail="${GITHUB_SHA}" \
+            --dry-run
 
