@@ -41,4 +41,4 @@ jobs:
 
       - name: Begin Kosli Trail
         run:
-          kosli begin trail "${GITHUB_SHA}" --dry-run
+          kosli begin trail "${GITHUB_SHA}" --dry-run --debug
