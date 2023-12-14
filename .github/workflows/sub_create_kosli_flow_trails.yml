@@ -33,10 +33,6 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Turn on Kosli beta features
-        run:
-          kosli enable beta
-
       - name: Create Kosli Flow
         run:
           kosli create flow2 ${{ env.KOSLI_FLOW }} 
@@ -45,4 +41,4 @@ jobs:
 
       - name: Begin Kosli Trail
         run:
-          kosli begin trail "${GITHUB_SHA}"
+          kosli begin trail "${GITHUB_SHA}" --dry-run
