@@ -81,7 +81,7 @@ jobs:
             --name=dashboard.snyk-scan \
             --scan-results=snyk.json \
             --trail="${GITHUB_SHA}" \
-            --dry-run
+            --debug
 
   lint:
     runs-on: ubuntu-latest
@@ -141,5 +141,5 @@ jobs:
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --name=dashboard.pull-request \
             --trail="${GITHUB_SHA}" \
-            --dry-run
+            --debug
 
