@@ -9,4 +9,4 @@ trail:
         - name: lint
           type: generic
         - name: pull-request
-          type: pullrequest
+          type: pull_request
