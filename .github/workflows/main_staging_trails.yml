@@ -10,7 +10,7 @@ env:
   KOSLI_HOST: https://staging.app.kosli.com
   KOSLI_ORG: cyber-dojo-trails
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
-  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
 
 jobs:
 
@@ -32,7 +32,7 @@ jobs:
     needs: [variables]
     uses: ./.github/workflows/trails/sub_create_kosli_flow.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
@@ -66,7 +66,7 @@ jobs:
     needs: [variables, wait-for-image]
     uses: ./.github/workflows/trails/sub_test.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
@@ -77,7 +77,7 @@ jobs:
     needs: [variables, test]
     uses: ./.github/workflows/sub_sdlc_gate.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
@@ -87,7 +87,7 @@ jobs:
     needs: [variables, sdlc-gate]
     uses: ./.github/workflows/sub_approve_deployment.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
@@ -98,7 +98,7 @@ jobs:
     needs: [variables, approve-deployment-to-beta]
     uses: ./.github/workflows/sub_approve_deployment.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
