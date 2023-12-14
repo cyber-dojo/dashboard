@@ -114,7 +114,8 @@ jobs:
             --compliant="${KOSLI_LINT_COMPLIANT}" \
             --evidence-paths="${LINT_EVIDENCE_DIR}" \
             --name=dashboard.lint \
-            --trail="${GITHUB_SHA}"
+            --trail="${GITHUB_SHA}" \
+            --dry-run
 
   pull-request:
     if: ${{ github.ref == 'refs/heads/main' }}
