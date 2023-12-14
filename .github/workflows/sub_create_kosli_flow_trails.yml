@@ -26,17 +26,17 @@ jobs:
   create-kosli-flow:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Create Kosli Flow
-        run: |
-          pwd
-          ls -al
-          kosli create flow2 ${{ env.KOSLI_FLOW }} \ 
-            --description="UX for a group practice dashboard" \ 
+        run:
+          kosli create flow2 ${{ env.KOSLI_FLOW }} 
+            --description="UX for a group practice dashboard" 
             --template-file=.kosli.yml
 
       - name: Begin Kosli Trail
