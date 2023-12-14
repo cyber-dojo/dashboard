@@ -33,6 +33,10 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
+      - name: Turn on Kosli beta features
+        run:
+          kosli enable beta
+
       - name: Create Kosli Flow
         run:
           kosli create flow2 ${{ env.KOSLI_FLOW }} 
