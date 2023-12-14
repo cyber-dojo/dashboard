@@ -32,9 +32,11 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Create Kosli Flow
-        run:
-          kosli create flow2 ${{ env.KOSLI_FLOW }} 
-            --description="UX for a group practice dashboard" 
+        run: |
+          pwd
+          ls -al
+          kosli create flow2 ${{ env.KOSLI_FLOW }} \ 
+            --description="UX for a group practice dashboard" \ 
             --template-file=.kosli.yml
 
       - name: Begin Kosli Trail
