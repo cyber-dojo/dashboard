@@ -80,8 +80,7 @@ jobs:
             --artifact-type=docker \
             --name=dashboard.snyk-scan \
             --scan-results=snyk.json \
-            --trail="${GITHUB_SHA}" \
-            --debug
+            --trail="${GITHUB_SHA}"
 
   lint:
     runs-on: ubuntu-latest
@@ -140,6 +139,5 @@ jobs:
             --artifact-type=docker \
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --name=dashboard.pull-request \
-            --trail="${GITHUB_SHA}" \
-            --debug
+            --trail="${GITHUB_SHA}"
 
