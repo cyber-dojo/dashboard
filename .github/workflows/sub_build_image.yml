@@ -26,8 +26,8 @@ env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
   KOSLI_HOST: ${{ inputs.KOSLI_HOST }}
   KOSLI_ORG: ${{ inputs.KOSLI_ORG }}
-  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
 
 jobs:
   build-image:
@@ -60,12 +60,3 @@ jobs:
           IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}                    
           kosli report artifact ${IMAGE_NAME} \
             --artifact-type=docker
-
-#      - name: Report image to Kosli flow
-#        run: |
-#          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
-#          kosli attest artifact
-#            --fingerprint-docker=${IMAGE_NAME} \
-#            --name=dashboard \
-#            --trail-name="${GITHUB_SHA}"
-

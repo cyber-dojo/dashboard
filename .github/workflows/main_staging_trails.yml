@@ -9,8 +9,8 @@ env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
   KOSLI_HOST: https://staging.app.kosli.com
   KOSLI_ORG: cyber-dojo-trails
-  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
 
 jobs:
 
