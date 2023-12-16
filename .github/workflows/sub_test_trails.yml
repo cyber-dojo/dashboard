@@ -138,8 +138,6 @@ jobs:
           kosli attest pullrequest github ${IMAGE_NAME} \
             --artifact-type=docker \
             --github-token=${{ secrets.GITHUB_TOKEN }} \
-            --repository=dashboard \
-            --github-org=cyber-dojo \
             --name=pull-request \
             --trail="${GITHUB_SHA}"
 
