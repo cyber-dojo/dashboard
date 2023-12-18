@@ -30,58 +30,6 @@ env:
 
 jobs:
 
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run tests
-        run: |
-          # docker-compose.yml uses this:
-          #
-          # volumes:
-          #  - type: tmpfs
-          #    target: /tmp
-          #    tmpfs:
-          #      mode: 01777
-          #
-          # and the mode: option is not supported in the version of docker-compose
-          # currently installed in ubuntu-latest in the Github Action's main.yml
-          # https://stackoverflow.com/questions/49839028
-          sudo curl -L "https://github.com/docker/compose/releases/download/`curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/docker/compose/releases/latest | sed 's#.*tag/##g' && echo`/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose                    
-          ./sh/run_tests_with_coverage.sh          
-
-  snyk-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - name: Setup Snyk
-        uses: snyk/actions/setup@master
-
-      - name: Run Snyk to check Docker image for vulnerabilities
-        continue-on-error: true
-        run:
-           snyk container test cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }} 
-            --file=Dockerfile 
-            --json-file-output=snyk.json 
-            --policy-path=.snyk
-
-      - name: Report Snyk results to Kosli Trail
-        run: |
-          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
-          docker pull ${IMAGE_NAME}
-          kosli attest snyk ${IMAGE_NAME} \
-            --artifact-type=docker \
-            --name=snyk-scan \
-            --scan-results=snyk.json \
-            --trail="${GITHUB_SHA}"
-
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -116,7 +64,87 @@ jobs:
             --name=dashboard.lint \
             --trail="${GITHUB_SHA}"
 
+  report-image:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for image to be built in main.yml
+        run:
+          ./sh/wait_for_image.sh
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report image to Kosli flow
+        run: |
+          IMAGE_TAG="$(echo $GITHUB_SHA | head -c7)"
+          IMAGE_NAME="cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}"
+          docker pull "${IMAGE_NAME}"
+          kosli attest artifact "${IMAGE_NAME}" \
+            --artifact-type=docker \
+            --name=dashboard \
+            --trail="${GITHUB_SHA}"
+
+  unit-tests:
+    needs: [report-image]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: |
+          # docker-compose.yml uses this:
+          #
+          # volumes:
+          #  - type: tmpfs
+          #    target: /tmp
+          #    tmpfs:
+          #      mode: 01777
+          #
+          # and the mode: option is not supported in the version of docker-compose
+          # currently installed in ubuntu-latest in the Github Action's main.yml
+          # https://stackoverflow.com/questions/49839028
+          sudo curl -L "https://github.com/docker/compose/releases/download/`curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/docker/compose/releases/latest | sed 's#.*tag/##g' && echo`/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose                    
+          ./sh/run_tests_with_coverage.sh          
+
+  snyk-scan:
+    needs: [report-image]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk to check Docker image for vulnerabilities
+        continue-on-error: true
+        run:
+           snyk container test cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }} 
+            --file=Dockerfile 
+            --json-file-output=snyk.json 
+            --policy-path=.snyk
+
+      - name: Report Snyk results to Kosli Trail
+        run: |
+          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}
+          docker pull ${IMAGE_NAME}
+          kosli attest snyk ${IMAGE_NAME} \
+            --artifact-type=docker \
+            --name=snyk-scan \
+            --scan-results=snyk.json \
+            --trail="${GITHUB_SHA}"
+
   pull-request:
+    needs: [report-image]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
