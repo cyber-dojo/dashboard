@@ -37,31 +37,31 @@ jobs:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
 
-  wait-for-image:
-    needs: [create-kosli-flow]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Wait for image to be built in main.yml
-        run:
-          ./sh/wait_for_image.sh
-
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - name: Report image to Kosli flow
-        run: |
-          IMAGE_TAG="$(echo $GITHUB_SHA | head -c7)"
-          IMAGE_NAME="cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}"
-          docker pull "${IMAGE_NAME}"     
-          kosli report artifact "${IMAGE_NAME}" \
-            --artifact-type=docker
+#  wait-for-image:
+#    needs: [create-kosli-flow]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Wait for image to be built in main.yml
+#        run:
+#          ./sh/wait_for_image.sh
+#
+#      - name: Setup Kosli CLI
+#        uses: kosli-dev/setup-cli-action@v2
+#        with:
+#          version: ${{ vars.KOSLI_CLI_VERSION }}
+#
+#      - name: Report image to Kosli flow
+#        run: |
+#          IMAGE_TAG="$(echo $GITHUB_SHA | head -c7)"
+#          IMAGE_NAME="cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}"
+#          docker pull "${IMAGE_NAME}"
+#          kosli report artifact "${IMAGE_NAME}" \
+#            --artifact-type=docker
 
   test:
-    needs: [variables, wait-for-image]
+    needs: [variables, create-kosli-flow]
     uses: ./.github/workflows/sub_test.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
