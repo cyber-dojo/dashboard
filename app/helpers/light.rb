@@ -26,7 +26,7 @@ class Light
   end
 
   def light?
-    colour != :""
+    index != 0 && colour != :""
   end
 
   def revert
