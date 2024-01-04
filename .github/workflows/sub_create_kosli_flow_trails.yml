@@ -35,7 +35,7 @@ jobs:
 
       - name: Create Kosli Flow
         run:
-          kosli create flow2 ${{ env.KOSLI_FLOW }} 
+          kosli create flow ${{ env.KOSLI_FLOW }} 
             --description="UX for a group practice dashboard" 
             --template-file=.kosli.yml
 
