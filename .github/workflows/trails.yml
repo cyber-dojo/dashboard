@@ -1,4 +1,4 @@
-name: Main - reports Trails to https://staging.app.kosli.com
+name: Main - reports Trails to https://app.kosli.com
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
-  KOSLI_HOST: https://staging.app.kosli.com
+  KOSLI_HOST: https://app.kosli.com
   KOSLI_ORG: cyber-dojo-trails
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
@@ -89,13 +89,3 @@ jobs:
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
       KOSLI_ENVIRONMENT: aws-prod
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
-
-  push-latest:
-    needs: [variables, approve-deployment-to-prod]
-    uses: ./.github/workflows/sub_push_latest.yml
-    secrets:
-      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
-    with:
-      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
-
