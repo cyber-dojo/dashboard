@@ -51,7 +51,7 @@ jobs:
           mkdir -p "${LINT_EVIDENCE_DIR}"
           gem install rubocop
           set +e
-          rubocop --raise-cop-error "$(repo_root)" > "${LINT_EVIDENCE_DIR}"/rubocop.log
+          rubocop --raise-cop-error . > "${LINT_EVIDENCE_DIR}"/rubocop.log
           STATUS=$?
           set -e
           
