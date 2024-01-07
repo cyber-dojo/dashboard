@@ -17,19 +17,15 @@ jobs:
   variables:
     runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.vars.outputs.image_tag }}
       image_name: ${{ steps.vars.outputs.image_name }}
+      image_tag: ${{ steps.vars.outputs.image_tag }}
     steps:
     - name: Prepare
       id: vars
       run: |
         TAG=$(echo $GITHUB_SHA | head -c7)
-        echo "image_tag=${TAG}" >> ${GITHUB_OUTPUT}
         echo "image_name=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_OUTPUT}
-        #echo "TAG=:${TAG}:"
-        #echo "KOSLI_FLOW=:${{ env.KOSLI_FLOW }}:"
-        #echo "IMAGE_NAME=:cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}:"
-        #echo "IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_ENV}
+        echo "image_tag=${TAG}" >> ${GITHUB_OUTPUT}
 
   create-kosli-flow:
     runs-on: ubuntu-latest

@@ -1,4 +1,4 @@
-name: Main - reports Trails to https://staging.app.kosli.com
+name: Reports to https://staging.app.kosli.com
 
 on:
   push:
@@ -7,16 +7,17 @@ on:
 
 env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
-  KOSLI_HOST: https://staging.app.kosli.com
-  KOSLI_ORG: cyber-dojo-trails
-  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
-  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
+  KOSLI_HOST: ${{ vars.KOSLI_HOST_STAGING }}  # https://staging.app.kosli.com
+  KOSLI_ORG: ${{ vars.KOSLI_ORG }}            # cyber-dojo
+  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}          # dashboard
 
 jobs:
 
   variables:
     runs-on: ubuntu-latest
     outputs:
+      image_name: ${{ steps.vars.outputs.image_name }}
       image_tag: ${{ steps.vars.outputs.image_tag }}
       kosli_host: ${{ steps.vars.outputs.kosli_host }}
       kosli_org: ${{ steps.vars.outputs.kosli_org }}
@@ -24,17 +25,15 @@ jobs:
     - name: Prepare
       id: vars
       run: |
-        TAG=$(echo $GITHUB_SHA | head -c7)                        
-        echo "image_tag={TAG}"                  >> ${GITHUB_OUTPUT}
+        TAG=$(echo $GITHUB_SHA | head -c7)        
+        echo "image_name=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_OUTPUT}
+        echo "image_tag=${TAG}" >> ${GITHUB_OUTPUT}
         echo "kosli_host=${{ env.KOSLI_HOST }}" >> ${GITHUB_OUTPUT}
-        echo "kosli_org=${{ env.KOSLI_ORG }}"   >> ${GITHUB_OUTPUT}        
-        echo "IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_ENV}
+        echo "kosli_org=${{ env.KOSLI_ORG }}" >> ${GITHUB_OUTPUT}        
 
-  create-kosli-trail:
+  create-kosli-flow:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
@@ -44,11 +43,7 @@ jobs:
         run:
           kosli create flow ${{ env.KOSLI_FLOW }} 
             --description="UX for a group practice dashboard" 
-            --template-file=.kosli.yml
-
-      - name: Begin Kosli Trail
-        run:
-          kosli begin trail "${GITHUB_SHA}"
+            --template=artifact,snyk-scan,lint,pull-request
 
   wait-for-image:
     runs-on: ubuntu-latest
@@ -60,10 +55,10 @@ jobs:
           ./sh/wait_for_image.sh
 
   test:
-    needs: [variables, create-kosli-trail, wait-for-image]
-    uses: ./.github/workflows/sub_test_trails.yml
+    needs: [variables, create-kosli-flow, wait-for-image]
+    uses: ./.github/workflows/sub_test.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
@@ -71,7 +66,7 @@ jobs:
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
   sdlc-control-gate:
-    needs: [test]
+    needs: [variables, test]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
@@ -79,17 +74,18 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Kosli SDLC gate to short-circuit-the-trail
+      - name: Kosli SDLC gate to short-circuit-the-flow
         run: |
-          docker pull ${{ env.IMAGE_NAME }}
-          kosli assert artifact ${{ env.IMAGE_NAME }} \
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
+          docker pull ${IMAGE_NAME}
+          kosli assert artifact ${IMAGE_NAME} \
             --artifact-type=docker          
 
   approve-deployment-to-beta:
     needs: [variables, sdlc-control-gate]
     uses: ./.github/workflows/sub_approve_deployment.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
@@ -100,9 +96,19 @@ jobs:
     needs: [variables, approve-deployment-to-beta]
     uses: ./.github/workflows/sub_approve_deployment.yml
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
+      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
     with:
       KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
       KOSLI_ENVIRONMENT: aws-prod
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
+
+  push-latest:
+    needs: [variables, approve-deployment-to-prod]
+    uses: ./.github/workflows/sub_push_latest.yml
+    secrets:
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+    with:
+      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
+
