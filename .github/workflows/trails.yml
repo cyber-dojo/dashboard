@@ -30,12 +30,31 @@ jobs:
 
   create-kosli-flow:
     needs: [variables]
-    uses: ./.github/workflows/sub_create_kosli_flow_trails.yml
-    secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
-    with:
-      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
-      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Create Kosli Flow
+        run:
+          kosli create flow ${{ env.KOSLI_FLOW }} 
+            --description="UX for a group practice dashboard" 
+            --template-file=.kosli.yml
+
+      - name: Begin Kosli Trail
+        run:
+          kosli begin trail "${GITHUB_SHA}"
+
+#    uses: ./.github/workflows/sub_create_kosli_flow_trails.yml
+#    secrets:
+#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
+#    with:
+#      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
+#      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
 
   wait-for-image:
     needs: [create-kosli-flow]
