@@ -17,6 +17,7 @@ jobs:
   variables:
     runs-on: ubuntu-latest
     outputs:
+      image_name: cyberdojo/${{ env.KOSLI_FLOW }}:${{ steps.vars.outputs.image_tag }}
       image_tag: ${{ steps.vars.outputs.image_tag }}
       kosli_host: ${{ steps.vars.outputs.kosli_host }}
       kosli_org: ${{ steps.vars.outputs.kosli_org }}
@@ -27,7 +28,6 @@ jobs:
         echo "image_tag=$(echo $GITHUB_SHA | head -c7)" >> ${GITHUB_OUTPUT}
         echo "kosli_host=${{ env.KOSLI_HOST }}"         >> ${GITHUB_OUTPUT}
         echo "kosli_org=${{ env.KOSLI_ORG }}"           >> ${GITHUB_OUTPUT}        
-        echo "IMAGE_TAG=$(echo $GITHUB_SHA | head -c7)" >> ${GITHUB_ENV}
 
   create-kosli-trail:
     runs-on: ubuntu-latest
@@ -70,7 +70,7 @@ jobs:
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
   sdlc-control-gate:
-    needs: [test]
+    needs: [variables, test]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
@@ -78,9 +78,9 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Kosli SDLC gate to short-circuit-the-flow
+      - name: Kosli SDLC gate to short-circuit-the-trail
         run: |
-          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ env.IMAGE_TAG }}          
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                              
           docker pull ${IMAGE_NAME}
           kosli assert artifact ${IMAGE_NAME} \
             --artifact-type=docker          
