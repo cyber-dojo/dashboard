@@ -17,6 +17,7 @@ jobs:
   variables:
     runs-on: ubuntu-latest
     outputs:
+      image_name: cyberdojo/${{ env.KOSLI_FLOW }}:${{ steps.vars.outputs.image_tag }}
       image_tag: ${{ steps.vars.outputs.image_tag }}
     steps:
     - name: Prepare
@@ -48,17 +49,13 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Setup image-tag
-        run:
-          echo "IMAGE_TAG=$(echo $GITHUB_SHA | head -c7)" >> ${GITHUB_ENV}
-
       - name: Build and push image to Dockerhub Registry
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: cyberdojo/${{ env.KOSLI_FLOW }}:${{ env.IMAGE_TAG }}
+          tags: ${{ needs.variables.outputs.image_name }}
           build-args:
             COMMIT_SHA=${{ github.sha }}
 
@@ -72,7 +69,7 @@ jobs:
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
   sdlc-control-gate:
-    needs: [test]
+    needs: [variables, test]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
@@ -82,7 +79,7 @@ jobs:
 
       - name: Kosli SDLC gate to short-circuit-the-flow
         run: |
-          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ env.IMAGE_TAG }}          
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
           docker pull ${IMAGE_NAME}
           kosli assert artifact ${IMAGE_NAME} \
             --artifact-type=docker          
