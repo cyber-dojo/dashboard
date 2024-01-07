@@ -48,13 +48,6 @@ jobs:
         run:
           kosli begin trail "${GITHUB_SHA}"
 
-#    uses: ./.github/workflows/sub_create_kosli_flow_trails.yml
-#    secrets:
-#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
-#    with:
-#      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
-#      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
-
   wait-for-image:
     runs-on: ubuntu-latest
     steps:

@@ -37,10 +37,6 @@ jobs:
             --description="UX for a group practice dashboard" 
             --template=artifact,snyk-scan,lint,pull-request
 
-#    uses: ./.github/workflows/sub_create_kosli_flow.yml
-#    secrets:
-#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
-
   build-image:
     needs: [variables]
     uses: ./.github/workflows/sub_build_image.yml
