@@ -24,6 +24,9 @@ jobs:
       run: |
         TAG=$(echo $GITHUB_SHA | head -c7)
         echo "image_tag=${TAG}" >> ${GITHUB_OUTPUT}
+        echo "TAG=:${TAG}:"
+        echo "KOSLI_FLOW=:${{ env.KOSLI_FLOW }}:"
+        echo "IMAGE_NAME=:cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}:"
         echo "IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_ENV}
 
   create-kosli-flow:
@@ -51,13 +54,17 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
+      - name: Debug commands
+        run: |
+          echo "env.IMAGE_NAME=:${{ env.IMAGE_NAME }}:" 
+
       - name: Build and push image to Dockerhub Registry
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}
+          tags: "${{ env.IMAGE_NAME }}"
           build-args:
             COMMIT_SHA=${{ github.sha }}
 
