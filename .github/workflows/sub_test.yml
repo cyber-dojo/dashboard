@@ -94,7 +94,7 @@ jobs:
 
       - name: Run tests
         run: |
-          #./sh/upgrade_docker_compose.sh          
+          ./sh/upgrade_docker_compose.sh          
           ./sh/run_tests_with_coverage.sh          
 
   snyk-scan:
