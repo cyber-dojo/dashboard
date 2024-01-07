@@ -28,8 +28,7 @@ jobs:
         echo "kosli_host=${{ env.KOSLI_HOST }}"         >> ${GITHUB_OUTPUT}
         echo "kosli_org=${{ env.KOSLI_ORG }}"           >> ${GITHUB_OUTPUT}        
 
-  create-kosli-flow:
-    needs: [variables]
+  create-kosli-trail:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +56,6 @@ jobs:
 #      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
 
   wait-for-image:
-    needs: [create-kosli-flow]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -67,7 +65,7 @@ jobs:
           ./sh/wait_for_image.sh
 
   test:
-    needs: [variables, wait-for-image]
+    needs: [variables, create-kosli-trail, wait-for-image]
     uses: ./.github/workflows/sub_test_trails.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
