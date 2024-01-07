@@ -11,7 +11,6 @@ env:
   KOSLI_ORG: ${{ vars.KOSLI_ORG }}            # cyber-dojo
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}          # dashboard
-  X_IMAGE_NAME: cyberdojo/${{ vars.KOSLI_FLOW }}:${GITHUB_SHA:0:7}
 
 jobs:
 
@@ -19,17 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.vars.outputs.image_tag }}
+      image_name: ${{ steps.vars.outputs.image_name }}
     steps:
     - name: Prepare
       id: vars
       run: |
-        echo "X_IMAGE_NAME=:${{env.X_IMAGE_NAME}}:"
         TAG=$(echo $GITHUB_SHA | head -c7)
         echo "image_tag=${TAG}" >> ${GITHUB_OUTPUT}
+        echo "image_name=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_OUTPUT}
         #echo "TAG=:${TAG}:"
         #echo "KOSLI_FLOW=:${{ env.KOSLI_FLOW }}:"
         #echo "IMAGE_NAME=:cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}:"
-        echo "IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_ENV}
+        #echo "IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_ENV}
 
   create-kosli-flow:
     runs-on: ubuntu-latest
@@ -56,17 +56,13 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Debug commands
-        run: |
-          echo "env.IMAGE_NAME=:${{ env.IMAGE_NAME }}:" 
-
       - name: Build and push image to Dockerhub Registry
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ${IMAGE_NAME}
+          tags: ${{ needs.variables.outputs.image_name }}
           build-args:
             COMMIT_SHA=${{ github.sha }}
 
@@ -80,7 +76,7 @@ jobs:
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
   sdlc-control-gate:
-    needs: [test]
+    needs: [variables, test]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
@@ -90,8 +86,9 @@ jobs:
 
       - name: Kosli SDLC gate to short-circuit-the-flow
         run: |
-          docker pull ${{ env.IMAGE_NAME }}
-          kosli assert artifact ${{ env.IMAGE_NAME }} \
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}
+          docker pull ${IMAGE_NAME}
+          kosli assert artifact ${IMAGE_NAME} \
             --artifact-type=docker          
 
   approve-deployment-to-beta:
