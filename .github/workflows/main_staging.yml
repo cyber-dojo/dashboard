@@ -42,13 +42,6 @@ jobs:
             --description="UX for a group practice dashboard" 
             --template=artifact,snyk-scan,lint,pull-request
 
-#    uses: ./.github/workflows/sub_create_kosli_flow.yml
-#    secrets:
-#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
-#    with:
-#      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
-#      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
-
   wait-for-image:
     runs-on: ubuntu-latest
     steps:
@@ -71,13 +64,27 @@ jobs:
 
   sdlc-gate:
     needs: [variables, test]
-    uses: ./.github/workflows/sub_sdlc_gate.yml
-    secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
-    with:
-      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
-      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
-      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Kosli SDLC gate to short-circuit-the-flow
+        run: |
+          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}          
+          docker pull ${IMAGE_NAME}
+          kosli assert artifact ${IMAGE_NAME} \
+            --artifact-type=docker          
+
+#    uses: ./.github/workflows/sub_sdlc_gate.yml
+#    secrets:
+#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
+#    with:
+#      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
+#      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
+#      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
   approve-deployment-to-beta:
     needs: [variables, sdlc-gate]
