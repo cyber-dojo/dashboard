@@ -27,6 +27,7 @@ jobs:
         echo "image_tag=$(echo $GITHUB_SHA | head -c7)" >> ${GITHUB_OUTPUT}
         echo "kosli_host=${{ env.KOSLI_HOST }}"         >> ${GITHUB_OUTPUT}
         echo "kosli_org=${{ env.KOSLI_ORG }}"           >> ${GITHUB_OUTPUT}        
+        echo "IMAGE_TAG=$(echo $GITHUB_SHA | head -c7)" >> ${GITHUB_ENV}
 
   create-kosli-trail:
     runs-on: ubuntu-latest
@@ -68,8 +69,8 @@ jobs:
       KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
       IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
-  sdlc-gate:
-    needs: [variables, test]
+  sdlc-control-gate:
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
@@ -79,21 +80,13 @@ jobs:
 
       - name: Kosli SDLC gate to short-circuit-the-flow
         run: |
-          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }}          
+          IMAGE_NAME=cyberdojo/${{ env.KOSLI_FLOW }}:${{ env.IMAGE_TAG }}          
           docker pull ${IMAGE_NAME}
           kosli assert artifact ${IMAGE_NAME} \
             --artifact-type=docker          
 
-#    uses: ./.github/workflows/sub_sdlc_gate.yml
-#    secrets:
-#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
-#    with:
-#      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
-#      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
-#      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
-
   approve-deployment-to-beta:
-    needs: [variables, sdlc-gate]
+    needs: [variables, sdlc-control-gate]
     uses: ./.github/workflows/sub_approve_deployment.yml
     secrets:
       KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
