@@ -226,8 +226,25 @@ jobs:
             --environment=aws-beta
 
 
-  approve-deployment-to-prod:
+  deploy-to-beta:
     needs: [variables, approve-deployment-to-beta]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for deployment to aws-beta
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
+          ./sh/wait_for_deployment.sh \
+              "${IMAGE_NAME}" \
+              "${{ env.KOSLI_HOST }}" \
+              "${{ env.KOSLI_API_TOKEN }}" \
+              "${{ env.KOSLI_ORG }}" \
+              aws-beta
+
+
+  approve-deployment-to-prod:
+    needs: [variables, deploy-to-beta]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
@@ -258,8 +275,25 @@ jobs:
             --environment=aws-prod
 
 
-  push-latest:
+  deploy-to-prod:
     needs: [variables, approve-deployment-to-prod]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for deployment to aws-prod
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
+          ./sh/wait_for_deployment.sh \
+              "${IMAGE_NAME}" \
+              "${{ env.KOSLI_HOST }}" \
+              "${{ env.KOSLI_API_TOKEN }}" \
+              "${{ env.KOSLI_ORG }}" \
+              aws-prod
+
+
+  push-latest:
+    needs: [variables, deploy-to-prod]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
