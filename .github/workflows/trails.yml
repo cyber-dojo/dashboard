@@ -7,10 +7,10 @@ on:
 
 env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
-  KOSLI_HOST: https://app.kosli.com
+  KOSLI_HOST: ${{ vars.KOSLI_HOST }} # https://app.kosli.com
   KOSLI_ORG: cyber-dojo-trails
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }} # dashboard
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
-  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
 
 jobs:
 
@@ -51,28 +51,137 @@ jobs:
         run:
           kosli begin trail "${GITHUB_SHA}"
 
-  wait-for-image:
+  lint:
+    needs: [variables, create-kosli-flow]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.0
+          bundler-cache: true
+
+      - name: Run Rubocop linter on source, report results to Kosli Trail
+        run: |
+          export LINT_EVIDENCE_DIR=/tmp/evidence/lint
+          mkdir -p "${LINT_EVIDENCE_DIR}"
+          gem install rubocop
+          set +e
+          rubocop --raise-cop-error . > "${LINT_EVIDENCE_DIR}"/rubocop.log
+          STATUS=$?
+          set -e
+
+          KOSLI_LINT_COMPLIANT=$([ ${STATUS} = 0 ] && echo true || echo false)
+          cp .rubocop.yml "${LINT_EVIDENCE_DIR}"
+          kosli attest generic \
+            --compliant="${KOSLI_LINT_COMPLIANT}" \
+            --evidence-paths="${LINT_EVIDENCE_DIR}" \
+            --name=dashboard.lint \
+            --trail="${GITHUB_SHA}"
+          exit $STATUS
+
+  pull-request:
+    needs: [variables, create-kosli-flow]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report pull-request evidence to Kosli
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
+          docker pull ${IMAGE_NAME}
+          kosli attest pullrequest github ${IMAGE_NAME} \
+            --artifact-type=docker \
+            --github-token=${{ secrets.GITHUB_TOKEN }} \
+            --name=dashboard.pull-request \
+            --trail="${GITHUB_SHA}"
+
+  build-image:
+    needs: [variables, create-kosli-flow]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Wait for image to be built in main.yml
-        run:
-          ./sh/wait_for_image.sh
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                              
+          ./sh/wait_for_image.sh "${IMAGE_NAME}"
 
-  test:
-    needs: [variables, create-kosli-trail, wait-for-image]
-    uses: ./.github/workflows/sub_test_trails.yml
-    secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-    with:
-      KOSLI_HOST: ${{ needs.variables.outputs.kosli_host }}
-      KOSLI_ORG: ${{ needs.variables.outputs.kosli_org }}
-      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report image to Kosli flow
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
+          docker pull "${IMAGE_NAME}"
+          kosli report artifact "${IMAGE_NAME}" \
+            --artifact-type=docker
+
+
+  unit-tests:
+    needs: [variables, build-image]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: |
+          ./sh/upgrade_docker_compose.sh          
+          ./sh/run_tests_with_coverage.sh          
+
+
+  snyk-scan:
+    needs: [variables, build-image]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk to check Docker image for vulnerabilities
+        continue-on-error: true
+        run:
+           snyk container test cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }} 
+            --file=Dockerfile 
+            --json-file-output=snyk.json 
+            --policy-path=.snyk
+
+      - name: Report Snyk results to Kosli Trail
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                              
+          docker pull ${IMAGE_NAME}
+          kosli attest snyk ${IMAGE_NAME} \
+            --artifact-type=docker \
+            --name=dashboard.snyk-scan \
+            --scan-results=snyk.json \
+            --trail="${GITHUB_SHA}"
+
 
   sdlc-control-gate:
-    needs: [variables, test]
+    needs: [variables, lint, pull-request, unit-tests, snyk-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
