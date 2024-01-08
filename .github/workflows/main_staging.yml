@@ -98,12 +98,10 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report pull-request evidence to Kosli
-        run: |
-          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
-          docker pull ${IMAGE_NAME}
-          kosli report evidence artifact pullrequest github ${IMAGE_NAME} \
-            --artifact-type=docker \
-            --github-token ${{ secrets.GITHUB_TOKEN }} \
+        run:
+          kosli report evidence commit pullrequest github
+            --flows=${{ env.KOSLI_FLOW }}
+            --github-token ${{ secrets.GITHUB_TOKEN }}
             --name=pull-request
 
 
