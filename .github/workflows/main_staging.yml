@@ -11,6 +11,7 @@ env:
   KOSLI_ORG: ${{ vars.KOSLI_ORG }}           # cyber-dojo
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}         # dashboard
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 jobs:
 
