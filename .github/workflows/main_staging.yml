@@ -113,7 +113,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Wait for image to be built in main.yml
-        run:
+        run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
           ./sh/wait_for_image.sh "${IMAGE_NAME}"
 
