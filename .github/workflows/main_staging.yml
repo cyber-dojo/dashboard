@@ -198,14 +198,14 @@ jobs:
     needs: [variables, sdlc-control-gate]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Report approval of deployment to Kosli
         run: |
@@ -232,6 +232,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
       - name: Wait for deployment to aws-beta
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
@@ -247,14 +252,14 @@ jobs:
     needs: [variables, deploy-to-beta]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Report approval of deployment to Kosli
         run: |
@@ -280,6 +285,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Wait for deployment to aws-prod
         run: |
