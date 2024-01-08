@@ -165,9 +165,9 @@ jobs:
         continue-on-error: true
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                                                  
-          snyk container test ${IMAGE_NAME} \ 
+          snyk container test ${IMAGE_NAME} \
             --file=Dockerfile \
-            --json-file-output=snyk.json \ 
+            --json-file-output=snyk.json \
             --policy-path=.snyk
 
       - name: Report Snyk results to Kosli Trail
