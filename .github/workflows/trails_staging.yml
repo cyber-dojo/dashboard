@@ -11,7 +11,7 @@ env:
   KOSLI_ORG: cyber-dojo-trails
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}         # dashboard
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
-  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
 
 jobs:
 
@@ -150,6 +150,8 @@ jobs:
   snyk-scan:
     needs: [variables, build-image]
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
