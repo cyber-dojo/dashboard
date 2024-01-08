@@ -269,12 +269,6 @@ jobs:
             --description="Deployed to aws-prod in Github Actions pipeline" \
             --environment=aws-prod
 
-#    uses: ./.github/workflows/sub_approve_deployment.yml
-#    secrets:
-#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
-#    with:
-#      KOSLI_ENVIRONMENT: aws-prod
-#      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
 
   deploy-to-prod:
     needs: [variables, approve-deployment-to-prod]
