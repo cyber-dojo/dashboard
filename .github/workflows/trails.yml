@@ -44,7 +44,7 @@ jobs:
 
       - name: Create Kosli Flow
         run:
-          kosli create flow ${{ env.KOSLI_FLOW }} 
+          kosli create flow "${{ env.KOSLI_FLOW }}" 
             --description="UX for a group practice dashboard" 
             --template-file=.kosli.yml
 
@@ -105,7 +105,7 @@ jobs:
       - name: Report pull-request evidence to Kosli
         run:
           kosli attest pullrequest github
-            --github-token=${{ secrets.GITHUB_TOKEN }}
+            --github-token="${{ secrets.GITHUB_TOKEN }}"
             --name=dashboard.pull-request
             --trail="${GITHUB_SHA}"
 
@@ -165,7 +165,7 @@ jobs:
         continue-on-error: true
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                                        
-          snyk container test ${IMAGE_NAME} \
+          snyk container test "${IMAGE_NAME}" \
             --file=Dockerfile \
             --json-file-output=snyk.json \
             --policy-path=.snyk
@@ -173,8 +173,8 @@ jobs:
       - name: Report Snyk results to Kosli Trail
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                              
-          docker pull ${IMAGE_NAME}
-          kosli attest snyk ${IMAGE_NAME} \
+          docker pull "${IMAGE_NAME}"
+          kosli attest snyk "${IMAGE_NAME}" \
             --artifact-type=docker \
             --name=dashboard.snyk-scan \
             --scan-results=snyk.json \
@@ -193,8 +193,8 @@ jobs:
       - name: Kosli SDLC gate to short-circuit-the-trail
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
-          docker pull ${IMAGE_NAME}
-          kosli assert artifact ${IMAGE_NAME} \
+          docker pull "${IMAGE_NAME}"
+          kosli assert artifact "${IMAGE_NAME}" \
             --artifact-type=docker          
 
   approve-deployment-to-beta:
