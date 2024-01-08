@@ -114,7 +114,7 @@ jobs:
       - name: Wait for image to be built in main.yml
         run:
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
-          ./sh/wait_for_image.sh "${IMAGE_NAME}
+          ./sh/wait_for_image.sh "${IMAGE_NAME}"
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
