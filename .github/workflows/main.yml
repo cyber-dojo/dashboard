@@ -230,13 +230,6 @@ jobs:
             --description="Deployed to aws-beta in Github Actions pipeline" \
             --environment=aws-beta
 
-#    uses: ./.github/workflows/sub_approve_deployment.yml
-#    secrets:
-#      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
-#    with:
-#      KOSLI_ENVIRONMENT: aws-beta
-#      IMAGE_TAG: ${{ needs.variables.outputs.image_tag }}
-
 
   deploy-to-beta:
     needs: [variables, approve-deployment-to-beta]
