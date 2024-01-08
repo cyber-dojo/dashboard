@@ -11,6 +11,7 @@ env:
   KOSLI_ORG: cyber-dojo-trails
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }} # dashboard
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 jobs:
 
@@ -128,8 +129,10 @@ jobs:
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
           docker pull "${IMAGE_NAME}"
-          kosli report artifact "${IMAGE_NAME}" \
-            --artifact-type=docker
+          kosli attest artifact "${IMAGE_NAME}" \
+            --artifact-type=docker \
+            --name=dashboard \
+            --trail="${GITHUB_SHA}"
 
 
   unit-tests:
@@ -160,10 +163,11 @@ jobs:
 
       - name: Run Snyk to check Docker image for vulnerabilities
         continue-on-error: true
-        run:
-           snyk container test cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }} 
-            --file=Dockerfile 
-            --json-file-output=snyk.json 
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                                        
+          snyk container test ${IMAGE_NAME} \
+            --file=Dockerfile \
+            --json-file-output=snyk.json \
             --policy-path=.snyk
 
       - name: Report Snyk results to Kosli Trail
