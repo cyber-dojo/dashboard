@@ -203,14 +203,14 @@ jobs:
     needs: [variables, sdlc-control-gate]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Report approval of deployment to Kosli
         run: |
@@ -242,14 +242,14 @@ jobs:
     needs: [variables, deploy-to-beta]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Report approval of deployment to Kosli
         run: |
