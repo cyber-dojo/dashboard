@@ -52,7 +52,7 @@ jobs:
           kosli begin trail "${GITHUB_SHA}"
 
   lint:
-    needs: [variables, create-kosli-flow]
+    needs: [variables, create-kosli-trail]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -87,7 +87,7 @@ jobs:
           exit $STATUS
 
   pull-request:
-    needs: [variables, create-kosli-flow]
+    needs: [variables, create-kosli-trail]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -109,7 +109,7 @@ jobs:
             --trail="${GITHUB_SHA}"
 
   build-image:
-    needs: [variables, create-kosli-flow]
+    needs: [variables, create-kosli-trail]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -160,10 +160,11 @@ jobs:
 
       - name: Run Snyk to check Docker image for vulnerabilities
         continue-on-error: true
-        run:
-           snyk container test cyberdojo/${{ env.KOSLI_FLOW }}:${{ inputs.IMAGE_TAG }} 
-            --file=Dockerfile 
-            --json-file-output=snyk.json 
+        run: |
+          IMAGE_NAME=${{ needs.variables.outputs.image_name }}                                                  
+          snyk container test ${IMAGE_NAME} \ 
+            --file=Dockerfile \
+            --json-file-output=snyk.json \ 
             --policy-path=.snyk
 
       - name: Report Snyk results to Kosli Trail
