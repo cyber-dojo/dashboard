@@ -239,15 +239,15 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Wait for deployment to aws-beta
-        run: |
-          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
-          ./sh/wait_for_deployment.sh \
-              "${IMAGE_NAME}" \
-              "${{ env.KOSLI_HOST }}" \
-              "${{ env.KOSLI_API_TOKEN }}" \
-              "${{ env.KOSLI_ORG }}" \
-              aws-beta
+#      - name: Wait for deployment to aws-beta
+#        run: |
+#          IMAGE_NAME=${{ needs.variables.outputs.image_name }}
+#          ./sh/wait_for_deployment.sh \
+#              "${IMAGE_NAME}" \
+#              "${{ env.KOSLI_HOST }}" \
+#              "${{ env.KOSLI_API_TOKEN }}" \
+#              "${{ env.KOSLI_ORG }}" \
+#              aws-beta
 
 
   approve-deployment-to-prod:
@@ -293,12 +293,12 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Wait for deployment to aws-prod
-        run: |
-          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
-          ./sh/wait_for_deployment.sh \
-              "${IMAGE_NAME}" \
-              "${{ env.KOSLI_HOST }}" \
-              "${{ env.KOSLI_API_TOKEN }}" \
-              "${{ env.KOSLI_ORG }}" \
-              aws-prod
+#      - name: Wait for deployment to aws-prod
+#        run: |
+#          IMAGE_NAME=${{ needs.variables.outputs.image_name }}
+#          ./sh/wait_for_deployment.sh \
+#              "${IMAGE_NAME}" \
+#              "${{ env.KOSLI_HOST }}" \
+#              "${{ env.KOSLI_API_TOKEN }}" \
+#              "${{ env.KOSLI_ORG }}" \
+#              aws-prod
