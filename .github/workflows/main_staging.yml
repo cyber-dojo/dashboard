@@ -237,7 +237,7 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Wait for deployment to aws-beta
+      - name: Wait for deployment to aws-beta in main.yml
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
           ./sh/wait_for_deployment.sh \
@@ -291,7 +291,7 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Wait for deployment to aws-prod
+      - name: Wait for deployment to aws-prod in main.yml
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
           ./sh/wait_for_deployment.sh \
