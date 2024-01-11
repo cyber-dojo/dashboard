@@ -79,7 +79,7 @@ jobs:
           kosli attest generic \
             --compliant="${KOSLI_LINT_COMPLIANT}" \
             --evidence-paths="${LINT_EVIDENCE_DIR}" \
-            --name=dashboard.lint \
+            --name=lint \
             --trail="${GITHUB_SHA}"
           exit $STATUS
 
@@ -102,7 +102,7 @@ jobs:
         run:
           kosli attest pullrequest github
             --github-token="${{ secrets.GITHUB_TOKEN }}"
-            --name=dashboard.pull-request
+            --name=pull-request
             --trail="${GITHUB_SHA}"
 
   build-image:
