@@ -1,0 +1,164 @@
+name: Example of a Github issue attesation for Kosli Trails
+on:
+  push:
+    branches-ignore:
+      - main
+
+env:
+  KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
+  KOSLI_HOST: ${{ vars.KOSLI_HOST }} # https://app.kosli.com
+  KOSLI_ORG: cyber-dojo-trails
+  KOSLI_FLOW: dashboard-github-issues
+  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      kosli_trail_id: ${{ steps.github_ref_check.outputs.kosli_trail_id }}
+      github_issue_number: ${{ steps.github_ref_check.outputs.github_issue_number }}
+      image_name: ${{ steps.image_name.outputs.image_name }}
+    steps:
+      - name: Check Ref Pattern
+        id: github_ref_check
+        # The expected branch name pattern is <issue_number>-<branch_title>
+        # i.e. 1234-my-branch-title
+        run: |
+          if [[ $GITHUB_REF =~ ^refs/heads/[0-9]+-.*$ ]]; then
+            GITHUB_ISSUE_NUMBER=$(echo $GITHUB_REF | sed -E 's#^refs/heads/([0-9]+)-.*#\1#')
+            echo "github_issue_number=${GITHUB_ISSUE_NUMBER}" >> ${GITHUB_OUTPUT}
+            echo "kosli_trail_id=github-${GITHUB_ISSUE_NUMBER}" >> ${GITHUB_OUTPUT}
+          fi
+
+      - name: Prepare image name and tag
+        id: image_name
+        run: |
+          TAG=$(echo $GITHUB_SHA | head -c7)
+          # the value of vars.KOSLI_FLOW is "dashboard"
+          echo "image_name=cyberdojo/${{ vars.KOSLI_FLOW }}:${TAG}" >> ${GITHUB_OUTPUT}
+
+  create-kosli-trail:
+    if: ${{ needs.prepare.outputs.github_issue_number }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup kosli cli
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Create Kosli flow
+        run:
+          kosli create flow ${{ env.KOSLI_FLOW }}
+            --template-file .kosli-github-issue.yml
+            --description "Flow to track github issues"
+      
+      - name: Begin Kosli Trail
+        run:
+          kosli begin trail ${{ needs.prepare.outputs.kosli_trail_id }}
+            --flow ${{ env.KOSLI_FLOW }}
+            --template-file .kosli-github-issue.yml
+
+      - name: Check and attest Github issue
+        env:
+          GITHUB_ISSUE_NUMBER: ${{ needs.prepare.outputs.github_issue_number }}
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              --write-out "%{http_code}" \
+              --silent \
+              https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER})
+
+          if [[ ${HTTP_CODE} -eq 200 ]]; then
+            export KOSLI_COMPLIANT="true"
+          else
+            export KOSLI_COMPLIANT="false"
+          fi
+
+          kosli attest generic \
+            --flow ${{ env.KOSLI_FLOW }} \
+            --trail ${{ needs.prepare.outputs.kosli_trail_id }} \
+            --name "ticket" \
+            --evidence-url https://github.com/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER}
+
+  build-image:
+    if: ${{ needs.prepare.outputs.github_issue_number }}
+    needs: [prepare, create-kosli-trail]
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ needs.prepare.outputs.image_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+
+      - name: Build image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: false
+          tags: ${{ needs.prepare.outputs.image_name }}
+          build-args:
+            COMMIT_SHA=${{ github.sha }}
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report image to Kosli flow
+        run: |
+          docker pull "${IMAGE_NAME}"
+          kosli attest artifact "${IMAGE_NAME}" \
+            --artifact-type=docker \
+            --name=dashboard \
+            --flow ${{ env.KOSLI_FLOW }} \
+            --trail ${{ needs.prepare.outputs.kosli_trail_id }} \
+
+  snyk-scan:
+    needs: [prepare, build-image]
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      IMAGE_NAME: ${{ needs.prepare.outputs.image_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Pull docker image
+        run:
+          docker pull "${IMAGE_NAME}"
+
+      - name: Run Snyk to check Docker image for vulnerabilities
+        continue-on-error: true
+        run:
+          snyk container test "${IMAGE_NAME}"
+            --file=Dockerfile
+            --json-file-output=snyk.json
+            --policy-path=.snyk
+
+      - name: Report Snyk results to Kosli Trail
+        run:
+          kosli attest snyk "${IMAGE_NAME}" \
+            --artifact-type=docker \
+            --name=dashboard.snyk-scan \
+            --scan-results=snyk.json \
+            --trail="${GITHUB_SHA}"

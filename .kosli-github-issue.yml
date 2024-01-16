@@ -1,0 +1,10 @@
+version: 1
+trail:
+  attestations:
+  - name: ticket
+    type: generic
+  artifacts:
+    - name: dashboard
+      attestations:
+        - name: snyk-scan
+          type: snyk
