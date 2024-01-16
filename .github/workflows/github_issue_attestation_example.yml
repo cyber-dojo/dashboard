@@ -1,4 +1,4 @@
-name: Example of a Github issue attesation for Kosli Trails
+name: Example of a Github issue attestation for Kosli Trails (prod)
 on:
   push:
     branches:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Check Ref Pattern
         id: github_ref_check
-        # The github issue is expected to be in the commit message.
+        # The GitHub issue is expected to be in the commit message.
         # Issue number can be specified as #1 or gh-1
         run: |
           set +e
