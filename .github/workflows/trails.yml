@@ -106,11 +106,13 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report pull-request evidence to Kosli
+        env:
+          KOSLI_TRAIL: ${{ env.KOSLI_TRAIL }}
         run:
           kosli attest pullrequest github
             --github-token="${{ secrets.GITHUB_TOKEN }}"
             --name=pull-request
-            --trail="${GITHUB_SHA}"
+            --trail="${{ env.KOSLI_TRAIL }}"
 
 
   build-image:
@@ -130,13 +132,15 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report image to Kosli flow
+        env:
+          KOSLI_TRAIL: ${{ env.KOSLI_TRAIL }}
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
           docker pull "${IMAGE_NAME}"
           kosli attest artifact "${IMAGE_NAME}" \
             --artifact-type=docker \
             --name=dashboard \
-            --trail="${GITHUB_SHA}"
+            --trail="${{ env.KOSLI_TRAIL }}"
 
 
   unit-tests:
@@ -177,6 +181,8 @@ jobs:
             --policy-path=.snyk
 
       - name: Report Snyk results to Kosli Trail
+        env:
+          KOSLI_TRAIL: ${{ env.KOSLI_TRAIL }}
         run: |
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                              
           docker pull "${IMAGE_NAME}"
@@ -184,7 +190,7 @@ jobs:
             --artifact-type=docker \
             --name=dashboard.snyk-scan \
             --scan-results=snyk.json \
-            --trail="${GITHUB_SHA}"
+            --trail="${{ env.KOSLI_TRAIL }}"
 
 
   sdlc-control-gate:
@@ -201,7 +207,7 @@ jobs:
           IMAGE_NAME=${{ needs.variables.outputs.image_name }}                    
           docker pull "${IMAGE_NAME}"
           kosli assert artifact "${IMAGE_NAME}" \
-            --artifact-type=docker          
+            --artifact-type=docker
 
 
   approve-deployment-to-beta:
