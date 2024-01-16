@@ -1,7 +1,7 @@
 name: Example of a Github issue attesation for Kosli Trails
 on:
   push:
-    branches-ignore:
+    branches:
       - main
 
 env:
@@ -21,11 +21,13 @@ jobs:
     steps:
       - name: Check Ref Pattern
         id: github_ref_check
-        # The expected branch name pattern is <issue_number>-<branch_title>
-        # i.e. 1234-my-branch-title
+        # The github issue is expected to be in the commit message.
+        # Issue number can be specified as #1 or gh-1
         run: |
-          if [[ $GITHUB_REF =~ ^refs/heads/[0-9]+-.*$ ]]; then
-            GITHUB_ISSUE_NUMBER=$(echo $GITHUB_REF | sed -E 's#^refs/heads/([0-9]+)-.*#\1#')
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.sha }})
+          GITHUB_ISSUE_NUMBER=$(echo $COMMIT_MESSAGE | grep -oE '(#|gh-)[0-9]+' | head -n 1 | grep -oE '[0-9]+')
+          # Only echo the output if the issue number is found
+          if [[ ! -z $GITHUB_ISSUE_NUMBER ]]; then
             echo "github_issue_number=${GITHUB_ISSUE_NUMBER}" >> ${GITHUB_OUTPUT}
             echo "kosli_trail_id=github-${GITHUB_ISSUE_NUMBER}" >> ${GITHUB_OUTPUT}
           fi
@@ -89,28 +91,24 @@ jobs:
             --name "ticket" \
             --evidence-url https://github.com/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER}
 
-  build-image:
+  build-test-image:
     if: ${{ needs.prepare.outputs.github_issue_number }}
     needs: [prepare, create-kosli-trail]
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ needs.prepare.outputs.image_name }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
+      - name: Wait for image to be built in main.yml
+        run: |
+          IMAGE_NAME=${{ needs.prepare.outputs.image_name }}                              
+          ./sh/wait_for_image.sh "${IMAGE_NAME}"
 
-      - name: Build image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: false
-          tags: ${{ needs.prepare.outputs.image_name }}
-          build-args:
-            COMMIT_SHA=${{ github.sha }}
+      - name: Pull docker image
+        run:
+          docker pull "${IMAGE_NAME}"
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -119,33 +117,14 @@ jobs:
 
       - name: Report image to Kosli flow
         run: |
-          docker pull "${IMAGE_NAME}"
           kosli attest artifact "${IMAGE_NAME}" \
             --artifact-type=docker \
             --name=dashboard \
             --flow ${{ env.KOSLI_FLOW }} \
             --trail ${{ needs.prepare.outputs.kosli_trail_id }} \
 
-  snyk-scan:
-    needs: [prepare, build-image]
-    runs-on: ubuntu-latest
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      IMAGE_NAME: ${{ needs.prepare.outputs.image_name }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
       - name: Setup Snyk
         uses: snyk/actions/setup@master
-
-      - name: Pull docker image
-        run:
-          docker pull "${IMAGE_NAME}"
 
       - name: Run Snyk to check Docker image for vulnerabilities
         continue-on-error: true
