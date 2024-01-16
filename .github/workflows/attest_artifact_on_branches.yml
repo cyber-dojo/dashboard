@@ -26,6 +26,8 @@ jobs:
         # The github issue is expected to be in the commit message.
         # Issue number can be specified as #1 or gh-1
         run: |
+          set +e
+
           COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.sha }})
           GITHUB_ISSUE_NUMBER=$(echo $COMMIT_MESSAGE | grep -oE '(#|gh-)[0-9]+' | head -n 1 | grep -oE '[0-9]+')
           # Only echo the output if the issue number is found
@@ -33,6 +35,8 @@ jobs:
             echo "github_issue_number=${GITHUB_ISSUE_NUMBER}" >> ${GITHUB_OUTPUT}
             echo "kosli_trail_id=github-${GITHUB_ISSUE_NUMBER}" >> ${GITHUB_OUTPUT}
           fi
+
+          set -e
 
       - name: Prepare image name and tag
         id: image_name
