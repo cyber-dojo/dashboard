@@ -74,10 +74,10 @@ jobs:
           STATUS=$?
           set -e
 
-          KOSLI_LINT_COMPLIANT=$([ ${STATUS} = 0 ] && echo true || echo false)
+          KOSLI_COMPLIANT=$([ ${STATUS} = 0 ] && echo true || echo false)
           cp .rubocop.yml "${LINT_EVIDENCE_DIR}"
           kosli attest generic \
-            --compliant="${KOSLI_LINT_COMPLIANT}" \
+            --compliant="${KOSLI_COMPLIANT}" \
             --evidence-paths="${LINT_EVIDENCE_DIR}" \
             --name=lint \
             --trail="${GITHUB_SHA}"
