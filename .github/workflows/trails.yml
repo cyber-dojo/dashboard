@@ -31,8 +31,6 @@ jobs:
 
   create-kosli-trail:
     runs-on: ubuntu-latest
-    env:
-      KOSLI_TRAIL: ${{ env.KOSLI_TRAIL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +46,8 @@ jobs:
             --template-file=.kosli.yml
 
       - name: Begin Kosli Trail
+        env:
+          KOSLI_TRAIL: ${{ env.KOSLI_TRAIL }}
         run:
           kosli begin trail "${{ env.KOSLI_TRAIL }}"
 
@@ -55,8 +55,6 @@ jobs:
   lint:
     needs: [variables, create-kosli-trail]
     runs-on: ubuntu-latest
-    env:
-      KOSLI_TRAIL: ${{ env.KOSLI_TRAIL }}
     steps:
       - uses: actions/checkout@v4
 
