@@ -11,7 +11,6 @@ env:
   KOSLI_ORG: cyber-dojo-trails
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }} # dashboard
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS }}
-  KOSLI_TRAIL: $GITHUB_SHA
 
 
 jobs:
@@ -48,7 +47,7 @@ jobs:
 
       - name: Begin Kosli Trail
         run:
-          kosli begin trail "${{ env.KOSLI_TRAIL }}"
+          kosli begin trail "${GITHUB_SHA}"
 
 
   lint:
@@ -84,7 +83,8 @@ jobs:
           kosli attest generic \
             --compliant="${KOSLI_COMPLIANT}" \
             --evidence-paths="${KOSLI_EVIDENCE_PATHS}" \
-            --name=lint
+            --name=lint \
+            --trail="${GITHUB_SHA}"
           exit $STATUS
 
 
