@@ -19,6 +19,8 @@ jobs:
       github_issue_number: ${{ steps.github_ref_check.outputs.github_issue_number }}
       image_name: ${{ steps.image_name.outputs.image_name }}
     steps:
+      - uses: actions/checkout@v4
+
       - name: Check Ref Pattern
         id: github_ref_check
         # The github issue is expected to be in the commit message.
