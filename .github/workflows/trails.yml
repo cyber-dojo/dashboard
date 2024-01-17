@@ -36,9 +36,8 @@ jobs:
             --template-file=.kosli.yml
 
       - name: Begin Kosli Trail
-        run: |
-          KOSLI_TRAIL="${GITHUB_SHA}"
-          kosli begin trail "${KOSLI_TRAIL}"
+        run:
+          kosli begin trail "${GITHUB_SHA}"
 
       - name: Set outputs
         id: variables
@@ -46,7 +45,7 @@ jobs:
           IMAGE_TAG=${GITHUB_SHA:0:7}
           echo "image_tag=${IMAGE_TAG}" >> ${GITHUB_OUTPUT}       
           echo "image_name=cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}" >> ${GITHUB_OUTPUT}          
-          echo "kosli_trail=${KOSLI_TRAIL}" >> ${GITHUB_OUTPUT}
+          echo "kosli_trail=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
 
 
   lint:
@@ -141,8 +140,8 @@ jobs:
 
       - name: Report image to Kosli flow
         run:
-          kosli attest artifact "${IMAGE_NAME}" \
-            --artifact-type=docker \
+          kosli attest artifact "${IMAGE_NAME}" 
+            --artifact-type=docker 
             --name=dashboard
 
       - name: Set outputs
