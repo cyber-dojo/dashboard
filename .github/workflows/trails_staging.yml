@@ -15,26 +15,12 @@ env:
 
 jobs:
 
-  variables:
+  kosli-trail:
     runs-on: ubuntu-latest
     outputs:
-      image_name: ${{ steps.vars.outputs.image_name }}
-      image_tag: ${{ steps.vars.outputs.image_tag }}
-      kosli_trail: ${{ steps.vars.outputs.kosli_trail }}
-    steps:
-    - name: Prepare
-      id: vars
-      run: |
-        IMAGE_TAG=${GITHUB_SHA:0:7}
-        echo "image_name=cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}" >> ${GITHUB_OUTPUT}
-        echo "image_tag=${IMAGE_TAG}" >> ${GITHUB_OUTPUT}
-        echo "kosli_trail=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
-
-
-  create-kosli-trail:
-    runs-on: ubuntu-latest
-    env:
-      KOSLI_TRAIL: ${{ needs.variables.outputs.kosli_trail }}
+      image_tag:   ${{ steps.variables.outputs.image_tag }}
+      image_name:  ${{ steps.variables.outputs.image_name }}
+      kosli_trail: ${{ steps.variables.outputs.kosli_trail }}
     steps:
       - uses: actions/checkout@v4
 
@@ -53,12 +39,20 @@ jobs:
         run:
           kosli begin trail "${GITHUB_SHA}"
 
+      - name: Set outputs
+        id: variables
+        run: |
+          IMAGE_TAG=${GITHUB_SHA:0:7}
+          echo "image_tag=${IMAGE_TAG}" >> ${GITHUB_OUTPUT}       
+          echo "image_name=cyberdojo/${{ env.KOSLI_FLOW }}:${IMAGE_TAG}" >> ${GITHUB_OUTPUT}          
+          echo "kosli_trail=${GITHUB_SHA}" >> ${GITHUB_OUTPUT}
+
 
   lint:
-    needs: [variables, create-kosli-trail]
+    needs: [kosli-trail]
     runs-on: ubuntu-latest
     env:
-      KOSLI_TRAIL: ${{ needs.variables.outputs.kosli_trail }}
+      KOSLI_TRAIL: ${{ needs.kosli-trail.outputs.kosli_trail }}
     steps:
       - uses: actions/checkout@v4
 
@@ -87,16 +81,15 @@ jobs:
           kosli attest generic \
             --compliant="${KOSLI_COMPLIANT}" \
             --evidence-paths="${KOSLI_EVIDENCE_PATHS}" \
-            --name=lint \
-            --trail="${{ env.KOSLI_TRAIL }}"
+            --name=lint
           exit $STATUS
 
 
   pull-request:
-    needs: [variables, create-kosli-trail]
+    needs: [kosli-trail]
     runs-on: ubuntu-latest
     env:
-      KOSLI_TRAIL: ${{ needs.variables.outputs.kosli_trail }}
+      KOSLI_TRAIL: ${{ needs.kosli-trail.outputs.kosli_trail }}
     permissions:
       id-token: write
       contents: write
@@ -114,21 +107,21 @@ jobs:
           kosli attest pullrequest github
             --github-token="${{ secrets.GITHUB_TOKEN }}"
             --name=pull-request
-            --trail="${{ env.KOSLI_TRAIL }}"
 
 
   build-image:
-    needs: [variables, create-kosli-trail]
+    needs: [kosli-trail]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
-      KOSLI_TRAIL: ${{ needs.variables.outputs.kosli_trail }}
+      KOSLI_TRAIL: ${{ needs.kosli-trail.outputs.kosli_trail }}
+      IMAGE_NAME:  ${{ needs.kosli-trail.outputs.image_name }}
+    outputs:
+      kosli_fingerprint: ${{ steps.variables.outputs.kosli_fingerprint }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Wait for image to be built in main.yml
-        run: |
-          IMAGE_NAME=${{ needs.variables.outputs.image_name }}
+        run:
           ./sh/wait_for_image.sh "${IMAGE_NAME}"
 
       - name: Setup Kosli CLI
@@ -137,15 +130,20 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report image to Kosli flow
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli attest artifact "${IMAGE_NAME}" \
-            --artifact-type=docker \
+        run:
+          kosli attest artifact "${IMAGE_NAME}" 
+            --artifact-type=docker
             --name=dashboard
+
+      - name: Set outputs
+        id: variables
+        run: |
+          FINGERPRINT=$(kosli fingerprint "${IMAGE_NAME}" --artifact-type=docker)
+          echo "kosli_fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
 
 
   unit-tests:
-    needs: [variables, build-image]
+    needs: [build-image]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -157,11 +155,12 @@ jobs:
 
 
   snyk-scan:
-    needs: [variables, build-image]
+    needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
-      KOSLI_TRAIL: ${{ needs.variables.outputs.kosli_trail }}
+      KOSLI_TRAIL:       ${{ needs.kosli-trail.outputs.kosli_trail }}
+      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -183,20 +182,18 @@ jobs:
             --policy-path=.snyk
 
       - name: Report Snyk results to Kosli Trail
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli attest snyk "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --name=dashboard.snyk-scan \
-            --scan-results=snyk.json \
-            --trail="${{ env.KOSLI_TRAIL }}"
+        run:
+          kosli attest snyk "${IMAGE_NAME}" 
+            --name=dashboard.snyk-scan 
+            --scan-results=snyk.json
 
 
   sdlc-control-gate:
-    needs: [variables, lint, pull-request, unit-tests, snyk-scan]
+    needs: [lint, pull-request, unit-tests, snyk-scan, kosli-trail, build-image]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
+      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
     steps:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -204,17 +201,17 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Kosli SDLC gate to short-circuit the workflow
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli assert artifact "${IMAGE_NAME}" \
-            --artifact-type=docker
+        run:
+          kosli assert artifact "${IMAGE_NAME}"
 
 
   approve-deployment-to-beta:
-    needs: [variables, sdlc-control-gate]
+    needs: [sdlc-control-gate, kosli-trail, build-image]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
+      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+      KOSLI_ENVIRONMENT: aws-beta
     steps:
       - uses: actions/checkout@v4
         with:
@@ -226,27 +223,22 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli report approval "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --environment=aws-beta \
+        run:
+          kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
       - name: Report expected deployment to Kosli
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli expect deployment "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --description="Deployed to aws-beta in Github Actions pipeline" \
-            --environment=aws-beta
+        run:
+          kosli expect deployment "${IMAGE_NAME}"
+            --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
 
 
   deploy-to-beta:
-    needs: [variables, approve-deployment-to-beta]
+    needs: [approve-deployment-to-beta, kosli-trail]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
+      IMAGE_NAME: ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_ENVIRONMENT: aws-beta
     steps:
       - uses: actions/checkout@v4
 
@@ -262,14 +254,16 @@ jobs:
               "${{ env.KOSLI_HOST }}" 
               "${{ env.KOSLI_API_TOKEN }}" 
               "${{ env.KOSLI_ORG }}" 
-              aws-beta
+              "${KOSLI_ENVIRONMENT}"
 
 
   approve-deployment-to-prod:
-    needs: [variables, deploy-to-beta]
+    needs: [deploy-to-beta, kosli-trail, build-image]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
+      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+      KOSLI_ENVIRONMENT: aws-prod
     steps:
       - uses: actions/checkout@v4
         with:
@@ -281,27 +275,22 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli report approval "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --environment=aws-prod \
+        run:
+          kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
       - name: Report expected deployment to Kosli
-        run: |
-          docker pull "${IMAGE_NAME}"
-          kosli expect deployment "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --description="Deployed to aws-prod in Github Actions pipeline" \
-            --environment=aws-prod
+        run:
+          kosli expect deployment "${IMAGE_NAME}"
+            --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
 
 
   deploy-to-prod:
-    needs: [variables, approve-deployment-to-prod]
+    needs: [approve-deployment-to-prod, kosli-trail]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ needs.variables.outputs.image_name }}
+      IMAGE_NAME: ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_ENVIRONMENT: aws-prod
     steps:
       - uses: actions/checkout@v4
 
@@ -317,4 +306,4 @@ jobs:
               "${{ env.KOSLI_HOST }}" 
               "${{ env.KOSLI_API_TOKEN }}" 
               "${{ env.KOSLI_ORG }}" 
-              aws-prod
+              "${KOSLI_ENVIRONMENT}"
