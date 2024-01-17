@@ -141,7 +141,7 @@ jobs:
       - name: Report image to Kosli flow
         run:
           kosli attest artifact "${IMAGE_NAME}" 
-            --artifact-type=docker 
+            --artifact-type=docker
             --name=dashboard
 
       - name: Set outputs
@@ -149,8 +149,7 @@ jobs:
         run: |
           FINGERPRINT=$(kosli fingerprint "${IMAGE_NAME}" --artifact-type=docker)
           echo "kosli_fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
-          
-    
+              
 
   unit-tests:
     needs: [build-image]
@@ -234,12 +233,12 @@ jobs:
 
       - name: Report approval of deployment to Kosli
         run:
-          kosli report approval "${IMAGE_NAME}" 
+          kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
       - name: Report expected deployment to Kosli
         run:
-          kosli expect deployment "${IMAGE_NAME}" 
+          kosli expect deployment "${IMAGE_NAME}"
             --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
 
 
@@ -293,12 +292,12 @@ jobs:
 
       - name: Report approval of deployment to Kosli
         run:
-          kosli report approval "${IMAGE_NAME}" 
+          kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
       - name: Report expected deployment to Kosli
         run:
-          kosli expect deployment "${IMAGE_NAME}" 
+          kosli expect deployment "${IMAGE_NAME}"
             --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
 
 #  deploy-to-prod:
