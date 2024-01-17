@@ -307,3 +307,23 @@ jobs:
               "${{ env.KOSLI_API_TOKEN }}" 
               "${{ env.KOSLI_ORG }}" 
               "${KOSLI_ENVIRONMENT}"
+
+
+#  push-latest:
+#    needs: [deploy-to-prod, kosli-trail]
+#    runs-on: ubuntu-latest
+#    env:
+#      IMAGE_NAME: ${{ needs.kosli-trail.outputs.image_name }}
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKER_USER }}
+#          password: ${{ secrets.DOCKER_PASS }}
+#
+#      - name: Build and push image:latest to Dockerhub Registry
+#        run: |
+#          docker pull "${IMAGE_NAME}"
+#          docker tag "${IMAGE_NAME}" "cyberdojo/${{ env.KOSLI_FLOW }}:latest"
+#          docker push "cyberdojo/${{ env.KOSLI_FLOW }}:latest"
