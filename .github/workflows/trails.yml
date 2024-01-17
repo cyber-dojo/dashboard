@@ -147,7 +147,7 @@ jobs:
       - name: Set outputs
         id: variables
         run: |
-          FINGERPRINT=$(kosli fingerprint "${IMAGE_NAME}" --type=docker)
+          FINGERPRINT=$(kosli fingerprint "${IMAGE_NAME}" --artifact-type=docker)
           echo "kosli_fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
           
     
