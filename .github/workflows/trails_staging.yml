@@ -81,7 +81,7 @@ jobs:
           kosli attest generic \
             --compliant="${KOSLI_COMPLIANT}" \
             --evidence-paths="${KOSLI_EVIDENCE_PATHS}" \
-            --name=lint
+            --name=dashboard.lint
           exit $STATUS
 
 
@@ -106,7 +106,7 @@ jobs:
         run:
           kosli attest pullrequest github
             --github-token="${{ secrets.GITHUB_TOKEN }}"
-            --name=pull-request
+            --name=dashboard.pull-request
 
 
   build-image:
