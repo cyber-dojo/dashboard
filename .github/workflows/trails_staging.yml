@@ -322,7 +322,7 @@ jobs:
 #          username: ${{ secrets.DOCKER_USER }}
 #          password: ${{ secrets.DOCKER_PASS }}
 #
-#      - name: Build and push image:latest to Dockerhub Registry
+#      - name: Tag image to :latest and push to Dockerhub Registry
 #        run: |
 #          docker pull "${IMAGE_NAME}"
 #          docker tag "${IMAGE_NAME}" "cyberdojo/${{ env.KOSLI_FLOW }}:latest"
