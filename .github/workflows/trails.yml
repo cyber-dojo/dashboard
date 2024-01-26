@@ -109,7 +109,6 @@ jobs:
     needs: [kosli-trail]
     runs-on: ubuntu-latest
     env:
-      KOSLI_TRAIL: ${{ needs.kosli-trail.outputs.kosli_trail }}
       IMAGE_NAME:  ${{ needs.kosli-trail.outputs.image_name }}
     outputs:
       kosli_fingerprint: ${{ steps.variables.outputs.kosli_fingerprint }}
