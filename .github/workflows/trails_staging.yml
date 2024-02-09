@@ -115,7 +115,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Wait for image to be built in main.yml
+      - name: Wait for image to be built in trails.yml
         run:
           ./sh/wait_for_image.sh "${IMAGE_NAME}"
 
@@ -236,7 +236,7 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Wait for deployment to aws-beta in main.yml
+      - name: Wait for deployment to aws-beta in trails.yml
         run:
           ./sh/wait_for_deployment.sh 
               "${IMAGE_NAME}" 

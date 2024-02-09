@@ -115,18 +115,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-#      - name: Build and push image to Dockerhub Registry
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: .
-#          push: true
-#          tags: ${{ needs.kosli-trail.outputs.image_name }}
-#          build-args:
-#            COMMIT_SHA=${{ github.sha }}
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Wait for image to be built in main.yml
-        run:
-          ./sh/wait_for_image.sh "${IMAGE_NAME}"
+      - name: Build and push image to Dockerhub Registry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ needs.kosli-trail.outputs.image_name }}
+          build-args:
+            COMMIT_SHA=${{ github.sha }}
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -230,38 +231,14 @@ jobs:
           kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
-#  deploy-to-beta:
-#    needs: [approve-deployment-to-beta, kosli-trail]
-#    uses: ./.github/workflows/sub_deploy_to_beta.yml
-#    with:
-#      IMAGE_TAG: ${{ needs.kosli-trail.outputs.image_tag }}
-
-
   deploy-to-beta:
-    needs: [approve-deployment-to-beta, kosli-trail]
-    runs-on: ubuntu-latest
     environment:
       name: staging
-      url: https://staging.app.kosli.com
-    env:
-      IMAGE_NAME: ${{ needs.kosli-trail.outputs.image_name }}
-      KOSLI_ENVIRONMENT: aws-beta
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - name: Wait for deployment to aws-beta
-        run:
-          ./sh/wait_for_deployment.sh 
-              "${IMAGE_NAME}" 
-              "${{ env.KOSLI_HOST }}" 
-              "${{ env.KOSLI_API_TOKEN }}" 
-              "${{ env.KOSLI_ORG }}" 
-              "${KOSLI_ENVIRONMENT}"
+      url: ${{ vars.KOSLI_HOST_STAGING }}
+    needs: [approve-deployment-to-beta, kosli-trail]
+    uses: ./.github/workflows/sub_deploy_to_beta.yml
+    with:
+      IMAGE_TAG: ${{ needs.kosli-trail.outputs.image_tag }}
 
 
   approve-deployment-to-prod:
@@ -287,34 +264,12 @@ jobs:
             --approver="${{ github.actor }}"
 
 
-#  deploy-to-prod:
-#    needs: [approve-deployment-to-prod, kosli-trail]
-#    uses: ./.github/workflows/sub_deploy_to_prod.yml
-#    with:
-#      IMAGE_TAG: ${{ needs.kosli-trail.outputs.image_tag }}
-
   deploy-to-prod:
-    needs: [approve-deployment-to-prod, kosli-trail]
-    runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://app.kosli.com
-    env:
-      IMAGE_NAME: ${{ needs.kosli-trail.outputs.image_name }}
-      KOSLI_ENVIRONMENT: aws-prod
-    steps:
-      - uses: actions/checkout@v4
+      url: ${{ vars.KOSLI_HOST }}
+    needs: [approve-deployment-to-prod, kosli-trail]
+    uses: ./.github/workflows/sub_deploy_to_prod.yml
+    with:
+      IMAGE_TAG: ${{ needs.kosli-trail.outputs.image_tag }}
 
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - name: Wait for deployment to aws-prod
-        run:
-          ./sh/wait_for_deployment.sh 
-              "${IMAGE_NAME}" 
-              "${{ env.KOSLI_HOST }}" 
-              "${{ env.KOSLI_API_TOKEN }}" 
-              "${{ env.KOSLI_ORG }}" 
-              "${KOSLI_ENVIRONMENT}"
