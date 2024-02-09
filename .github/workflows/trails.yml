@@ -212,6 +212,9 @@ jobs:
   approve-deployment-to-beta:
     needs: [sdlc-control-gate, kosli-trail, build-image]
     runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ vars.KOSLI_HOST_STAGING }}
     env:
       IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
@@ -232,9 +235,6 @@ jobs:
             --approver="${{ github.actor }}"
 
   deploy-to-beta:
-    environment:
-      name: staging
-      url: ${{ vars.KOSLI_HOST_STAGING }}
     needs: [approve-deployment-to-beta, kosli-trail]
     uses: ./.github/workflows/sub_deploy_to_beta.yml
     with:
@@ -244,6 +244,9 @@ jobs:
   approve-deployment-to-prod:
     needs: [deploy-to-beta, kosli-trail, build-image]
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.KOSLI_HOST }}
     env:
       IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
@@ -265,9 +268,6 @@ jobs:
 
 
   deploy-to-prod:
-    environment:
-      name: production
-      url: ${{ vars.KOSLI_HOST }}
     needs: [approve-deployment-to-prod, kosli-trail]
     uses: ./.github/workflows/sub_deploy_to_prod.yml
     with:
