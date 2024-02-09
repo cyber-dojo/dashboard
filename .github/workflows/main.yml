@@ -221,15 +221,6 @@ jobs:
             --environment=aws-beta \
             --approver="${{ github.actor }}"
 
-      - name: Report expected deployment to Kosli
-        run: |
-          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
-          docker pull "${IMAGE_NAME}"
-          kosli expect deployment "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --description="Deployed to aws-beta in Github Actions pipeline" \
-            --environment=aws-beta
-
 
   deploy-to-beta:
     needs: [variables, approve-deployment-to-beta]
@@ -259,15 +250,6 @@ jobs:
             --artifact-type=docker \
             --environment=aws-prod \
             --approver="${{ github.actor }}"
-
-      - name: Report expected deployment to Kosli
-        run: |
-          IMAGE_NAME=${{ needs.variables.outputs.image_name }}          
-          docker pull "${IMAGE_NAME}"
-          kosli expect deployment "${IMAGE_NAME}" \
-            --artifact-type=docker \
-            --description="Deployed to aws-prod in Github Actions pipeline" \
-            --environment=aws-prod
 
 
   deploy-to-prod:

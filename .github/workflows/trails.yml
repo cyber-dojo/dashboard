@@ -230,12 +230,6 @@ jobs:
           kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
-      - name: Report expected deployment to Kosli
-        run:
-          kosli expect deployment "${IMAGE_NAME}"
-            --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
-
-
 #  deploy-to-beta:
 #    needs: [approve-deployment-to-beta, kosli-trail]
 #    uses: ./.github/workflows/sub_deploy_to_beta.yml
@@ -289,10 +283,6 @@ jobs:
           kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
 
-      - name: Report expected deployment to Kosli
-        run:
-          kosli expect deployment "${IMAGE_NAME}"
-            --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
 
 #  deploy-to-prod:
 #    needs: [approve-deployment-to-prod, kosli-trail]
