@@ -1,0 +1,14 @@
+
+differ
+------
+Trails.yml  reports Trails to Org=cdt Flow=differ
+change it to
+Trails.yml  reports Trails to Org=cd Flow=differ-service
+- and don't make report to CDF
+- so no new Flow=differ reports
+
+Then repeat this basic process for all 10 repos.
+At that point cyber-dojo-trails can be archived as it has served its purpose.
+
+We can probably also Archive Flow=differ so you only see
+a differ Flow if you are looking at an older snapshot.
