@@ -7,9 +7,9 @@ on:
 env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
   KOSLI_HOST: ${{ vars.KOSLI_HOST_STAGING }} # https://staging.app.kosli.com
-  KOSLI_ORG: cyber-dojo-trails
+  KOSLI_ORG: cyber-dojo
   KOSLI_FLOW: dashboard-github-issues
-  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_TRAILS_STAGING }}
+  KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN_STAGING }}
 
 jobs:
   prepare:
@@ -149,23 +149,3 @@ jobs:
             --name=dashboard.snyk-scan
             --scan-results=snyk.json
             --trail=${{ needs.prepare.outputs.kosli_trail_id }}
-
-      - name: Report deployment expectations to Kosli Trail
-        env:
-          KOSLI_ENVIRONMENT: aws-beta
-        run:
-          # This is done to ensure that artifacts from this trail
-          #    do not make aws-beta environment non-compliant
-          kosli expect deployment "${IMAGE_NAME}"
-            --artifact-type=docker
-            --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
-
-      - name: Report deployment expectations to Kosli Trail
-        env:
-          KOSLI_ENVIRONMENT: aws-prod
-        run:
-          # This is done to ensure that artifacts from this trail
-          #    do not make aws-prod environment non-compliant
-          kosli expect deployment "${IMAGE_NAME}"
-            --artifact-type=docker
-            --description="Deployed to ${KOSLI_ENVIRONMENT} in Github Actions pipeline"
