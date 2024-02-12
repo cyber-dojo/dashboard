@@ -89,6 +89,7 @@ class AppBase < Sinatra::Base
   end
 
   def json_payload
+    request.body.rewind
     json_hash_parse(request.body.read)
   end
 
