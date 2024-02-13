@@ -4,8 +4,6 @@ trail:
   artifacts:
     - name: dashboard
       attestations:
-        - name: ticket
-          type: generic
         - name: lint
           type: generic
         - name: pull-request
