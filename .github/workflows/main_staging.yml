@@ -74,7 +74,7 @@ jobs:
 
           if [[ ${HTTP_CODE} -eq 200 ]]; then
             export KOSLI_COMPLIANT=true
-            export EXTERNAL_URL="--external-url="issue=https://github.com/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER}"
+            export EXTERNAL_URL="--external-url=issue=https://github.com/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER}"
           else
             export KOSLI_COMPLIANT=false
             export EXTERNAL_URL=
