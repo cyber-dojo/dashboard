@@ -47,6 +47,45 @@ jobs:
           echo "image_name=cyberdojo/dashboard:${IMAGE_TAG}" >> ${GITHUB_OUTPUT}          
 
 
+  ticket:
+    needs: [kosli-trail]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Check git-commit message references a Github Issue
+        run: |
+          export COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.sha }})
+          # Issue number can be specified as #1 or gh-1
+          export GITHUB_ISSUE_NUMBER=$(echo $COMMIT_MESSAGE | grep -oE '(#|gh-)[0-9]+' | head -n 1 | grep -oE '[0-9]+')
+          
+          HTTP_CODE=$(curl --output /dev/null --location \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              --write-out "%{http_code}" \
+              --silent \
+              https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER})
+
+          if [[ ${HTTP_CODE} -eq 200 ]]; then
+            export KOSLI_COMPLIANT=true
+            export EXTERNAL_URL="--external-url="issue=https://github.com/${GITHUB_REPOSITORY}/issues/${GITHUB_ISSUE_NUMBER}"
+          else
+            export KOSLI_COMPLIANT=false
+            export EXTERNAL_URL=
+          fi
+
+          kosli attest generic \
+            --compliant="${KOSLI_COMPLIANT}" \
+            ${EXTERNAL_URL} \
+            --name=dashboard.ticket
+
+
   lint:
     needs: [kosli-trail]
     runs-on: ubuntu-latest
