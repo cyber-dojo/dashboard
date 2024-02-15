@@ -188,6 +188,7 @@ jobs:
       - name: Attest Snyk results to Kosli Trail
         run:
           kosli attest snyk "${IMAGE_NAME}" 
+            --attachments=.snyk          
             --name=dashboard.snyk-scan 
             --scan-results=snyk.json
 
