@@ -183,12 +183,12 @@ jobs:
           snyk container test "${IMAGE_NAME}" 
             --file=Dockerfile 
             --json-file-output=snyk.json 
-            --policy-path=.snyk
+            --policy-path=snyk.policy
 
       - name: Attest Snyk results to Kosli Trail
         run:
           kosli attest snyk "${IMAGE_NAME}" 
-            --attachments=.snyk          
+            --attachments=snyk.policy          
             --name=dashboard.snyk-scan 
             --scan-results=snyk.json
 
