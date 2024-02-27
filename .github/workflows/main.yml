@@ -181,8 +181,9 @@ jobs:
         continue-on-error: true
         run:
           snyk container test "${IMAGE_NAME}" 
-            --file=Dockerfile 
-            --json-file-output=snyk.json 
+            --file=Dockerfile
+            --sarif
+            --sarif-file-output=snyk.json 
             --policy-path=.snyk
 
       - name: Attest Snyk results to Kosli Trail
