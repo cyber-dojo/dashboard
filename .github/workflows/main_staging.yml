@@ -70,7 +70,7 @@ jobs:
           gem install rubocop
           mkdir -p "${KOSLI_ATTACHMENTS}"
           set +e
-          rubocop --raise-cop-error . | tee "${KOSLI_ATTACHMENTS}"/rubocop.log
+          rubocop --config=rubocop.policy.yml --raise-cop-error . | tee "${KOSLI_ATTACHMENTS}"/rubocop.log
           STATUS=${PIPESTATUS[0]}
           set -e
 
