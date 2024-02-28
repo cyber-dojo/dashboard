@@ -75,7 +75,7 @@ jobs:
           set -e
 
           KOSLI_COMPLIANT=$([ ${STATUS} = 0 ] && echo true || echo false)
-          cp .rubocop.yml "${KOSLI_ATTACHMENTS}"
+          cp rubocop.policy.yml "${KOSLI_ATTACHMENTS}"
           kosli attest generic \
             --attachments="${KOSLI_ATTACHMENTS}" \
             --compliant="${KOSLI_COMPLIANT}" \
@@ -184,12 +184,12 @@ jobs:
             --file=Dockerfile
             --sarif
             --sarif-file-output=snyk.json 
-            --policy-path=.snyk
+            --policy-path=snyk.policy
 
       - name: Attest Snyk results to Kosli Trail
         run:
           kosli attest snyk "${IMAGE_NAME}" 
-            --attachments=.snyk          
+            --attachments=snyk.policy          
             --name=dashboard.snyk-scan 
             --scan-results=snyk.json
 
