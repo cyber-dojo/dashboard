@@ -184,12 +184,12 @@ jobs:
             --file=Dockerfile
             --sarif
             --sarif-file-output=snyk.json 
-            --policy-path=snyk.policy
+            --policy-path=.snyk
 
       - name: Attest Snyk results to Kosli Trail
         run:
           kosli attest snyk "${IMAGE_NAME}" 
-            --attachments=snyk.policy          
+            --attachments=.snyk          
             --name=dashboard.snyk-scan 
             --scan-results=snyk.json
 
