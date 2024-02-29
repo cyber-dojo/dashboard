@@ -170,12 +170,13 @@ jobs:
       - name: Run Snyk container scan and report results to Kosli Trail
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          SARIF_FILENAME: snyk.container.scan.json
         run: |
           set +e          
           snyk container test "${IMAGE_NAME}" \
             --file=Dockerfile \
             --sarif \
-            --sarif-file-output=snyk.container.scan.json \
+            --sarif-file-output="${SARIF_FILENAME}" \
             --policy-path=.snyk
           set -e
 
@@ -184,11 +185,50 @@ jobs:
           
           kosli attest snyk "${IMAGE_NAME}" \
             --name=dashboard.snyk-container-scan \
-            --scan-results=snyk.container.scan.json
+            --scan-results="${SARIF_FILENAME}"
+
+
+  snyk-code-scan:
+    needs: [build-image, kosli-trail]
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk code scan and report results to Kosli Trail
+        env:
+          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          SARIF_FILENAME: snyk.code.scan.json
+        run: |
+          set +e          
+          snyk code test \
+            --sarif \
+            --sarif-file-output="${SARIF_FILENAME}" \
+            --policy-path=.snyk \
+            .
+          set -e
+
+          mkdir "${KOSLI_ATTACHMENTS}"
+          cp .snyk "${KOSLI_ATTACHMENTS}"
+
+          kosli attest snyk "${IMAGE_NAME}" \
+            --name=dashboard.snyk-code-scan \
+            --scan-results="${SARIF_FILENAME}"
 
 
   sdlc-control-gate:
-    needs: [lint, pull-request, unit-tests, snyk-container-scan, kosli-trail, build-image]
+    needs: [lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, kosli-trail, build-image]
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}

@@ -180,12 +180,13 @@ jobs:
       - name: Run Snyk container scan and report results to Kosli Trail
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          SARIF_FILENAME: snyk.container.scan.json
         run: |
           set +e          
           snyk container test "${IMAGE_NAME}" \
             --file=Dockerfile \
             --sarif \
-            --sarif-file-output=snyk.container.scan.json \
+            --sarif-file-output="${SARIF_FILENAME}" \
             --policy-path=.snyk
           set -e
 
@@ -194,7 +195,7 @@ jobs:
 
           kosli attest snyk "${IMAGE_NAME}" \
             --name=dashboard.snyk-container-scan \
-            --scan-results=snyk.container.scan.json
+            --scan-results="${SARIF_FILENAME}"
 
 
   snyk-code-scan:
@@ -218,20 +219,22 @@ jobs:
       - name: Run Snyk code scan and report results to Kosli Trail
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          SARIF_FILENAME: snyk.code.scan.json
         run: |
           set +e          
           snyk code test \
             --sarif \
-            --sarif-file-output=snyk.code.scan.json \
+            --sarif-file-output="${SARIF_FILENAME}" \
             --policy-path=.snyk \
             .
           set -e
 
-          fail
+          mkdir "${KOSLI_ATTACHMENTS}"
+          cp .snyk "${KOSLI_ATTACHMENTS}"
 
-#          kosli attest snyk "${IMAGE_NAME}" \
-#            --name=dashboard.snyk-code-scan \
-#            --scan-results=snyk.code.scan.json
+          kosli attest snyk "${IMAGE_NAME}" \
+            --name=dashboard.snyk-code-scan \
+            --scan-results="${SARIF_FILENAME}"
 
 
   sdlc-control-gate:
