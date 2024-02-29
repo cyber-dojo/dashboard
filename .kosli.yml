@@ -8,5 +8,5 @@ trail:
           type: generic
         - name: pull-request
           type: pull_request
-        - name: snyk-scan
+        - name: snyk-container-scan
           type: snyk
