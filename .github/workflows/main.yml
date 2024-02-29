@@ -220,7 +220,7 @@ jobs:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
         run: |
           set +e          
-          snyk code test "${IMAGE_NAME}" \
+          snyk code test \
             --sarif \
             --sarif-file-output=snyk.code.scan.json \
             --policy-path=.snyk \
