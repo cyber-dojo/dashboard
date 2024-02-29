@@ -177,27 +177,21 @@ jobs:
       - name: Setup Snyk
         uses: snyk/actions/setup@master
 
-      - name: Run Snyk to check Docker image for vulnerabilities
-        continue-on-error: true
+      - name: Run Snyk to check Docker image for vulnerabilities and report results to Kosli Trail
+        env:
+          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
         run: |
-          KOSLI_ATTACHMENTS=/tmp/kosli
-          rm -rf "${KOSLI_ATTACHMENTS}" || true
-          mkdir -p "${KOSLI_ATTACHMENTS}"
+          mkdir -p "${KOSLI_ATTACHMENTS}"          
           cp .snyk "${KOSLI_ATTACHMENTS}"
           
+          set +e          
           snyk container test "${IMAGE_NAME}" 
             --file=Dockerfile
             --sarif
             --sarif-file-output=snyk.container.scan.json 
             --policy-path=.snyk | tee "${KOSLI_ATTACHMENTS}/snyk.container.scan.log
+          set -e
 
-      - name: Attest Snyk results to Kosli Trail
-        run: |
-          env | grep KOSLI_ATTACHMENTS || true 
-          KOSLI_ATTACHMENTS=/tmp/kosli
-          ls -al /tmp
-          ls -al "${KOSLI_ATTACHMENTS}"
-          
           kosli attest snyk "${IMAGE_NAME}" 
             --name=dashboard.snyk-container-scan 
             --scan-results=snyk.container.scan.json
