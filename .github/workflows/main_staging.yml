@@ -171,6 +171,7 @@ jobs:
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
         run: |
+          mkdir "${KOSLI_ATTACHMENTS}"          
           cp .snyk "${KOSLI_ATTACHMENTS}"
           
           set +e          
