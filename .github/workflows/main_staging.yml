@@ -152,10 +152,6 @@ jobs:
   snyk-container-scan:
     needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
-      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -169,8 +165,11 @@ jobs:
 
       - name: Run Snyk container scan and report results to Kosli Trail
         env:
+          IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
-          SARIF_FILENAME: snyk.container.scan.json
+          SARIF_FILENAME:    snyk.container.scan.json
+          SNYK_TOKEN:        ${{ secrets.SNYK_TOKEN }}
         run: |
           set +e          
           snyk container test "${IMAGE_NAME}" \
@@ -191,10 +190,6 @@ jobs:
   snyk-code-scan:
     needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
-      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -208,8 +203,11 @@ jobs:
 
       - name: Run Snyk code scan and report results to Kosli Trail
         env:
+          IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
-          SARIF_FILENAME: snyk.code.scan.json
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+          SARIF_FILENAME:    snyk.code.scan.json
+          SNYK_TOKEN:        ${{ secrets.SNYK_TOKEN }}
         run: |
           set +e          
           snyk code test \
