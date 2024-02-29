@@ -188,7 +188,7 @@ jobs:
             --file=Dockerfile \
             --sarif \
             --sarif-file-output=snyk.container.scan.json \
-            --policy-path=.snyk | tee "${KOSLI_ATTACHMENTS}/snyk.container.scan.log
+            --policy-path=.snyk | tee "${KOSLI_ATTACHMENTS}/snyk.container.scan.log"
           set -e
 
           kosli attest snyk "${IMAGE_NAME}" \
