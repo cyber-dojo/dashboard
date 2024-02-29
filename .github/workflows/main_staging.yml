@@ -171,17 +171,17 @@ jobs:
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
         run: |
-          mkdir "${KOSLI_ATTACHMENTS}"          
-          cp .snyk "${KOSLI_ATTACHMENTS}"
-          
           set +e          
           snyk container test "${IMAGE_NAME}" \
             --file=Dockerfile \
             --sarif \
             --sarif-file-output=snyk.container.scan.json \
-            --policy-path=.snyk | tee "${KOSLI_ATTACHMENTS}/snyk.container.scan.log"
+            --policy-path=.snyk
           set -e
 
+          mkdir "${KOSLI_ATTACHMENTS}"          
+          cp .snyk "${KOSLI_ATTACHMENTS}"
+          
           kosli attest snyk "${IMAGE_NAME}" \
             --name=dashboard.snyk-container-scan \
             --scan-results=snyk.container.scan.json
