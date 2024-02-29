@@ -159,7 +159,7 @@ jobs:
           ./sh/run_tests_with_coverage.sh          
 
 
-  snyk-scan:
+  snyk-container-scan:
     needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
     env:
@@ -186,7 +186,7 @@ jobs:
             --file=Dockerfile \
             --sarif \
             --sarif-file-output=snyk.container.scan.json \
-            --policy-path=.snyk | tee "${KOSLI_ATTACHMENTS}/snyk.container.scan.log"
+            --policy-path=.snyk
           set -e
 
           mkdir "${KOSLI_ATTACHMENTS}"
@@ -197,8 +197,45 @@ jobs:
             --scan-results=snyk.container.scan.json
 
 
+  snyk-code-scan:
+    needs: [build-image, kosli-trail]
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk code scan and report results to Kosli Trail
+        env:
+          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+        run: |
+          set +e          
+          snyk code test "${IMAGE_NAME}" \
+            --sarif \
+            --sarif-file-output=snyk.code.scan.json \
+            --policy-path=.snyk \
+            .
+          set -e
+
+          fail
+
+#          kosli attest snyk "${IMAGE_NAME}" \
+#            --name=dashboard.snyk-code-scan \
+#            --scan-results=snyk.code.scan.json
+
+
   sdlc-control-gate:
-    needs: [lint, pull-request, unit-tests, snyk-scan, kosli-trail, build-image]
+    needs: [lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, kosli-trail, build-image]
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
