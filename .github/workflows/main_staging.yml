@@ -183,9 +183,10 @@ jobs:
 
       - name: Attest Snyk results to Kosli Trail
         run: |
-          env | grep KOSLI_ATTACHMENTS 
           KOSLI_ATTACHMENTS=/tmp/kosli
+          ls -al /tmp
           ls -al "${KOSLI_ATTACHMENTS}
+          
           kosli attest snyk "${IMAGE_NAME}" 
             --name=dashboard.snyk-container-scan 
             --scan-results=snyk.container.scan.json
