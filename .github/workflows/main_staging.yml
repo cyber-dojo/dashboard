@@ -149,7 +149,7 @@ jobs:
           ./sh/run_tests_with_coverage.sh          
 
 
-  snyk-scan:
+  snyk-container-scan:
     needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
     env:
@@ -188,7 +188,7 @@ jobs:
 
 
   sdlc-control-gate:
-    needs: [lint, pull-request, unit-tests, snyk-scan, kosli-trail, build-image]
+    needs: [lint, pull-request, unit-tests, snyk-container-scan, kosli-trail, build-image]
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME:        ${{ needs.kosli-trail.outputs.image_name }}
