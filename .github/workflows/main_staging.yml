@@ -353,4 +353,4 @@ jobs:
         run: |
           docker pull "${IMAGE_NAME}"
           docker tag "${IMAGE_NAME}" cyberdojo/dashboard:latest
-          docker push "cyberdojo/dashboard:latest
+          docker push cyberdojo/dashboard:latest
