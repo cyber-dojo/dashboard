@@ -68,7 +68,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    uses: fivexl/gh-workflow-tf-plan-apply/.github/workflows/base.yml@v0.0.19
+    uses: fivexl/gh-workflow-tf-plan-apply/.github/workflows/base.yml@v0.0.18
     with:
       aws_region: ${{ needs.variables.outputs.aws_region }}
       aws_role_arn: arn:aws:iam::${{ needs.variables.outputs.aws_account_id }}:role/${{ needs.variables.outputs.gh_actions_iam_role_name }}
@@ -78,16 +78,17 @@ jobs:
       tf_apply: 'true'
       tf_version: v1.4.5
       tf_additional_env_vars: '{"TF_VAR_TAGGED_IMAGE": "${{ needs.variables.outputs.ecr_registry }}/${{ needs.variables.outputs.service_name }}:${{ needs.variables.outputs.image_tag }}"}'
-      tf_sh_version: 0.2.1
-      tf_upload_artifact_name_suffix: "_prod"
-      tf_upload_artifact_state_file: 'true'
-      tf_upload_artifact_plan: 'true'
-      tf_state_file_dir_on_s3: "terraform/${{ needs.variables.outputs.service_name }}"
-      tf_state_file_name: "${{ needs.variables.outputs.service_name }}.tfstate"
+#      tf_sh_version: 0.2.1
+#      tf_upload_artifact_name_suffix: "_prod"
+#      tf_upload_artifact_state_file: 'true'
+#      tf_upload_artifact_plan: 'true'
+#      tf_state_file_dir_on_s3: "terraform/${{ needs.variables.outputs.service_name }}"
+#      tf_state_file_name: "${{ needs.variables.outputs.service_name }}.tfstate"
 
 
   trail-attest-terraform:
     needs: deploy-to-aws-prod
+    if: false  # WIP
     permissions:
       actions: write
       contents: read
