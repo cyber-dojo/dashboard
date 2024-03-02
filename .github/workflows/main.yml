@@ -7,9 +7,9 @@ on:
 
 env:
   KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}
-  KOSLI_HOST: ${{ vars.KOSLI_HOST }} # https://app.kosli.com
-  KOSLI_ORG: ${{ vars.KOSLI_ORG }}   # cyber-dojo
-  KOSLI_FLOW: dashboard-ci
+  KOSLI_HOST: ${{ vars.KOSLI_HOST }}   # https://app.kosli.com
+  KOSLI_ORG: ${{ vars.KOSLI_ORG }}     # cyber-dojo
+  KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}   # dashboard-ci
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
   KOSLI_TRAIL: ${{ github.sha }}
 
