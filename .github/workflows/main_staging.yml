@@ -63,7 +63,6 @@ jobs:
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
         run: |
-          gem install rubocop
           mkdir -p "${KOSLI_ATTACHMENTS}"
           set +e
           make lint | tee "${KOSLI_ATTACHMENTS}"/rubocop.log
