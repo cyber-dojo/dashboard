@@ -59,11 +59,6 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2.0
-          bundler-cache: true
-
       - name: Run Rubocop linter on source, report results to Kosli Trail
         env:
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
@@ -71,14 +66,13 @@ jobs:
           gem install rubocop
           mkdir -p "${KOSLI_ATTACHMENTS}"
           set +e
-          rubocop --config=rubocop.policy.yml --raise-cop-error . | tee "${KOSLI_ATTACHMENTS}"/rubocop.log
+          make lint | tee "${KOSLI_ATTACHMENTS}"/rubocop.log
           STATUS=${PIPESTATUS[0]}
           set -e
 
           KOSLI_COMPLIANT=$([ ${STATUS} = 0 ] && echo true || echo false)
-          cp rubocop.policy.yml "${KOSLI_ATTACHMENTS}"
+          cp .rubocop.yml "${KOSLI_ATTACHMENTS}"
           kosli attest generic \
-            --attachments="${KOSLI_ATTACHMENTS}" \
             --compliant="${KOSLI_COMPLIANT}" \
             --name=dashboard.lint
           exit $STATUS
