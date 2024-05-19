@@ -4,8 +4,6 @@
 # generated for each ./build_test_publish.sh command
 # in /tmp/augmented-docker-compose.dashboard.peek.yml
 
-version: '3.7'
-
 services:
 
   nginx:
