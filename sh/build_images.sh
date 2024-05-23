@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -Eeu
 
-#source ${SCRIPTS_DIR}/augmented_docker_compose.sh
-
 # - - - - - - - - - - - - - - - - - - - - - -
 build_images()
 {

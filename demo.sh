@@ -10,7 +10,6 @@ source "${SCRIPTS_DIR}/config.sh"
 source "${SCRIPTS_DIR}/containers_down.sh"
 source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
 source "${SCRIPTS_DIR}/copy_in_saver_test_data.sh"
-#source "${SCRIPTS_DIR}/create_docker_compose_yml.sh"
 
 export $(docker run --rm cyberdojo/versioner)
 
@@ -95,7 +94,6 @@ curl_plain_200()
 log_filename() { echo -n /tmp/dashboard.log; }
 
 #- - - - - - - - - - - - - - - - - - - - - - - - - - -
-#create_docker_compose_yml
 build_images server
 build_images client
 build_images nginx
