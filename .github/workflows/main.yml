@@ -23,7 +23,7 @@ jobs:
       image_tag:   ${{ steps.variables.outputs.image_tag }}
       image_name:  ${{ steps.variables.outputs.image_name }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -57,7 +57,7 @@ jobs:
       contents: write
       pull-requests: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -75,7 +75,7 @@ jobs:
     needs: [kosli-trail]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -109,7 +109,7 @@ jobs:
     outputs:
       kosli_fingerprint: ${{ steps.variables.outputs.kosli_fingerprint }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - uses: docker/login-action@v3
         with:
@@ -147,11 +147,10 @@ jobs:
     needs: [build-image]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - name: Run tests
         run: |
-          ./sh/upgrade_docker_compose.sh          
           ./sh/run_tests_with_coverage.sh          
 
 
@@ -159,7 +158,7 @@ jobs:
     needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -197,7 +196,7 @@ jobs:
     needs: [build-image, kosli-trail]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -259,7 +258,7 @@ jobs:
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
       KOSLI_ENVIRONMENT: aws-beta
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0
 
@@ -291,7 +290,7 @@ jobs:
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
       KOSLI_ENVIRONMENT: aws-prod
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0
 
@@ -326,7 +325,7 @@ jobs:
     env:
       IMAGE_NAME: ${{ needs.kosli-trail.outputs.image_name }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
 
       - uses: docker/login-action@v3
         with:

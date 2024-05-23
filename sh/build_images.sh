@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeu
 
-source ${SCRIPTS_DIR}/augmented_docker_compose.sh
+#source ${SCRIPTS_DIR}/augmented_docker_compose.sh
 
 # - - - - - - - - - - - - - - - - - - - - - -
 build_images()
@@ -21,7 +21,7 @@ build_tagged_images()
 {
   local -r target="${1}"
 
-  augmented_docker_compose \
+  docker compose \
     build \
     --build-arg COMMIT_SHA=$(commit_sha) "${target}"
 
