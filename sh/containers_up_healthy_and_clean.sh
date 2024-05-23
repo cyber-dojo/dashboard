@@ -6,7 +6,7 @@ server_up_healthy_and_clean()
     export CONTAINER_NAME="$(server_container)"
     export CONTAINER_PORT="$(server_port)"
     export CONTAINER_USER="$(server_user)"
-    augmented_docker_compose up --detach $(server_name)
+    docker compose up --detach $(server_name)
     exit_non_zero_unless_healthy
     exit_non_zero_unless_started_cleanly
   fi
@@ -19,7 +19,7 @@ client_up_healthy_and_clean()
     export CONTAINER_NAME="$(client_container)"
     export CONTAINER_PORT="$(client_port)"
     export CONTAINER_USER="$(client_user)"
-    augmented_docker_compose up --detach $(client_name)
+    docker compose up --detach $(client_name)
     exit_non_zero_unless_healthy
     exit_non_zero_unless_started_cleanly
   fi
