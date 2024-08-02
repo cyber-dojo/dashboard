@@ -13,7 +13,7 @@ env:
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}                 # dashboard-ci
   KOSLI_TRAIL: ${{ github.sha }}
   SERVICE_NAME: ${{ github.event.repository.name }}  # dashboard
-  SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
   SONARCLOUD_PROJECT_KEY: ${{ github.repository_owner }}_${{ github.event.repository.name }}  #cyber-dojo_dashboard
 
 
