@@ -55,8 +55,8 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: write
+      id-token: read
+      contents: read
       pull-requests: read
     steps:
       - uses: actions/checkout@v4.1.1
