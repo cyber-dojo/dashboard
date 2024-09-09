@@ -345,10 +345,6 @@ jobs:
     env:
       IMAGE_NAME: ${{ needs.setup.outputs.image_name }}
     steps:
-      - uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 1
-
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
