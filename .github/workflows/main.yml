@@ -13,8 +13,7 @@ env:
   KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}                 # dashboard-ci
   KOSLI_TRAIL: ${{ github.sha }}
   SERVICE_NAME: ${{ github.event.repository.name }}  # dashboard
-  SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-  SONARCLOUD_PROJECT_KEY: ${{ github.repository_owner }}_${{ github.event.repository.name }}  #cyber-dojo_dashboard
+  KOSLI_SONAR_API_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
 
 jobs:
@@ -238,16 +237,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run SonarCloud scan - report results to Kosli Trail (in Kosli webhook)
+      - name: Run SonarCloud scan
         env:
-          SONAR_TOKEN: ${{ env.SONARCLOUD_TOKEN }}
+          SONAR_TOKEN: ${{ env.KOSLI_SONAR_API_TOKEN }}
         uses: sonarsource/sonarcloud-github-action@master
         with:
           args: >
             -Dsonar.analysis.kosli_flow=${{ env.KOSLI_FLOW }}
             -Dsonar.analysis.kosli_trail=${{ env.KOSLI_TRAIL }}
-            -Dsonar.analysis.kosli_artifact_fingerprint=${{ needs.build-image.outputs.kosli_fingerprint }}
-            -Dsonar.analysis.kosli_attestation=sonarcloud-scan
+            -Dsonar.analysis.kosli_artifact_fingerprint=${{ needs.build-image.outputs.artifact_digest }}
+            -Dsonar.analysis.kosli_attestation=sonarcloud-scan-webhook
+
+      - name: Setup Kosli CLI
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Attest SonarCloud scan results to Kosli Trail
+        env:
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.artifact_digest }}
+        run:
+          kosli attest sonar
+            --name=dashboard.sonarcloud-scan-cli
 
 
   sdlc-control-gate:
