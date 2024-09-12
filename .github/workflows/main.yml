@@ -253,7 +253,7 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Attest SonarCloud scan results to Kosli Trail
+      - name: Attest SonarCloud scan results to Kosli Trail using Kosli CLI
         env:
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
