@@ -246,19 +246,7 @@ jobs:
             -Dsonar.analysis.kosli_flow=${{ env.KOSLI_FLOW }}
             -Dsonar.analysis.kosli_trail=${{ env.KOSLI_TRAIL }}
             -Dsonar.analysis.kosli_artifact_fingerprint=${{ needs.build-image.outputs.artifact_digest }}
-            -Dsonar.analysis.kosli_attestation=sonarcloud-scan-webhook
-
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - name: Attest SonarCloud scan results to Kosli Trail
-        env:
-          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.artifact_digest }}
-        run:
-          kosli attest sonar
-            --name=dashboard.sonarcloud-scan-cli
+            -Dsonar.analysis.kosli_attestation=sonarcloud-scan
 
 
   sdlc-control-gate:
