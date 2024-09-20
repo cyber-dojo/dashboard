@@ -15,5 +15,3 @@ trail:
           type: snyk
         - name: sonarcloud-scan
           type: sonar
-        - name: sonarcloud-scan-webhook
-          type: sonar
