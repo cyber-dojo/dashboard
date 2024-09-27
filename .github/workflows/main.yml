@@ -157,30 +157,35 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
       - name: Setup Snyk
         uses: snyk/actions/setup@master
 
-      - name: Run Snyk container scan and report results to Kosli Trail
+      - name: Run Snyk container scan
         env:
-          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
-          SARIF_FILENAME:    snyk.container.scan.json
-          SNYK_TOKEN:        ${{ secrets.SNYK_TOKEN }}
-        run: |
-          set +e          
+          IMAGE_NAME:     ${{ needs.setup.outputs.image_name }}
+          SARIF_FILENAME: snyk.container.scan.json
+          SNYK_TOKEN:     ${{ secrets.SNYK_TOKEN }}
+        run:
           snyk container test "${IMAGE_NAME}" \
             --file=Dockerfile \
             --sarif \
             --sarif-file-output="${SARIF_FILENAME}" \
             --policy-path=.snyk
-          set -e
 
+      - name: Setup Kosli CLI
+        if: always()
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report Snyk container scan results to Kosli Trail
+        if: always()
+        env:
+          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          SARIF_FILENAME:    snyk.container.scan.json
+        run:
           mkdir "${KOSLI_ATTACHMENTS}"
           cp .snyk "${KOSLI_ATTACHMENTS}"
 
@@ -197,30 +202,34 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
       - name: Setup Snyk
         uses: snyk/actions/setup@master
 
-      - name: Run Snyk code scan and report results to Kosli Trail
+      - name: Run Snyk code scan
         env:
-          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
-          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-          SARIF_FILENAME:    snyk.code.scan.json
-          SNYK_TOKEN:        ${{ secrets.SNYK_TOKEN }}
-        run: |
-          set +e          
+          SARIF_FILENAME: snyk.code.scan.json
+          SNYK_TOKEN:     ${{ secrets.SNYK_TOKEN }}
+        run:
           snyk code test \
             --sarif \
             --sarif-file-output="${SARIF_FILENAME}" \
             --policy-path=.snyk \
             .
-          set -e
 
+      - name: Setup Kosli CLI
+        if: always()
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Report Snyk code scan results to Kosli Trail
+        if: always()
+        env:
+          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
+          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+          SARIF_FILENAME:    snyk.code.scan.json
+        run: |
           mkdir "${KOSLI_ATTACHMENTS}"
           cp .snyk "${KOSLI_ATTACHMENTS}"
 
@@ -243,11 +252,13 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@master
 
       - name: Setup Kosli CLI
+        if: always()
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest SonarCloud scan results to Kosli Trail using Kosli CLI
+        if: always()
         env:
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
