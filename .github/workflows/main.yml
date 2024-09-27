@@ -173,20 +173,20 @@ jobs:
             --policy-path=.snyk
 
       - name: Setup Kosli CLI
-        if: always()
+        if: success() || failure()
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Report Snyk container scan results to Kosli Trail
-        if: always()
+      - name: Attest Snyk container scan results to Kosli Trail
+        if: success() || failure()
         env:
           IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
           SARIF_FILENAME:    snyk.container.scan.json
-        run:
-          mkdir "${KOSLI_ATTACHMENTS}"
+        run: |
+          mkdir -p "${KOSLI_ATTACHMENTS}"
           cp .snyk "${KOSLI_ATTACHMENTS}"
 
           kosli attest snyk "${IMAGE_NAME}" \
@@ -217,20 +217,20 @@ jobs:
             .
 
       - name: Setup Kosli CLI
-        if: always()
+        if: success() || failure()
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Report Snyk code scan results to Kosli Trail
-        if: always()
+      - name: Attest Snyk code scan results to Kosli Trail
+        if: success() || failure()
         env:
           IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
           KOSLI_ATTACHMENTS: /tmp/kosli_attachments
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
           SARIF_FILENAME:    snyk.code.scan.json
         run: |
-          mkdir "${KOSLI_ATTACHMENTS}"
+          mkdir -p "${KOSLI_ATTACHMENTS}"
           cp .snyk "${KOSLI_ATTACHMENTS}"
 
           kosli attest snyk "${IMAGE_NAME}" \
@@ -252,13 +252,13 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@master
 
       - name: Setup Kosli CLI
-        if: always()
+        if: success() || failure()
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest SonarCloud scan results to Kosli Trail using Kosli CLI
-        if: always()
+        if: success() || failure()
         env:
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
