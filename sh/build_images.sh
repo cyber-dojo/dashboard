@@ -17,7 +17,7 @@ build_images()
 # - - - - - - - - - - - - - - - - - - - - - -
 build_tagged_images()
 {
-  local -r target="${1}"
+  local -r target="${1:-$(server_name)}"
 
   docker compose \
     build \
