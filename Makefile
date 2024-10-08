@@ -1,6 +1,6 @@
 
 SHORT_SHA := $(shell git rev-parse HEAD | head -c7)
-IMAGE_NAME := cyberdojo/differ:${SHORT_SHA}
+IMAGE_NAME := cyberdojo/dashboard:${SHORT_SHA}
 
 .PHONY: all image test lint snyk demo image
 
