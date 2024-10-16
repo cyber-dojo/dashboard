@@ -51,8 +51,6 @@ jobs:
   pull-request:
     runs-on: ubuntu-latest
     needs: [setup]
-    env:
-      KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
     permissions:
       id-token: write
       contents: read
@@ -68,6 +66,8 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest pull-request evidence to Kosli
+        env:
+          KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
         run:
           kosli attest pullrequest github
             --github-token="${{ secrets.GITHUB_TOKEN }}"
@@ -77,43 +77,37 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     needs: [setup]
-    env:
-      KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
+      - name: Run Rubocop linter on source
+        id: lint
+        run:
+          make lint
+
       - name: Setup Kosli CLI
+        if: success() || failure()
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
-      - name: Run Rubocop linter on source, attest results to Kosli
+      - name: Attest results to Kosli
+        if: success() || failure()
         env:
-          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
         run: |
-          mkdir -p "${KOSLI_ATTACHMENTS}"
-          set +e
-          make lint | tee "${KOSLI_ATTACHMENTS}"/rubocop.log
-          STATUS=${PIPESTATUS[0]}          
-          set -e
-
-          KOSLI_COMPLIANT=$([ ${STATUS} = 0 ] && echo true || echo false)
-          cp .rubocop.yml "${KOSLI_ATTACHMENTS}"
+          KOSLI_COMPLIANT=$([ "${{ steps.lint.outcome }}" == 'success' ] && echo true || echo false)          
           kosli attest generic \
-            --compliant="${KOSLI_COMPLIANT}" \
             --name=dashboard.lint
-          
-          exit $STATUS
-          
+
 
   build-image:
     runs-on: ubuntu-latest
     needs: [setup]
     env:
-      IMAGE_NAME:    ${{ needs.setup.outputs.image_name }}
-      KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
+      IMAGE_NAME: ${{ needs.setup.outputs.image_name }}
     outputs:
       kosli_fingerprint: ${{ steps.variables.outputs.kosli_fingerprint }}
     steps:
@@ -136,20 +130,19 @@ jobs:
             COMMIT_SHA=${{ github.sha }}
 
       - name: Setup Kosli CLI
-        if: success() || failure()
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest image to Kosli
-        if: success() || failure()
+        env:
+          KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
         run:
           kosli attest artifact "${IMAGE_NAME}" 
             --artifact-type=docker
             --name=dashboard
 
-      - name: Set outputs
-        if: success() || failure()
+      - name: Make Artifact fingerprint available to following jobs
         id: variables
         run: |
           FINGERPRINT=$(kosli fingerprint "${IMAGE_NAME}" --artifact-type=docker)
@@ -173,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
     env:
-      KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
+      SARIF_FILENAME: snyk.container.scan.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -184,14 +177,13 @@ jobs:
 
       - name: Run Snyk container scan
         env:
-          IMAGE_NAME:     ${{ needs.setup.outputs.image_name }}
-          SARIF_FILENAME: snyk.container.scan.json
-          SNYK_TOKEN:     ${{ secrets.SNYK_TOKEN }}
+          IMAGE_NAME: ${{ needs.setup.outputs.image_name }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run:
-          snyk container test "${IMAGE_NAME}" \
-            --file=Dockerfile \
-            --sarif \
-            --sarif-file-output="${SARIF_FILENAME}" \
+          snyk container test "${IMAGE_NAME}" 
+            --file=Dockerfile 
+            --sarif 
+            --sarif-file-output="${SARIF_FILENAME}" 
             --policy-path=.snyk
 
       - name: Setup Kosli CLI
@@ -203,13 +195,11 @@ jobs:
       - name: Attest Snyk container scan results to Kosli
         if: success() || failure()
         env:
-          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
+          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-          KOSLI_ATTACHMENTS: .snyk
-          SARIF_FILENAME:    snyk.container.scan.json
         run:
-          kosli attest snyk "${IMAGE_NAME}"
-            --name=dashboard.snyk-container-scan
+          kosli attest snyk 
+            --name=dashboard.snyk-container-scan 
             --scan-results="${SARIF_FILENAME}"
 
 
@@ -217,7 +207,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
     env:
-      KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
+      SARIF_FILENAME: snyk.code.scan.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -228,13 +218,12 @@ jobs:
 
       - name: Run Snyk code scan
         env:
-          SARIF_FILENAME: snyk.code.scan.json
-          SNYK_TOKEN:     ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run:
-          snyk code test \
-            --sarif \
-            --sarif-file-output="${SARIF_FILENAME}" \
-            --policy-path=.snyk \
+          snyk code test 
+            --sarif 
+            --sarif-file-output="${SARIF_FILENAME}" 
+            --policy-path=.snyk 
             .
 
       - name: Setup Kosli CLI
@@ -246,24 +235,17 @@ jobs:
       - name: Attest Snyk code scan results to Kosli
         if: success() || failure()
         env:
-          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-          KOSLI_ATTACHMENTS: /tmp/kosli_attachments
+          KOSLI_DRY_RUN:  ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-          SARIF_FILENAME:    snyk.code.scan.json
-        run: |
-          mkdir -p "${KOSLI_ATTACHMENTS}"
-          cp .snyk "${KOSLI_ATTACHMENTS}"
-
-          kosli attest snyk "${IMAGE_NAME}" \
-            --name=dashboard.snyk-code-scan \
+        run:
+          kosli attest snyk
+            --name=dashboard.snyk-code-scan 
             --scan-results="${SARIF_FILENAME}"
 
 
   sonarcloud-scan:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
-    env:
-      KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -283,6 +265,7 @@ jobs:
       - name: Attest SonarCloud scan results to Kosli using Kosli CLI
         if: success() || failure()
         env:
+          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
           kosli attest sonar
@@ -292,10 +275,6 @@ jobs:
   sdlc-control-gate:
     needs: [setup, lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, setup, build-image, sonarcloud-scan]
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-      KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
-      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
     steps:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -303,6 +282,10 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Kosli SDLC gate to short-circuit the workflow
+        env:
+          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
+          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
           kosli assert artifact "${IMAGE_NAME}"
 
@@ -310,11 +293,6 @@ jobs:
   approve-deployment-to-beta:
     runs-on: ubuntu-latest
     needs: [setup, sdlc-control-gate, setup, build-image]
-    env:
-      IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-      KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
-      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-      KOSLI_ENVIRONMENT: aws-beta
     environment:
       name: staging
       url: https://beta.cyber-dojo.org
@@ -329,6 +307,11 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
+        env:
+          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
+          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+          KOSLI_ENVIRONMENT: aws-beta
         run:
           kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
@@ -343,11 +326,6 @@ jobs:
   approve-deployment-to-prod:
     runs-on: ubuntu-latest
     needs: [setup, deploy-to-beta, setup, build-image]
-    env:
-      IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-      KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
-      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
-      KOSLI_ENVIRONMENT: aws-prod
     environment:
       name: production
       url: https://cyber-dojo.org
@@ -362,6 +340,11 @@ jobs:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
+        env:
+          IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
+          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
+          KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
+          KOSLI_ENVIRONMENT: aws-prod
         run:
           kosli report approval "${IMAGE_NAME}"
             --approver="${{ github.actor }}"
