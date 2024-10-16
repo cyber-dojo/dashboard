@@ -1,4 +1,4 @@
-name: Main - reports Trails to https://app.kosli.com
+name: Main - Attests to https://app.kosli.com
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  # KOSLI_DRY_RUN: true                              # Repo override
+  KOSLI_DRY_RUN: ${{ vars.KOSLI_DRY_RUN }}           # false
   KOSLI_HOST: ${{ vars.KOSLI_HOST }}                 # https://app.kosli.com
   KOSLI_ORG: ${{ vars.KOSLI_ORG }}                   # cyber-dojo
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
@@ -23,7 +23,6 @@ jobs:
     outputs:
       image_tag:     ${{ steps.variables.outputs.image_tag }}
       image_name:    ${{ steps.variables.outputs.image_name }}
-      kosli_dry_run: ${{ steps.vars.outputs.kosli_dry_run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,21 +35,10 @@ jobs:
           echo "image_tag=${IMAGE_TAG}" >> ${GITHUB_OUTPUT}       
           echo "image_name=cyberdojo/${{ env.SERVICE_NAME }}:${IMAGE_TAG}" >> ${GITHUB_OUTPUT}          
 
-          if [ "${{ vars.KOSLI_DRY_RUN }}" == "true" ] ; then      # Org override
-            value=true   
-          elif [ "${{ env.KOSLI_DRY_RUN }}" != "" ] ; then         # Repo override
-            value="${{ env.KOSLI_DRY_RUN }}"  
-          elif [ "${{ github.ref }}" == 'refs/heads/main' ] ; then # Branch check
-            value=false
-          else
-            value=true                                             # Default
-          fi
-          echo "kosli_dry_run=${value}" >> ${GITHUB_OUTPUT}
-
 
   pull-request:
     runs-on: ubuntu-latest
-    needs: [setup]
+    needs: []
     permissions:
       id-token: write
       contents: read
@@ -61,13 +49,13 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Kosli CLI
+        if: ${{ github.ref }} == 'refs/heads/main'
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest pull-request evidence to Kosli
-        env:
-          KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
+        if: ${{ github.ref }} == 'refs/heads/main'
         run:
           kosli attest pullrequest github
             --github-token="${{ secrets.GITHUB_TOKEN }}"
@@ -76,7 +64,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    needs: [setup]
+    needs: []
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,15 +76,13 @@ jobs:
           make lint
 
       - name: Setup Kosli CLI
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest results to Kosli
-        if: success() || failure()
-        env:
-          KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         run: |
           KOSLI_COMPLIANT=$([ "${{ steps.lint.outcome }}" == 'success' ] && echo true || echo false)          
           kosli attest generic \
@@ -130,13 +116,13 @@ jobs:
             COMMIT_SHA=${{ github.sha }}
 
       - name: Setup Kosli CLI
+        if: ${{ github.ref }} == 'refs/heads/main'
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest image to Kosli
-        env:
-          KOSLI_DRY_RUN: ${{ needs.setup.outputs.kosli_dry_run }}
+        if: ${{ github.ref }} == 'refs/heads/main'
         run:
           kosli attest artifact "${IMAGE_NAME}" 
             --artifact-type=docker
@@ -187,15 +173,14 @@ jobs:
             --policy-path=.snyk
 
       - name: Setup Kosli CLI
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest Snyk container scan results to Kosli
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         env:
-          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
           kosli attest snyk 
@@ -227,15 +212,14 @@ jobs:
             .
 
       - name: Setup Kosli CLI
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest Snyk code scan results to Kosli
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         env:
-          KOSLI_DRY_RUN:  ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
           kosli attest snyk
@@ -257,15 +241,14 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@master
 
       - name: Setup Kosli CLI
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest SonarCloud scan results to Kosli using Kosli CLI
-        if: success() || failure()
+        if: ${{ github.ref }} == 'refs/heads/main' && (success() || failure())
         env:
-          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
           kosli attest sonar
@@ -273,18 +256,19 @@ jobs:
 
 
   sdlc-control-gate:
-    needs: [setup, lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, setup, build-image, sonarcloud-scan]
+    needs: [setup, build-image, lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, sonarcloud-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Kosli CLI
+        if: ${{ github.ref }} == 'refs/heads/main'
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Kosli SDLC gate to short-circuit the workflow
+        if: ${{ github.ref }} == 'refs/heads/main'
         env:
           IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
         run:
           kosli assert artifact "${IMAGE_NAME}"
@@ -292,7 +276,7 @@ jobs:
 
   approve-deployment-to-beta:
     runs-on: ubuntu-latest
-    needs: [setup, sdlc-control-gate, setup, build-image]
+    needs: [setup, build-image, sdlc-control-gate]
     environment:
       name: staging
       url: https://beta.cyber-dojo.org
@@ -302,14 +286,15 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Kosli CLI
+        if: ${{ github.ref }} == 'refs/heads/main'
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
+        if: ${{ github.ref }} == 'refs/heads/main'
         env:
           IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
           KOSLI_ENVIRONMENT: aws-beta
         run:
@@ -317,7 +302,7 @@ jobs:
             --approver="${{ github.actor }}"
 
   deploy-to-beta:
-    needs: [approve-deployment-to-beta, setup]
+    needs: [setup, approve-deployment-to-beta]
     uses: ./.github/workflows/sub_deploy_to_beta.yml
     with:
       IMAGE_TAG: ${{ needs.setup.outputs.image_tag }}
@@ -325,7 +310,7 @@ jobs:
 
   approve-deployment-to-prod:
     runs-on: ubuntu-latest
-    needs: [setup, deploy-to-beta, setup, build-image]
+    needs: [setup, build-image, deploy-to-beta]
     environment:
       name: production
       url: https://cyber-dojo.org
@@ -335,14 +320,15 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Kosli CLI
+        if: ${{ github.ref }} == 'refs/heads/main'
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
+        if: ${{ github.ref }} == 'refs/heads/main'
         env:
           IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
-          KOSLI_DRY_RUN:     ${{ needs.setup.outputs.kosli_dry_run }}
           KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.kosli_fingerprint }}
           KOSLI_ENVIRONMENT: aws-prod
         run:
@@ -351,7 +337,7 @@ jobs:
 
 
   deploy-to-prod:
-    needs: [approve-deployment-to-prod, setup]
+    needs: [setup, approve-deployment-to-prod]
     uses: ./.github/workflows/sub_deploy_to_prod.yml
     with:
       IMAGE_TAG: ${{ needs.setup.outputs.image_tag }}
@@ -365,7 +351,7 @@ jobs:
   #   - use the 1st 7 chars of the SHA as a latest-equivalent tag
 
   push-latest:
-    needs: [deploy-to-prod, setup]
+    needs: [setup, deploy-to-prod]
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ needs.setup.outputs.image_name }}
