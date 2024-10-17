@@ -195,7 +195,7 @@ jobs:
           TAG=${{ needs.short-sha.outputs.value }}
           FINGERPRINT=$(kosli fingerprint "${IMAGE_NAME}" --artifact-type=docker)
           echo "tag=${TAG}"                 >> ${GITHUB_OUTPUT}
-          echo "name="${IMAGE_NAME}"        >> ${GITHUB_OUTPUT}
+          echo "name=${IMAGE_NAME}"         >> ${GITHUB_OUTPUT}
           echo "fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
               
 
