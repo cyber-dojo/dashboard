@@ -107,6 +107,32 @@ jobs:
             --scan-results="${SARIF_FILENAME}"
 
 
+  sonarcloud-scan:
+    runs-on: ubuntu-latest
+    needs: []
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SonarCloud scan
+        env:
+          SONAR_TOKEN: ${{ env.KOSLI_SONAR_API_TOKEN }}
+        uses: sonarsource/sonarcloud-github-action@master
+
+      - name: Setup Kosli CLI
+        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        uses: kosli-dev/setup-cli-action@v2
+        with:
+          version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Attest SonarCloud scan results to Kosli using Kosli CLI
+        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        run:
+          kosli attest sonar
+            --name=dashboard.sonarcloud-scan
+
+
   short-sha:
     runs-on: ubuntu-latest
     outputs:
@@ -171,32 +197,6 @@ jobs:
           echo "name=${IMAGE_NAME}"         >> ${GITHUB_OUTPUT}
           echo "fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
               
-
-  sonarcloud-scan:
-    runs-on: ubuntu-latest
-    needs: []
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run SonarCloud scan
-        env:
-          SONAR_TOKEN: ${{ env.KOSLI_SONAR_API_TOKEN }}
-        uses: sonarsource/sonarcloud-github-action@master
-
-      - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
-        uses: kosli-dev/setup-cli-action@v2
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
-
-      - name: Attest SonarCloud scan results to Kosli using Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
-        run:
-          kosli attest sonar
-            --name=dashboard.sonarcloud-scan
-
 
   unit-tests:
     needs: [image]
