@@ -1,13 +1,8 @@
-ARG BASE_IMAGE=cyberdojo/sinatra-base:f20e0b5
-FROM ${BASE_IMAGE}
-# ARGs are reset after FROM See https://github.com/moby/moby/issues/34129
-ARG BASE_IMAGE
-ENV BASE_IMAGE=${BASE_IMAGE}
-
+FROM cyberdojo/sinatra-base:11ddc45
 LABEL maintainer=jon@jaggersoft.com
 
 WORKDIR /dashboard
-COPY --chown=nobody:nogroup . .
+COPY . .
 
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}
