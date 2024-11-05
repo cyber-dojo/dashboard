@@ -7,6 +7,31 @@
   deploying, with Continuous Compliance, to [staging](https://app.kosli.com/cyber-dojo/environments/aws-beta/snapshots/) and [production](https://app.kosli.com/cyber-dojo/environments/aws-prod/snapshots/) AWS environments.
 - Uses patterns from https://www.kosli.com/blog/using-kosli-attest-in-github-action-workflows-some-tips/
 
+# Development
+
+```bash
+# To build the image
+$ make image_server
+
+# To run all tests
+$ make test_server
+
+# To run only specific tests
+$ ./bin/run_tests.sh {-h|--help}
+$ ./bin/run_tests.sh server 449AC6
+
+# To check coverage metrics
+$ make coverage_server
+
+# To run snyk-container-scan
+$ make snyk_container_scan
+
+# To run rubocop-lint
+$ make rubocop_lint
+
+# To run demo
+$ make demo
+```
 
 - - - -
 * [GET alive](docs/api.md#get-alive)  
