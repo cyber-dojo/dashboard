@@ -349,7 +349,7 @@ jobs:
             --approver="${{ github.actor }}"
 
   deploy-to-beta:
-    needs: [image, approve-deployment-to-beta]
+    needs: [build-image, approve-deployment-to-beta]
     uses: ./.github/workflows/sub_deploy_to_beta.yml
     with:
       IMAGE_TAG: ${{ needs.build-image.outputs.tag }}
