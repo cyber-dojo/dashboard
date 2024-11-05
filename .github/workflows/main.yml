@@ -173,7 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup, short-sha]
     env:
-      IMAGE_NAME: cyberdojo/${{ github.event.repository.name }}:${{ needs.short-sha.outputs.value }}
+      IMAGE_NAME: 244531986313.dkr.ecr.eu-central-1.amazonaws.com/dashboard:${{ needs.short-sha.outputs.value }}
     outputs:
       tag:         ${{ steps.variables.outputs.tag }}
       name:        ${{ steps.variables.outputs.name }}
@@ -409,5 +409,5 @@ jobs:
       - name: Tag image to :latest and push to Dockerhub Registry
         run: |
           docker pull "${IMAGE_NAME}"
-          docker tag "${IMAGE_NAME}" cyberdojo/${{ env.SERVICE_NAME }}:latest
-          docker push cyberdojo/${{ env.SERVICE_NAME }}:latest
+          docker tag "${IMAGE_NAME}" cyberdojo/dashboard:latest
+          docker push cyberdojo/dashboard:latest
