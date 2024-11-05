@@ -266,7 +266,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.IMAGE_TAR_FILENAME }}
-          key: ${{ needs.setup.outputs.image_name }}
+          key: ${{ needs.build-image.outputs.name }}
 
       - name: Load Docker image
         run:
@@ -322,7 +322,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.IMAGE_TAR_FILENAME }}
-          key: ${{ needs.setup.outputs.image_name }}
+          key: ${{ needs.build-image.outputs.name }}
 
       - name: Load Docker image
         run:
