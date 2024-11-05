@@ -12,21 +12,20 @@ services:
     user: root
 
   client:
-    image: cyberdojo/dashboard-client:${COMMIT_TAG}
-    user: nobody
+    image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
     build:
       args: [ COMMIT_SHA ]
-      context: test/client
-    container_name: test_dashboard_client
+      context: source/client
+    container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}
     depends_on:
       - server
     env_file: [ .env ]
-    ports: [ 9999:9999 ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
     read_only: true
-    restart: "no"
+    restart: no
     volumes:
-      - ./test/client:/dashboard:ro
-      - ./test:/test:ro
+      - ./test:/dashboard/test:ro
       - type: tmpfs
         target: /tmp
         tmpfs:
@@ -34,22 +33,21 @@ services:
           size: 10485760  # 10MB
 
   server:
-    image: cyberdojo/dashboard:${COMMIT_TAG}
-    user: nobody
+    image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
     build:
-      context: .
       args: [ COMMIT_SHA ]
-    container_name: test_dashboard_server
+      context: .
+    container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}
     depends_on:
       - differ
       - saver
     env_file: [ .env ]
-    ports: [ 4527:4527 ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
-    restart: "no"
+    restart: no
     volumes:
-      - ./app:/app:ro
-      - ./test:/test:ro
+      - ./test:/dashboard/test:ro
       - type: tmpfs
         target: /tmp
         tmpfs:
@@ -73,7 +71,7 @@ services:
     env_file: [ .env ]
     init: true
     read_only: true
-    restart: "no"
+    restart: no
     tmpfs:
       - /cyber-dojo:uid=19663,gid=65533
       - /tmp:uid=19663,gid=65533

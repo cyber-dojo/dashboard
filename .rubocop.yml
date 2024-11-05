@@ -3,12 +3,64 @@ AllCops:
 
 Layout/LineLength:
   Exclude:
-    - test/simplecov_json.rb
+    - test/simplecov_formatter_json.rb
     - test/data/cyber-dojo/kata_test_data.rb
 
-Naming/VariableNumber:
+Layout/SpaceInsideArrayLiteralBrackets:
+  Exclude:
+    - test/server/check_test_metrics.rb
+
+Layout/SpaceInsideReferenceBrackets:
+  Exclude:
+    - test/server/check_test_metrics.rb
+
+Lint/IneffectiveAccessModifier:
+  Exclude:
+    - source/server/app/app_base.rb
+
+Metrics/AbcSize:
+  Exclude:
+    - test/simplecov_formatter_json.rb
+    - test/id58_test_base.rb
+    - test/server/check_test_metrics.rb
+    - source/server/app/helpers/td_gapper.rb
+    - source/server/app/helpers/gatherer.rb
+    - source/server/app/helpers/avatars_progress.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - test/server/td_gapper_test.rb
+    - source/server/app/app_base.rb
+
+Metrics/ClassLength:
+  Exclude:
+    - test/server/td_gapper_test.rb
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - test/id58_test_base.rb
+    - source/server/app/helpers/td_gapper.rb
+    - source/server/app/helpers/avatars_progress.rb
+
+Metrics/ModuleLength:
   Exclude:
     - test/data/cyber-dojo/kata_test_data.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - test/id58_test_base.rb
+    - test/slim_json_reporter.rb
+    - test/simplecov_formatter_json.rb
+    - test/data/cyber-dojo/kata_test_data.rb
+    - test/server/check_test_metrics.rb
+    - source/server/app/helpers/td_gapper.rb
+    - source/server/app/helpers/gatherer.rb
+    - source/server/app/helpers/avatars_progress.rb
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - source/server/app/helpers/td_gapper.rb
+    - source/server/app/helpers/avatars_progress.rb
 
 Naming/MethodName:
   Exclude:
@@ -17,100 +69,61 @@ Naming/MethodName:
 Naming/MethodParameterName:
   Exclude:
     - test/id58_test_base.rb
-    - app/helpers/td_gapper.rb
-    - app/app_base.rb
+    - source/server/app/helpers/td_gapper.rb
+    - source/server/app/app_base.rb
 
-Metrics/AbcSize:
-  Exclude:
-    - test/simplecov_json.rb
-    - test/id58_test_base.rb
-    - app/helpers/td_gapper.rb
-    - app/helpers/gatherer.rb
-    - app/helpers/avatars_progress.rb
-
-Metrics/BlockLength:
-  Exclude:
-    - test/server/td_gapper_test.rb
-    - app/app_base.rb
-
-Metrics/ClassLength:
-  Exclude:
-    - test/server/td_gapper_test.rb
-
-Metrics/ModuleLength:
+Naming/VariableNumber:
   Exclude:
     - test/data/cyber-dojo/kata_test_data.rb
 
-Metrics/MethodLength:
+Security/Eval:
   Exclude:
-    - test/simplecov_json.rb
-    - test/data/cyber-dojo/kata_test_data.rb
-    - test/id58_test_base.rb
-    - app/helpers/td_gapper.rb
-    - app/helpers/gatherer.rb
-    - app/helpers/avatars_progress.rb
+    - test/server/check_test_metrics.rb
 
-Metrics/PerceivedComplexity:
-  Exclude:
-    - app/helpers/td_gapper.rb
-    - app/helpers/avatars_progress.rb
-
-Metrics/CyclomaticComplexity:
+Style/CaseEquality:
   Exclude:
     - test/id58_test_base.rb
-    - app/helpers/td_gapper.rb
-    - app/helpers/avatars_progress.rb
+    - source/client/code/app_base.rb
+    - source/server/config/config.ru
+    - source/server/app/app_base.rb
 
-Lint/IneffectiveAccessModifier:
+Style/ClassAndModuleChildren:
   Exclude:
-    - app/app_base.rb
+    - test/slim_json_reporter.rb
 
 Style/ClassVars:
   Exclude:
     - test/id58_test_base.rb
 
-Style/FormatStringToken:
-  Exclude:
-    - test/id58_test_base.rb
-
-Style/CaseEquality:
-  Exclude:
-    - test/id58_test_base.rb
-    - test/client/code/app_base.rb
-    - config/config.ru
-    - app/app_base.rb
-
 Style/Documentation:
   Exclude:
-    - app/http_json_hash/unpacker.rb
-    - app/http_json_hash/service_error.rb
-    - app/http_json_hash/service.rb
-    - app/http_json_hash/requester.rb
-    - test/simplecov_json.rb
+    - test/slim_json_reporter.rb
+    - test/simplecov_formatter_json.rb
+    - test/id58_test_base.rb
     - test/server/test_base.rb
-    - test/server/td_gapper_test.rb
     - test/server/td_gapper_test.rb
     - test/server/gather_test.rb
     - test/server/avatars_progress_test.rb
-    - test/id58_test_base.rb
     - test/data/cyber-dojo/kata_test_data.rb
-    - test/client/code/http_json_hash/unpacker.rb
-    - test/client/code/http_json_hash/service_error.rb
-    - test/client/code/http_json_hash/service.rb
-    - test/client/code/http_json_hash/requester.rb
-    - test/client/code/externals.rb
-    - test/client/code/external_saver.rb
-    - test/client/code/external_http.rb
-    - test/client/code/external_dashboard.rb
-    - test/client/code/dashboard.rb
-    - test/client/code/app_base.rb
-    - test/client/code/app.rb
-    - app/helpers/td_gapper.rb
-    - app/helpers/light.rb
-    - app/helpers/app_helpers.rb
-    - app/externals.rb
-    - app/external_time.rb
-    - app/external_saver.rb
-    - app/external_http.rb
-    - app/app_base.rb
-    - app/app.rb
+    - source/**/*.rb
+
+Style/DocumentDynamicEvalDefinition:
+  Exclude:
+    - test/server/check_test_metrics.rb
+
+Style/EvalWithLocation:
+  Exclude:
+    - test/server/check_test_metrics.rb
+
+Style/FormatString:
+  Exclude:
+    - test/server/check_test_metrics.rb
+
+Style/FormatStringToken:
+  Exclude:
+    - test/id58_test_base.rb
+    - test/server/check_test_metrics.rb
+
+Style/TrailingCommaInArrayLiteral:
+  Exclude:
+    - test/server/check_test_metrics.rb

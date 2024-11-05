@@ -7,8 +7,6 @@ class TdGapper
     @max_seconds_uncollapsed = max_seconds_uncollapsed
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def fully_gapped(all_lights, now)
     s = stats(all_lights, now)
     vertical_bleed(s)
@@ -60,8 +58,6 @@ class TdGapper
     strip(s[:katas])
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def time_ticks(gapped)
     return {} if gapped == {}
 
@@ -76,8 +72,6 @@ class TdGapper
     end
     ticks
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def stats(all_lights, now)
     obj = { katas: {}, td_nos: [0, n(now)] }
@@ -100,8 +94,6 @@ class TdGapper
     # eg td_nos: [ 0,5,7,11,99 ]
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def vertical_bleed(s)
     s[:td_nos].each do |n|
       s[:katas].each_value do |td_map|
@@ -113,8 +105,6 @@ class TdGapper
     #     '3s1BqT' => { 0=>[], 5=>[A],   7=>[G,A], 11=>[],   99=>[] }
     #   }
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def collapsed_table(td_nos)
     max_uncollapsed_tds = @max_seconds_uncollapsed / @seconds_per_td
@@ -145,8 +135,6 @@ class TdGapper
     # }
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def strip(gapped)
     # remove lightless columns from both ends
     return gapped if gapped == {}
@@ -169,8 +157,6 @@ class TdGapper
     end
     gapped
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def number(light)
     n(light.time)

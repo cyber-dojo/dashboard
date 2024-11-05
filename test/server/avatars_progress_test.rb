@@ -2,18 +2,18 @@
 
 require_relative 'test_base'
 require_relative '../data/cyber-dojo/kata_test_data'
-require_source 'helpers/app_helpers'
+require_source 'helpers/gatherer'
+require_source 'helpers/avatars_progress'
 
 class AvatarsProgressTest < TestBase
   def self.id58_prefix
     '0D6'
   end
 
-  include AppHelpers
+  include AvatarsProgressHelper
+  include KataTestData
 
   attr_reader :params
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'b46',
        'contract-test v0' do
@@ -29,8 +29,6 @@ class AvatarsProgressTest < TestBase
     actual = avatars_progress
     assert_equal expected, actual
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'b47',
        'contract-test v1' do
@@ -52,6 +50,4 @@ class AvatarsProgressTest < TestBase
     actual = avatars_progress
     assert_equal expected, actual
   end
-
-  include KataTestData
 end

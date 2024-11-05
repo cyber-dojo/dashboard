@@ -1,19 +1,11 @@
 #!/usr/bin/env bash
 set -Eeu
 
-export MY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export SCRIPTS_DIR="${MY_DIR}/sh"
+export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/bin/lib.sh"
+#source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
+export $(echo_versioner_env_vars)
 
-source "${SCRIPTS_DIR}/lib.sh"
-source "${SCRIPTS_DIR}/build_images.sh"
-source "${SCRIPTS_DIR}/config.sh"
-source "${SCRIPTS_DIR}/containers_down.sh"
-source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
-source "${SCRIPTS_DIR}/copy_in_saver_test_data.sh"
-
-export $(docker run --rm cyberdojo/versioner)
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_smoke_test()
 {
   echo curl log in $(log_filename)
@@ -23,12 +15,11 @@ curl_smoke_test()
   curl_json_body_200 ready
   curl_json_body_200 sha
 
-  curl_plain_200 assets/app.css 'Content-Type: text/css'
-  curl_plain_200 assets/app.js 'Content-Type: application/javascript'
+  curl_plain_200 assets/app.css 'content-type: text/css'
+  curl_plain_200 assets/app.js 'content-type: application/javascript'
   curl_plain_200 show/FxWwrr dashboard-page
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_json()
 {
   local -r route="${1}"  # eg ready
@@ -44,14 +35,13 @@ curl_json()
       > "$(log_filename)" 2>&1
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_json_body_200()
 {
   local -r route="${1}"  # eg ready
   echo -n "GET ${route} => 200 ...|"
   if curl_json "${route}" && grep --quiet 200 "$(log_filename)"; then
     local -r result=$(tail -n 1 "$(log_filename)")
-    echo "${result}"
+    echo "${result} SUCCESS"
   else
     echo FAILED
     echo
@@ -60,7 +50,6 @@ curl_json_body_200()
   fi
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_plain()
 {
   local -r route="${1}"   # eg dashboard/choose
@@ -73,7 +62,6 @@ curl_plain()
       > "$(log_filename)" 2>&1
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
 curl_plain_200()
 {
   local -r route="${1}"   # eg dashboard/choose
@@ -90,21 +78,28 @@ curl_plain_200()
   fi
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
 log_filename() { echo -n /tmp/dashboard.log; }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - -
-build_images server
-build_images client
-build_images nginx
-docker compose up --detach nginx
-server_up_healthy_and_clean $(server_name)
-copy_in_saver_test_data
-curl_smoke_test
-if [ "${1:-}" == '--no-browser' ]; then
-  containers_down
-else
-  open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
-  open "http://localhost/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
-  open "http://localhost/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
-fi
+server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
+
+
+demo()
+{
+  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" server
+  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
+  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" nginx
+  docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 nginx
+  docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 server
+  exit_non_zero_unless_started_cleanly
+  copy_in_saver_test_data
+  curl_smoke_test
+  if [ "${1:-}" == '--no-browser' ]; then
+    containers_down
+  else
+    open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
+    open "http://localhost/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
+    open "http://localhost/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
+  fi
+}
+
+demo "$@"

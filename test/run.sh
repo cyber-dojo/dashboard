@@ -1,10 +1,10 @@
 #!/bin/bash -Eeu
-# dashboard
+set -Eeu
 
-readonly MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
+readonly MY_DIR="$(cd "$( dirname "${0}" )" && pwd)"
 export COVERAGE_ROOT="${1}" # /tmp/coverage
 readonly TEST_LOG="${2}"    # test.log
-readonly TYPE="${3}"        # client|server
+readonly TYPE="${3}"        # {client|server}
 shift; shift; shift
 
 readonly TEST_FILES=(${MY_DIR}/${TYPE}/*_test.rb)
@@ -21,4 +21,7 @@ mkdir -p ${COVERAGE_ROOT}
 
 set +e
 ruby -e "${SCRIPT}" -- ${TEST_ARGS[@]} 2>&1 | tee ${COVERAGE_ROOT}/${TEST_LOG}
+STATUS=${PIPESTATUS[0]}
 set -e
+
+exit "${STATUS}"

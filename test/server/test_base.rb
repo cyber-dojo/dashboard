@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+require 'rack/test'
 require_relative '../id58_test_base'
 require_source 'app'
 require_source 'externals'
 
 class TestBase < Id58TestBase
-  include Rack::Test::Methods #  [1]
+  include Rack::Test::Methods
 
-  #  [1]
   def app
     App.new(externals)
   end
