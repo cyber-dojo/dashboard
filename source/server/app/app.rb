@@ -2,7 +2,8 @@
 
 require_relative 'app_base'
 require_relative 'prober'
-require_relative 'helpers/app_helpers'
+require_relative 'helpers/gatherer'
+require_relative 'helpers/avatars_progress'
 
 class App < AppBase
   def initialize(externals)
@@ -16,8 +17,6 @@ class App < AppBase
   get_delegate(Prober, :ready?)
   get_delegate(Prober, :sha)
 
-  # - - - - - - - - - - - - - - -
-
   get '/show/:id', provides: [:html] do
     @id = params[:id]
     respond_to do |wants|
@@ -26,8 +25,6 @@ class App < AppBase
       end
     end
   end
-
-  # - - - - - - - - - - - - - - -
 
   get '/heartbeat/:id', provides: [:json] do
     # Process all traffic-lights into minute columns here in Ruby
@@ -43,8 +40,6 @@ class App < AppBase
     end
   end
 
-  # - - - - - - - - - - - - - - -
-
   get '/progress/:id', provides: [:json] do
     respond_to do |wants|
       wants.json do
@@ -55,7 +50,8 @@ class App < AppBase
 
   private
 
-  helpers AppHelpers
+  helpers AvatarsProgressHelper
+  helpers GathererHelper
 
   def altered(indexes, gapped)
     indexes.to_h do |kata_id, group_index|
@@ -97,8 +93,6 @@ class App < AppBase
     element['checkout'] = light.checkout if light.checkout
     element
   end
-
-  # - - - - - - - - - - - - - - -
 
   def modified(ticks)
     ticks.transform_values do |v|

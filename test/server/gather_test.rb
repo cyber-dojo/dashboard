@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
 require_relative 'test_base'
-require_source 'helpers/app_helpers'
+require_source 'helpers/gatherer'
+require_source 'helpers/avatars_progress'
 
 class GatheredTest < TestBase
   def self.id58_prefix
     '450'
   end
 
-  include AppHelpers
+  include GathererHelper
 
   attr_reader :params
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 's46',
        'contract-test for gather from saved cyber-dojo group v0' do
@@ -31,8 +30,6 @@ class GatheredTest < TestBase
     gather
     gather_check(expected_indexes, expected_lights)
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 's47',
        'contract-test for gather from saved cyber-dojo group v1' do

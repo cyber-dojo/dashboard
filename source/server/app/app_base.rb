@@ -20,8 +20,6 @@ class AppBase < Sinatra::Base
   set :port, ENV.fetch('PORT', nil)
   set :environment, Sprockets::Environment.new
 
-  # - - - - - - - - - - - - - - - - - - - - - -
-
   environment.append_path('app/assets/images')
 
   def self.jquery_dialog_image(name)
@@ -35,8 +33,6 @@ class AppBase < Sinatra::Base
   jquery_dialog_image('ui-icons_ffffff_256x240.png')
   jquery_dialog_image('ui-bg_diagonals-thick_20_666666_40x40.png')
 
-  # - - - - - - - - - - - - - - - - - - - - - -
-
   environment.append_path('app/assets/stylesheets')
   environment.css_compressor = :sassc
 
@@ -48,8 +44,6 @@ class AppBase < Sinatra::Base
       end
     end
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - -
 
   environment.append_path('app/assets/javascripts')
   environment.js_compressor = Uglifier.new(harmony: true)
@@ -77,8 +71,6 @@ class AppBase < Sinatra::Base
     end
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - -
-
   def json_args
     symbolized(json_payload)
   end
@@ -101,8 +93,6 @@ class AppBase < Sinatra::Base
   rescue JSON::ParserError
     raise 'body is not JSON'
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - -
 
   set :show_exceptions, false
 

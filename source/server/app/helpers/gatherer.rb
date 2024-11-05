@@ -4,7 +4,7 @@ require_relative 'td_gapper'
 require_relative 'light'
 
 # mixin
-module AppHelpers
+module GathererHelper
   module_function
 
   def gather
@@ -26,7 +26,7 @@ module AppHelpers
     created = Time.mktime(*manifest['created'])
     args = [created, seconds_per_column, max_seconds_uncollapsed]
     gapper = TdGapper.new(*args)
-    @gapped = gapper.fully_gapped(@all_lights, time.now)
+    @gapped = gapper.fully_gapped(@all_lights, externals.time.now)
     @time_ticks = gapper.time_ticks(@gapped)
   end
 

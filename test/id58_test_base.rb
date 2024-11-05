@@ -2,10 +2,18 @@
 
 require 'English'
 require 'minitest/autorun'
-require 'rack/test'
+require 'minitest/reporters'
+require_relative 'slim_json_reporter'
+
+reporters = [
+  Minitest::Reporters::DefaultReporter.new,
+  Minitest::Reporters::SlimJsonReporter.new,
+  Minitest::Reporters::JUnitReporter.new("#{ENV.fetch('COVERAGE_ROOT')}/junit")
+]
+Minitest::Reporters.use!(reporters)
 
 def require_source(required)
-  require_relative "../dashboard/app/#{required}"
+  require_relative "../app/#{required}"
 end
 
 class Id58TestBase < Minitest::Test
@@ -18,8 +26,6 @@ class Id58TestBase < Minitest::Test
   @@args = (ARGV.sort.uniq - ['--']) # eg 2m4
   @@seen_ids = []
   @@timings = {}
-
-  # - - - - - - - - - - - - - - - - - - - - - -
 
   def self.test(id58_suffix, *lines, &test_block)
     source = test_block.source_location
@@ -59,8 +65,6 @@ class Id58TestBase < Minitest::Test
     end
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - -
-
   Minitest.after_run do
     slow = @@timings.select { |_name, secs| secs > 0.000 }
     sorted = slow.sort_by { |_name, secs| -secs }.to_h
@@ -73,8 +77,6 @@ class Id58TestBase < Minitest::Test
     end
     puts
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - -
 
   ID58_ALPHABET = %w[
     0 1 2 3 4 5 6 7 8 9
@@ -113,13 +115,9 @@ class Id58TestBase < Minitest::Test
     id58
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - -
-
   def id58_setup; end
 
   def id58_teardown; end
-
-  # - - - - - - - - - - - - - - - - - - - - - -
 
   attr_reader :id58, :name58
 end

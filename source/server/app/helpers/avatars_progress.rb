@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # mixin
-module AppHelpers
+module AvatarsProgressHelper
   module_function
 
   def avatars_progress

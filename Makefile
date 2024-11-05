@@ -1,25 +1,18 @@
 
-SHORT_SHA := $(shell git rev-parse HEAD | head -c7)
-IMAGE_NAME := cyberdojo/dashboard:${SHORT_SHA}
+image_server:
+	@${PWD}/bin/build_image.sh server
 
-.PHONY: all image test lint snyk demo image
+test_server:
+	@${PWD}/bin/run_tests.sh server
 
-all: image test lint snyk demo
+coverage_server:
+	@${PWD}/bin/check_coverage.sh server
 
-image:
-	${PWD}/build_test.sh -bo
+rubocop_lint:
+	@${PWD}/bin/rubocop_lint.sh
 
-test:
-	${PWD}/build_test.sh
-
-lint:
-	docker run --rm --volume "${PWD}:/app" cyberdojo/rubocop --raise-cop-error
-
-snyk-container: image
-	snyk container test ${IMAGE_NAME} \
-        --file=Dockerfile \
-        --json-file-output=snyk.container.scan.json \
-        --policy-path=.snyk
+snyk_container_scan:
+	@${PWD}/bin/snyk_container_scan.sh
 
 demo:
-	${PWD}/demo.sh
+	@${PWD}/bin/demo.sh

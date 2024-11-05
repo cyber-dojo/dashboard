@@ -1,8 +1,8 @@
-FROM cyberdojo/sinatra-base:11ddc45
+FROM cyberdojo/sinatra-base:026c095
 LABEL maintainer=jon@jaggersoft.com
 
 WORKDIR /dashboard
-COPY . .
+COPY source/server .
 
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}
