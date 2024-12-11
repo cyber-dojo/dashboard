@@ -17,7 +17,7 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   SERVICE_NAME: ${{ github.event.repository.name }}  # dashboard
   IMAGE_TAR_FILENAME: /tmp/${{ github.event.repository.name }}:${{ github.sha }}.tar
-  DOCKER_API_VERSION: "1.45"
+  DOCKER_API_VERSION: ${{ vars.DOCKER_API_VERSION }}
 
 jobs:
 
