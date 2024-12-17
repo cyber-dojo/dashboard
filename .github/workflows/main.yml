@@ -134,7 +134,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run:
           snyk code test 
-            --attachments=.snyk          
             --sarif 
             --sarif-file-output="${SARIF_FILENAME}" 
             --policy-path=.snyk 
@@ -150,6 +149,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run:
           kosli attest snyk
+            --attachments=.snyk          
             --name=dashboard.snyk-code-scan 
             --scan-results="${SARIF_FILENAME}"
 
