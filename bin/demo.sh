@@ -14,6 +14,7 @@ curl_smoke_test()
   curl_json_body_200 alive
   curl_json_body_200 ready
   curl_json_body_200 sha
+  curl_json_body_200 base_image
 
   curl_plain_200 assets/app.css 'content-type: text/css'
   curl_plain_200 assets/app.js 'content-type: application/javascript'

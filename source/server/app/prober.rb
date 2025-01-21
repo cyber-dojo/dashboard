@@ -18,6 +18,10 @@ class Prober
     ENV.fetch('SHA', nil)
   end
 
+  def base_image(_args)
+    ENV.fetch('BASE_IMAGE', nil)
+  end
+
   private
 
   def saver

@@ -23,6 +23,10 @@ echo_versioner_env_vars()
   local -r AWS_ACCOUNT_ID=244531986313
   local -r AWS_REGION=eu-central-1
   echo CYBER_DOJO_DASHBOARD_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/dashboard"
+
+  if [[ ! -v CYBER_DOJO_DASHBOARD_BASE_IMAGE ]] ; then
+    echo CYBER_DOJO_DASHBOARD_BASE_IMAGE=cyberdojo/sinatra-base:db948c1
+  fi
 }
 
 containers_down()
