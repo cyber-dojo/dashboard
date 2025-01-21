@@ -222,8 +222,8 @@ jobs:
       - name: Cache Docker image
         uses: actions/cache@v4
         with:
-          path: ${IMAGE_TAR_FILENAME}
-          key: ${IMAGE_NAME}
+          path: ${{ env.IMAGE_TAR_FILENAME }}
+          key: ${{ env.IMAGE_NAME }}
 
       - name: Setup Kosli CLI
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -259,8 +259,8 @@ jobs:
       - name: Retrieve Docker image from cache
         uses: actions/cache@v4
         with:
-          path: ${IMAGE_TAR_FILENAME}
-          key: ${IMAGE_NAME}
+          path: ${{ env.IMAGE_TAR_FILENAME }}
+          key: ${{ env.IMAGE_NAME }}
 
       - name: Load Docker image
         run:
@@ -316,8 +316,8 @@ jobs:
       - name: Retrieve Docker image from cache
         uses: actions/cache@v4
         with:
-          path: ${IMAGE_TAR_FILENAME}
-          key: ${IMAGE_NAME}
+          path: ${{ env.IMAGE_TAR_FILENAME }}
+          key: ${{ env.IMAGE_NAME }}
 
       - name: Load Docker image
         run:
