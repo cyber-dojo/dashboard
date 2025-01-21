@@ -52,7 +52,7 @@ build_image()
 
   docker compose build server
   #if [ "${type}" == 'client' ]; then
-  #  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
+  #  docker compose build client
   #fi
 
   local -r image_name="${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}"
@@ -69,7 +69,7 @@ build_image()
     docker tag "${image_name}" "cyberdojo/dashboard:${CYBER_DOJO_DASHBOARD_TAG}"
     echo "CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
     echo "CYBER_DOJO_DASHBOARD_TAG=${CYBER_DOJO_DASHBOARD_TAG}"
-    echo cyberdojo/dashboard:${CYBER_DOJO_DASHBOARD_TAG}
+    echo "${image_name}"
   fi
 }
 

@@ -210,24 +210,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push image to ECR
-        uses: docker/build-push-action@v6
-        id: docker_build
-        with:
-          context: .
-          push: true
-          tags: ${{ env.IMAGE_NAME }}
-          build-args:
-            COMMIT_SHA=${{ github.sha }}
-
-      - name: Make variables available to following jobs
-        id: variables
+      - name: Build and push Docker image to ECR
         run: |
-          TAG=${{ needs.setup.outputs.image_tag }}
-          FINGERPRINT=$(echo ${{ steps.docker_build.outputs.digest }} | sed 's/.*://')
-          echo "tag=${TAG}"                 >> ${GITHUB_OUTPUT}
-          echo "name=${IMAGE_NAME}"         >> ${GITHUB_OUTPUT}
-          echo "fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
+          make image_server
+          docker push "${{ env.IMAGE_NAME }}"
 
       - name: Tar Docker image
         run: |
@@ -246,10 +232,20 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
+      - name: Make variables available to following jobs
+        if: ${{ github.ref == 'refs/heads/main' }}
+        id: variables
+        run: |
+          TAG=${{ needs.setup.outputs.image_tag }}
+          FINGERPRINT=$(kosli fingerprint "${{ env.IMAGE_NAME }}" --artifact-type=docker)
+          echo "tag=${TAG}"                 >> ${GITHUB_OUTPUT}
+          echo "name=${IMAGE_NAME}"         >> ${GITHUB_OUTPUT}
+          echo "fingerprint=${FINGERPRINT}" >> ${GITHUB_OUTPUT}
+
       - name: Attest image provenance to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
         run:
-          kosli attest artifact "${IMAGE_NAME}" 
+          kosli attest artifact "${{ env.IMAGE_NAME }}" 
             --artifact-type=docker
             --name=dashboard
 
