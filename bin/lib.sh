@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -Eeu
 
+echo_base_image()
+{
+  local -r json="$(curl --fail --silent --request GET https://beta.cyber-dojo.org/dashboard/base_image)"
+  echo "${json}" | jq -r '.base_image'
+}
+
 echo_versioner_env_vars()
 {
   local -r sha="$(cd "${ROOT_DIR}" && git rev-parse HEAD)"
@@ -25,7 +31,7 @@ echo_versioner_env_vars()
   echo CYBER_DOJO_DASHBOARD_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/dashboard"
 
   if [[ ! -v CYBER_DOJO_DASHBOARD_BASE_IMAGE ]] ; then
-    echo CYBER_DOJO_DASHBOARD_BASE_IMAGE=cyberdojo/sinatra-base:db948c1
+    echo CYBER_DOJO_DASHBOARD_BASE_IMAGE="$(echo_base_image)"
   fi
 }
 
