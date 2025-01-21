@@ -1,8 +1,14 @@
-FROM cyberdojo/sinatra-base:db948c1
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 LABEL maintainer=jon@jaggersoft.com
 
 WORKDIR /dashboard
+
 COPY source/server .
+
+# ARGs are reset after FROM See https://github.com/moby/moby/issues/34129
+ARG BASE_IMAGE
+ENV BASE_IMAGE=${BASE_IMAGE}
 
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}

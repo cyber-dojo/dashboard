@@ -13,8 +13,8 @@ show_help()
     Use: ${MY_NAME} {server|client}
 
     Options:
-      server  - build the server image (local only)
-      client  - build the client image (local and CI workflow)
+      server  - build the server image
+      client  - build the client image
 
 EOF
 }
@@ -43,23 +43,16 @@ check_args()
 build_image()
 {
   check_args "$@"
-
   local -r type="${1}"
-
-  if [ -n "${CI:-}" ] && [ "${type}" == 'server' ] ; then
-    stderr "In CI workflow - use previous docker/build-push-action@v6 GitHub Action"
-    exit 42
-  fi
-
   exit_non_zero_unless_installed docker
   export $(echo_versioner_env_vars)
 
   containers_down
   remove_old_images
 
-  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" server
+  docker compose build server
   #if [ "${type}" == 'client' ]; then
-  #  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
+  #  docker compose build client
   #fi
 
   local -r image_name="${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}"
@@ -76,6 +69,7 @@ build_image()
     docker tag "${image_name}" "cyberdojo/dashboard:${CYBER_DOJO_DASHBOARD_TAG}"
     echo "CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
     echo "CYBER_DOJO_DASHBOARD_TAG=${CYBER_DOJO_DASHBOARD_TAG}"
+    echo "${image_name}"
   fi
 }
 
