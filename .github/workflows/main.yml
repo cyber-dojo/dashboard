@@ -56,7 +56,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Begin Kosli Trail
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -82,7 +82,7 @@ jobs:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Attest pull-request evidence to Kosli
         run:
@@ -107,7 +107,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
@@ -144,7 +144,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
@@ -172,7 +172,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
@@ -229,7 +229,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Make Digest available to following jobs
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -279,7 +279,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Attest JUnit test evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
@@ -340,7 +340,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
@@ -363,7 +363,7 @@ jobs:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Kosli SDLC gate to short-circuit the workflow
         env:
@@ -388,7 +388,7 @@ jobs:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
         env:
@@ -421,7 +421,7 @@ jobs:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
         with:
-          version: ${KOSLI_CLI_VERSION}
+          version: ${{ env.KOSLI_CLI_VERSION }}
 
       - name: Report approval of deployment to Kosli
         env:
