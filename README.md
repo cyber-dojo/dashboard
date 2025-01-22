@@ -1,4 +1,4 @@
-[![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main.yml/badge.svg)](https://github.com/cyber-dojo/dashboard/actions)
+![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main.yml/badge.svg?branch=main)
 
 
 - A [docker-containerized](https://registry.hub.docker.com/r/cyberdojo/dashboard) micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
