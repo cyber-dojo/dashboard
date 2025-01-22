@@ -198,6 +198,7 @@ jobs:
         run:
           kosli attest sonar
             --name=dashboard.sonarcloud-scan
+            --sonar-api-token="${{ secrets.KOSLI_SONAR_API_TOKEN }}"
 
 
   build-image:
