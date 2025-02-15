@@ -11,19 +11,20 @@ services:
     ports: [ 80:80 ]
     user: root
 
-  client:
-    image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
-    user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
+  server:
+    image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
     build:
       args:
         - COMMIT_SHA
-        - BASE_IMAGE=${CYBER_DOJO_DASHBOARD_BASE_IMAGE}
-      context: source/client
-    container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}
+        - BASE_IMAGE
+      context: .
+    container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}
     depends_on:
-      - server
+      - differ
+      - saver
     env_file: [ .env ]
-    ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
     restart: no
     volumes:
@@ -34,20 +35,19 @@ services:
           mode: 01777
           size: 10485760  # 10MB
 
-  server:
-    image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
-    user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
+  client:
+    image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
     build:
       args:
         - COMMIT_SHA
-        - BASE_IMAGE=${CYBER_DOJO_DASHBOARD_BASE_IMAGE}
-      context: .
-    container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}
+        - BASE_IMAGE
+      context: source/client
+    container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}
     depends_on:
-      - differ
-      - saver
+      - server
     env_file: [ .env ]
-    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
     read_only: true
     restart: no
     volumes:

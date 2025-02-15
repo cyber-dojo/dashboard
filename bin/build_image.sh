@@ -2,8 +2,9 @@
 set -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
 source "${ROOT_DIR}/bin/lib.sh"
+exit_non_zero_unless_installed docker
+export $(echo_env_vars)
 
 show_help()
 {
@@ -44,12 +45,13 @@ build_image()
 {
   check_args "$@"
   local -r type="${1}"
-  exit_non_zero_unless_installed docker
-  export $(echo_versioner_env_vars)
 
   containers_down
   remove_old_images
 
+  echo "Building server"
+  echo "COMMIT_SHA=${COMMIT_SHA}"
+  echo "BASE_IMAGE=${BASE_IMAGE}"
   docker compose build server
   #if [ "${type}" == 'client' ]; then
   #  docker compose build client
@@ -64,7 +66,7 @@ build_image()
     exit 42
   fi
 
-  # Tag image-name for local development where dashboard's name comes from echo-versioner-env-vars
+  # Tag image-name for local development where dashboard's name comes from echo_env_vars
   if [ "${type}" == 'server' ]; then
     docker tag "${image_name}" "cyberdojo/dashboard:${CYBER_DOJO_DASHBOARD_TAG}"
     echo "CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"

@@ -2,8 +2,9 @@
 set -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
 source "${ROOT_DIR}/bin/lib.sh"
+exit_non_zero_unless_installed docker
+export $(echo_env_vars)
 
 show_help()
 {
@@ -35,12 +36,10 @@ check_args()
       exit 0
       ;;
     'server')
-      export $(echo_versioner_env_vars)
       export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}"
       export USER="${CYBER_DOJO_DASHBOARD_SERVER_USER}"
       ;;
     'client')
-      export $(echo_versioner_env_vars)
       export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}"
       export USER="${CYBER_DOJO_DASHBOARD_CLIENT_USER}"
       ;;
@@ -65,7 +64,6 @@ run_tests()
   local -r CONTAINER_COVERAGE_DIR="/tmp/reports"
   local -r HOST_REPORTS_DIR="${ROOT_DIR}/reports/${TYPE}"
 
-  exit_non_zero_unless_installed docker
   # Don't do a build here, because in CI workflow, server image is built with GitHub Action
   docker compose --progress=plain up --no-build --wait --wait-timeout=10 "${TYPE}"
   echo_warnings "${TYPE}"
