@@ -8,8 +8,8 @@ echo_base_image()
   # This BASE_IMAGE abstraction is to facilitate the base_image_update.yml workflow
   # which is an work-in-progress experiment to look into automating deployment to the staging environment
   # (https://beta.cyber-dojo.org) of a Dockerfile base-image update (eg to fix snyk vulnerabilities).
-  # echo_base_image_via_curl
-  echo_base_image_via_code
+  echo_base_image_via_curl
+  # echo_base_image_via_code
 }
 
 echo_base_image_via_curl()
@@ -21,8 +21,8 @@ echo_base_image_via_curl()
 echo_base_image_via_code()
 {
   # An alternative echo_base_image for local development.
-  local -r tag=a00b4fd
-  local -r digest=902a3614b3e3ff9041a802dcd8e7d85abcd79406411a7f4cb30a5c0e1758dbc1
+  local -r tag=465eedc
+  local -r digest=9d076683e72e9d733f7e202f3e171fde83a3398874dfa3fc4a3dba1a6fece756
   echo "cyberdojo/sinatra-base:${tag}@sha256:${digest}"
 }
 
