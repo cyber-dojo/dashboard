@@ -21,12 +21,12 @@ echo_base_image_via_curl()
 echo_base_image_via_code()
 {
   # An alternative echo_base_image for local development.
-  local -r tag=db948c1
-  local -r digest=3abb65e0e8f3b780a64da6fe0c7a3123162d9b0d40a03e4668fef03d441e398b
+  local -r tag=a00b4fd
+  local -r digest=902a3614b3e3ff9041a802dcd8e7d85abcd79406411a7f4cb30a5c0e1758dbc1
   echo "cyberdojo/sinatra-base:${tag}@sha256:${digest}"
 }
 
-echo_versioner_env_vars()
+echo_env_vars()
 {
   # Set env-vars for this repo
   if [[ ! -v BASE_IMAGE ]] ; then
@@ -37,8 +37,9 @@ echo_versioner_env_vars()
   fi
 
   local -r env_filename="$(repo_root)/.env"
-  echo CYBER_DOJO_DASHBOARD_CLIENT_PORT=9999 > "${env_filename}"
-  docker run --rm cyberdojo/versioner | grep PORT >> "${env_filename}"
+  echo "# This file is generated in bin/lib.sh echo_env_vars()" > "${env_filename}"
+  echo CYBER_DOJO_DASHBOARD_CLIENT_PORT=9999                   >> "${env_filename}"
+  docker run --rm cyberdojo/versioner | grep PORT              >> "${env_filename}"
 
   # Get identities of all docker-compose.yml dependent services (from versioner)
   docker run --rm cyberdojo/versioner
@@ -62,7 +63,7 @@ echo_versioner_env_vars()
 
 image_sha()
 {
-  cd "$(repo_root)" && git rev-parse HEAD
+  git rev-parse HEAD
 }
 
 repo_root()
@@ -109,12 +110,14 @@ exit_non_zero_if_bad_base_image()
   # Called in setup job in .github/workflows/main.yml
   base_image="${1}"
   regex=":[a-z0-9]{7}@sha256:[a-z0-9]{64}$"
-  if ! [[ ${base_image} =~ $regex ]]; then
-    stderr "BAD base_image=${base_image}"
+  if [[ ${base_image} =~ $regex ]]; then
+    echo "PASSED: base_image=${base_image}"
+  else
+    stderr "base_image=${base_image}"
     stderr "must have a 7-digit short-sha tag and a full 64-digit digest, Eg"
-    stderr " name  : cyberdojo/sinatra-base"
-    stderr " tag   : 559d354"
-    stderr " digest: ddab9080cd0bbd8e976a18bdd01b37b66e47fe83b0db396e65dc3014bad17fd3"
+    stderr "  name  : cyberdojo/sinatra-base"
+    stderr "  tag   : 559d354"
+    stderr "  digest: ddab9080cd0bbd8e976a18bdd01b37b66e47fe83b0db396e65dc3014bad17fd3"
     exit 42
   fi
 }

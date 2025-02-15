@@ -3,8 +3,8 @@ set -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/bin/lib.sh"
-#source "${SCRIPTS_DIR}/containers_up_healthy_and_clean.sh"
-export $(echo_versioner_env_vars)
+exit_non_zero_unless_installed docker
+export $(echo_env_vars)
 
 curl_smoke_test()
 {
