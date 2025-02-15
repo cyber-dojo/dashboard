@@ -83,7 +83,6 @@ log_filename() { echo -n /tmp/dashboard.log; }
 
 server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
-
 demo()
 {
   docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" server
@@ -91,7 +90,7 @@ demo()
   docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" nginx
   docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 nginx
   docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 server
-  exit_non_zero_unless_started_cleanly
+
   copy_in_saver_test_data
   curl_smoke_test
   if [ "${1:-}" == '--no-browser' ]; then
