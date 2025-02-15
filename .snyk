@@ -1,3 +1,41 @@
 # This file specifies snyk vulnerabilities to be ignored.
 # If this file contains only comments, then no vulnerabilities are ignored
 # but do not delete this file - it is needed for the live-snyk-scans repo workflows.
+ignore:
+  SNYK-ALPINE320-CURL-8689558:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+  SNYK-ALPINE320-CURL-8689557:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+  SNYK-ALPINE320-CURL-8689556:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+  SNYK-ALPINE320-MUSL-8720638:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+  SNYK-ALPINE320-OPENSSL-8710359:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+  SNYK-ALPINE320-OPENSSL-8690013:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+  SNYK-ALPINE320-OPENSSL-8235201:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-03-15T15:47:10.182Z
+        created: 2025-02-15T15:47:10.201Z
+
+patch: {}
