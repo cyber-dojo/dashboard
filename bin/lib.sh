@@ -8,8 +8,8 @@ echo_base_image()
   # This BASE_IMAGE abstraction is to facilitate the base_image_update.yml workflow
   # which is an work-in-progress experiment to look into automating deployment to the staging environment
   # (https://beta.cyber-dojo.org) of a Dockerfile base-image update (eg to fix snyk vulnerabilities).
-  echo_base_image_via_curl
-  # echo_base_image_via_code
+  # echo_base_image_via_curl
+  echo_base_image_via_code
 }
 
 echo_base_image_via_curl()
@@ -21,8 +21,10 @@ echo_base_image_via_curl()
 echo_base_image_via_code()
 {
   # An alternative echo_base_image for local development.
-  local -r tag=465eedc
-  local -r digest=9d076683e72e9d733f7e202f3e171fde83a3398874dfa3fc4a3dba1a6fece756
+  # Currently, using the latest sinatra-base image is causing a dashboard error
+  # Error compiling CSS asset: Could not open library /usr/local/bundle/gems/sassc-2.4.0/ext/libsass.so
+  local -r tag=db948c1
+  local -r digest=3abb65e0e8f3b780a64da6fe0c7a3123162d9b0d40a03e4668fef03d441e398b
   echo "cyberdojo/sinatra-base:${tag}@sha256:${digest}"
 }
 
