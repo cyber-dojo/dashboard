@@ -5,37 +5,42 @@ ignore:
   SNYK-ALPINE320-CURL-8689558:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
   SNYK-ALPINE320-CURL-8689557:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
   SNYK-ALPINE320-CURL-8689556:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
   SNYK-ALPINE320-MUSL-8720638:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
   SNYK-ALPINE320-OPENSSL-8710359:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
   SNYK-ALPINE320-OPENSSL-8690013:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
   SNYK-ALPINE320-OPENSSL-8235201:
     - '*':
         reason: Waiting for base image upgrade
-        expires: 2025-03-15T15:47:10.182Z
-        created: 2025-02-15T15:47:10.201Z
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
+  SNYK-ALPINE320-EXPAT-9459842:
+    - '*':
+        reason: Waiting for base image upgrade
+        expires: 2025-04-15T15:47:10.182Z
+        created: 2025-03-15T15:47:10.201Z
 
 patch: {}
