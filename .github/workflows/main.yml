@@ -21,13 +21,14 @@ on:
 
 env:
   KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
-  KOSLI_AWS_BETA:  ${{ vars.KOSLI_AWS_BETA }}          # aws-beta
-  KOSLI_DEBUG:     ${{ vars.KOSLI_DEBUG }}             # true/false
-  KOSLI_DRY_RUN:   ${{ vars.KOSLI_DRY_RUN }}           # false
-  KOSLI_HOST:      ${{ vars.KOSLI_HOST }}              # https://app.kosli.com
-  KOSLI_ORG:       ${{ vars.KOSLI_ORG }}               # cyber-dojo
-  KOSLI_FLOW:      ${{ vars.KOSLI_FLOW }}              # dashboard-ci
-  KOSLI_TRAIL:     ${{ inputs.KOSLI_TRAIL }}
+  KOSLI_AWS_BETA:  ${{ vars.KOSLI_AWS_BETA }}              # aws-beta
+  KOSLI_ACTIVE:    ${{ github.ref == 'refs/heads/main' }}  # true/false
+  KOSLI_DEBUG:     ${{ vars.KOSLI_DEBUG }}                 # true/false
+  KOSLI_DRY_RUN:   ${{ vars.KOSLI_DRY_RUN }}               # true/false
+  KOSLI_HOST:      ${{ vars.KOSLI_HOST }}                  # https://app.kosli.com
+  KOSLI_ORG:       ${{ vars.KOSLI_ORG }}                   # cyber-dojo
+  KOSLI_FLOW:      ${{ vars.KOSLI_FLOW }}                  # dashboard-ci
+  KOSLI_TRAIL:     ${{ inputs.KOSLI_TRAIL }}               # ${{ github.sha }}
 
   AWS_ECR_ID:          ${{ vars.AWS_ECR_ID }}
   AWS_REGION:          ${{ vars.AWS_REGION }}
@@ -203,54 +204,47 @@ jobs:
 
   build-image:
     needs: [setup]
-    uses: cyber-dojo/reusable-actions-workflows/.github/workflows/secure-docker-build.yml@main
+    uses: cyber-dojo/reusable-actions-workflows/.github/workflows/secure-docker-build2.yml@main
     with:
-      CHECKOUT_REPOSITORY: cyber-dojo/dashboard
-      CHECKOUT_REF: ${{ github.sha }}
-      CHECKOUT_FETCH_DEPTH: 1
-      IMAGE_NAME: ${{ needs.setup.outputs.ecr_registry }}/${{ needs.setup.outputs.service_name }}
-      IMAGE_TAG: ${{ needs.setup.outputs.image_tag }}
-      IMAGE_BUILD_ARGS: |
+      checkout_repository: cyber-dojo/dashboard
+      checkout_ref: ${{ github.sha }}
+      checkout_fetch_depth: 1
+      image_name: ${{ needs.setup.outputs.ecr_registry }}/${{ github.event.repository.name }}
+      image_tag: ${{ needs.setup.outputs.image_tag }}
+      image_build_args: |
         COMMIT_SHA=${{ github.sha }}
         BASE_IMAGE=${{ inputs.BASE_IMAGE }}
-      ATTEST_TO_KOSLI: ${{ github.ref == 'refs/heads/main' }}
-      KOSLI_FLOW: ${{ vars.KOSLI_FLOW }}
-      KOSLI_TRAIL: ${{ github.sha }}
-      KOSLI_REFERENCE_NAME: ${{ needs.setup.outputs.service_name }}
+      attest_to_kosli: ${{ github.ref == 'refs/heads/main' }}
+      kosli_flow: ${{ vars.KOSLI_FLOW }}
+      kosli_trail: ${{ github.sha }}
+      kosli_reference_name: ${{ needs.setup.outputs.service_name }}
     secrets:
-      KOSLI_API_TOKEN: ${{ secrets.KOSLI_API_TOKEN }}
+      kosli_api_token: ${{ secrets.KOSLI_API_TOKEN }}
 
 
   unit-tests:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
-    permissions:
-      id-token: write
-      contents: read
     env:
       IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
+      CACHE_KEY:         ${{ needs.build-image.outputs.cache_key }}
+      CACHE_PATH:        ${{ needs.build-image.outputs.cache_path }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Retrieve Docker image from cache
+        uses: actions/cache@v4
         with:
-          aws-region:            ${{ needs.setup.outputs.aws_region }}
-          role-duration-seconds: 900
-          role-session-name:     ${{ github.event.repository.name }}
-          role-to-assume:        arn:aws:iam::${{ needs.setup.outputs.aws_account_id_beta }}:role/${{ needs.setup.outputs.gh_actions_iam_role_name }}
-          mask-aws-account-id:   no
+          key:  ${{ env.CACHE_KEY }}
+          path: ${{ env.CACHE_PATH }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Pull image from ECR registry
+      - name: Load Docker image
         run:
-          docker image pull "${IMAGE_NAME}@sha256:${KOSLI_FINGERPRINT}"
+          docker image load 
+            --input "${{ env.CACHE_PATH }}"
 
       - name: Run unit tests
         run:
@@ -287,34 +281,27 @@ jobs:
   snyk-container-scan:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
-    permissions:
-      id-token: write
-      contents: read
     env:
       IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
+      CACHE_KEY:         ${{ needs.build-image.outputs.cache_key }}
+      CACHE_PATH:        ${{ needs.build-image.outputs.cache_path }}
       SARIF_FILENAME:    snyk.container.scan.json
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Retrieve Docker image from cache
+        uses: actions/cache@v4
         with:
-          aws-region:            ${{ needs.setup.outputs.aws_region }}
-          role-duration-seconds: 900
-          role-session-name:     ${{ github.event.repository.name }}
-          role-to-assume:        arn:aws:iam::${{ needs.setup.outputs.aws_account_id_beta }}:role/${{ needs.setup.outputs.gh_actions_iam_role_name }}
-          mask-aws-account-id:   no
+          key:  ${{ env.CACHE_KEY }}
+          path: ${{ env.CACHE_PATH }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Pull image from ECR registry
+      - name: Load Docker image
         run:
-          docker image pull "${IMAGE_NAME}@sha256:${KOSLI_FINGERPRINT}"
+          docker image load 
+            --input "${{ env.CACHE_PATH }}"
 
       - name: Setup Snyk
         uses: snyk/actions/setup@master
