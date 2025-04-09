@@ -204,7 +204,7 @@ jobs:
 
   build-image:
     needs: [setup]
-    uses: cyber-dojo/reusable-actions-workflows/.github/workflows/secure-docker-build2.yml@main
+    uses: cyber-dojo/reusable-actions-workflows/.github/workflows/secure-docker-build.yml@main
     with:
       checkout_repository: cyber-dojo/dashboard
       checkout_ref: ${{ github.sha }}
@@ -225,26 +225,33 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
+    permissions:
+      id-token: write
+      contents: read
     env:
       IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
-      CACHE_KEY:         ${{ needs.build-image.outputs.cache_key }}
-      CACHE_PATH:        ${{ needs.build-image.outputs.cache_path }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Retrieve Docker image from cache
-        uses: actions/cache@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          key:  ${{ env.CACHE_KEY }}
-          path: ${{ env.CACHE_PATH }}
+          aws-region:            ${{ needs.setup.outputs.aws_region }}
+          role-duration-seconds: 900
+          role-session-name:     ${{ github.event.repository.name }}
+          role-to-assume:        arn:aws:iam::${{ needs.setup.outputs.aws_account_id_beta }}:role/${{ needs.setup.outputs.gh_actions_iam_role_name }}
+          mask-aws-account-id:   no
 
-      - name: Load Docker image
-        run: |
-          docker image ls
-          docker image load --input "${{ env.CACHE_PATH }}"
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull image from ECR registry
+        run:
+          docker image pull "${IMAGE_NAME}@sha256:${KOSLI_FINGERPRINT}"
 
       - name: Run unit tests
         run: |
@@ -282,27 +289,34 @@ jobs:
   snyk-container-scan:
     runs-on: ubuntu-latest
     needs: [setup, build-image]
+    permissions:
+      id-token: write
+      contents: read
     env:
       IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
-      CACHE_KEY:         ${{ needs.build-image.outputs.cache_key }}
-      CACHE_PATH:        ${{ needs.build-image.outputs.cache_path }}
       SARIF_FILENAME:    snyk.container.scan.json
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Retrieve Docker image from cache
-        uses: actions/cache@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          key:  ${{ env.CACHE_KEY }}
-          path: ${{ env.CACHE_PATH }}
+          aws-region:            ${{ needs.setup.outputs.aws_region }}
+          role-duration-seconds: 900
+          role-session-name:     ${{ github.event.repository.name }}
+          role-to-assume:        arn:aws:iam::${{ needs.setup.outputs.aws_account_id_beta }}:role/${{ needs.setup.outputs.gh_actions_iam_role_name }}
+          mask-aws-account-id:   no
 
-      - name: Load Docker image
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull image from ECR registry
         run:
-          docker image load 
-            --input "${{ env.CACHE_PATH }}"
+          docker image pull "${IMAGE_NAME}@sha256:${KOSLI_FINGERPRINT}"
 
       - name: Setup Snyk
         uses: snyk/actions/setup@master
