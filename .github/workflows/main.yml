@@ -242,12 +242,13 @@ jobs:
           path: ${{ env.CACHE_PATH }}
 
       - name: Load Docker image
-        run:
-          docker image load 
-            --input "${{ env.CACHE_PATH }}"
+        run: |
+          docker image load --input "${{ env.CACHE_PATH }}"
+          docker image ls | grep dashboard
 
       - name: Run unit tests
-        run:
+        run: |
+          docker image ls | grep dashboard
           make test_server
 
       - name: Get Unit test coverage
