@@ -4,10 +4,13 @@ Add makefile target to build CSS/JS assets
 Make them pre-reqs for building an image
 In source/server/app/app_base.rb get app.css file by reading existing file
   Confirm demo works
-
-DOING
 In source/server/app/app_base.rb get app.js file by reading existing file
   Confirm demo works
+
+DOING
+
+Demo opens http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true
+  and this has a failing image load for the last traffic-light
 
 Deploy to aws-beta?
 

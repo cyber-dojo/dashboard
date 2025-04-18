@@ -8,12 +8,13 @@ silently { require 'sinatra/contrib' } # N x "warning: method redefined"
 require_relative 'http_json_hash/service'
 require 'json'
 require 'sprockets'
-require 'uglifier'
 
 class AppBase < Sinatra::Base
   def initialize(externals)
     @externals = externals
-    @css = File.read("#{__dir__}/assets/stylesheets/pre-built-app.css")
+    assets_dir = "#{__dir__}/assets"
+    @css = File.read("#{assets_dir}/stylesheets/pre-built-app.css")
+    @js  = File.read("#{assets_dir}/javascripts/pre-built-app.js")
     super(nil)
   end
 
@@ -37,20 +38,17 @@ class AppBase < Sinatra::Base
   get '/assets/app.css', provides: [:css] do
     respond_to do |format|
       format.css do
+        content_type 'text/css'
         @css
       end
     end
   end
 
-  environment.append_path('app/assets/javascripts')
-  environment.js_compressor = Uglifier.new(harmony: true)
-
   get '/assets/app.js', provides: [:js] do
     respond_to do |format|
       format.js do
-        env['PATH_INFO'].sub!('/assets', '')
-        settings.environment.call(env)
-        #File.read('/dashboard/app/assets/javascripts/pre-built-app.js')
+        content_type 'text/javascript'
+        @js
       end
     end
   end

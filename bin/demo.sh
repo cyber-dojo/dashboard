@@ -17,8 +17,10 @@ curl_smoke_test()
   curl_json_body_200 base_image
 
   curl_plain_200 assets/app.css 'content-type: text/css'
-  curl_plain_200 assets/app.js 'content-type: application/javascript'
+  curl_plain_200 assets/app.js  'content-type: text/javascript'
+
   curl_plain_200 show/FxWwrr dashboard-page
+  open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
 }
 
 curl_json()
@@ -93,13 +95,6 @@ demo()
 
   copy_in_saver_test_data
   curl_smoke_test
-  if [ "${1:-}" == '--no-browser' ]; then
-    containers_down
-  else
-    open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
-    open "http://localhost/dashboard/show/FxWwrr?auto_refresh=true&minute_columns=true"
-    open "http://localhost/dashboard/show/LyQpFr?auto_refresh=true&minute_columns=true"
-  fi
 }
 
 demo "$@"
