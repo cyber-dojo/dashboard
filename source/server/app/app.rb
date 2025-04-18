@@ -7,7 +7,7 @@ require_relative 'helpers/avatars_progress'
 
 class App < AppBase
   def initialize(externals)
-    super(externals)
+    super
     @externals = externals
   end
 

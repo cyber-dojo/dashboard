@@ -20,17 +20,29 @@ echo_base_image_via_curl()
 
 echo_base_image_via_code()
 {
-  # An alternative echo_base_image for local development.
-  # Currently, using the latest sinatra-base image is causing a dashboard error
-  # Error compiling CSS asset: Could not open library /usr/local/bundle/gems/sassc-2.4.0/ext/libsass.so
-  local -r tag=db948c1
-  local -r digest=3abb65e0e8f3b780a64da6fe0c7a3123162d9b0d40a03e4668fef03d441e398b
+  # An alternative echo_base_image for local development, or initial base-image upgrade
+  local -r tag=759c4e9
+  local -r digest=d5f87f343a9f88a598b810c0f02b81db0bb67319701a956aec3577cbd51c1c24
   echo "cyberdojo/sinatra-base:${tag}@sha256:${digest}"
 }
 
 echo_env_vars()
 {
+  #--------------------
+  # Set env-vars for SCSS/JS asset-builder
+
+  local -r asset_builder_port=5135
+  local -r asset_env_filename="$(repo_root)/.env.asset_builder"
+  echo "# This file is generated in bin/lib.sh echo_env_vars()" > "${asset_env_filename}"
+  echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}         >> "${asset_env_filename}"
+  echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}
+  echo CYBER_DOJO_ASSET_BUILDER_IMAGE=cyberdojo/asset_builder
+  echo CYBER_DOJO_ASSET_BUILDER_TAG=2bbe111
+  echo CYBER_DOJO_ASSET_BUILDER_CONTAINER_NAME=asset_builder
+
+  #--------------------
   # Set env-vars for this repo
+
   if [[ ! -v BASE_IMAGE ]] ; then
     echo BASE_IMAGE="$(echo_base_image)"  # --build-arg
   fi

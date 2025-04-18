@@ -348,8 +348,6 @@ class TdGapperTest < TestBase
     assert_equal expected, actual
   end
 
-  private
-
   def hippo_id
     'a4r9YN'
   end
