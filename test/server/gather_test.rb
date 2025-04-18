@@ -73,15 +73,13 @@ class GatheredTest < TestBase
   end
 
   def flat_lights(id)
-    actual = []
-    @all_lights[id].each do |light|
-      actual << tcpi(
+    @all_lights[id].map do |light|
+      tcpi(
         light.time_a,
         light.colour,
         light.predicted,
         light.index
       )
     end
-    actual
   end
 end
