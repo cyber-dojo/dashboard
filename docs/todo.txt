@@ -1,0 +1,22 @@
+
+DONE
+Add makefile target to build CSS/JS assets
+Make them pre-reqs for building an image
+In source/server/app/app_base.rb get app.css file by reading existing file
+  Confirm demo works
+
+DOING
+In source/server/app/app_base.rb get app.js file by reading existing file
+  Confirm demo works
+
+Deploy to aws-beta?
+
+Create new sinatra-base image with no Gems for SCSS/JS
+
+Use this sinatra-base image for server
+  Confirm demo works
+
+Strip out all entries in .snyk file
+
+Run snyk container scan and see what vulns remain.
+
