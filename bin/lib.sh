@@ -20,11 +20,9 @@ echo_base_image_via_curl()
 
 echo_base_image_via_code()
 {
-  # An alternative echo_base_image for local development.
-  # Currently, using the latest sinatra-base image is causing a dashboard error
-  # Error compiling CSS asset: Could not open library /usr/local/bundle/gems/sassc-2.4.0/ext/libsass.so
-  local -r tag=db948c1
-  local -r digest=3abb65e0e8f3b780a64da6fe0c7a3123162d9b0d40a03e4668fef03d441e398b
+  # An alternative echo_base_image for local development, or initial base-image upgrade
+  local -r tag=759c4e9
+  local -r digest=d5f87f343a9f88a598b810c0f02b81db0bb67319701a956aec3577cbd51c1c24
   echo "cyberdojo/sinatra-base:${tag}@sha256:${digest}"
 }
 
