@@ -34,7 +34,7 @@ echo_env_vars()
   local -r asset_builder_port=5135
   local -r asset_env_filename="$(repo_root)/.env.asset_builder"
   echo "# This file is generated in bin/lib.sh echo_env_vars()" > "${asset_env_filename}"
-  echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}         >> "${asset_env_filename}"
+  echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}     >> "${asset_env_filename}"
   echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}
   echo CYBER_DOJO_ASSET_BUILDER_IMAGE=cyberdojo/asset_builder
   echo CYBER_DOJO_ASSET_BUILDER_TAG=2bbe111

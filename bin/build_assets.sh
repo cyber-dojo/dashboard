@@ -10,7 +10,6 @@ source "${my_dir}/lib.sh"
 exit_non_zero_unless_installed docker curl
 export $(echo_env_vars)
 
-docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" asset_builder
 docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 asset_builder
 
 readonly assets_dir="${my_dir}/../source/server/app/assets"
