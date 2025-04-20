@@ -8,8 +8,8 @@ echo_base_image()
   # This BASE_IMAGE abstraction is to facilitate the base_image_update.yml workflow
   # which is an work-in-progress experiment to look into automating deployment to the staging environment
   # (https://beta.cyber-dojo.org) of a Dockerfile base-image update (eg to fix snyk vulnerabilities).
-  # echo_base_image_via_curl
-  echo_base_image_via_code
+  echo_base_image_via_curl
+  # echo_base_image_via_code
 }
 
 echo_base_image_via_curl()
