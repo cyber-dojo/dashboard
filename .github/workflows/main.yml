@@ -229,30 +229,18 @@ jobs:
       IMAGE_NAME:        ${{ needs.setup.outputs.image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     steps:
-#      - name: Download docker image
-#        uses: cyber-dojo/download-artifact@main
-#        with:
-#          IMAGE_NAME:   ${{ needs.setup.outputs.image_name }}
-#          IMAGE_DIGEST: ${{ needs.build-image.outputs.digest }}
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Download docker image
+        uses: cyber-dojo/download-artifact@main
         with:
-          name: ${{ needs.build-image.outputs.digest }}
-          path: ${{ runner.temp }}
-
-      - name: Load image
-        run: |
-          docker load --input ${{ runner.temp }}/${{ needs.build-image.outputs.digest }}.tar
-  #        cat ${{ runner.temp }}/${{ inputs.IMAGE_DIGEST }}.tar | docker import - ${{ inputs.IMAGE_NAME }}
+          IMAGE_NAME:   ${{ needs.setup.outputs.image_name }}
+          IMAGE_DIGEST: ${{ needs.build-image.outputs.digest }}
 
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
       - name: Run unit tests
-        run: |
-          docker image ls
+        run:
           make test_server
 
       - name: Get Unit test coverage
