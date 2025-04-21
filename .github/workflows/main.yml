@@ -242,6 +242,7 @@ jobs:
       - name: Run unit tests
         run: |
           docker image ls
+          set -x
           make test_server
 
       - name: Get Unit test coverage
