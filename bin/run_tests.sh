@@ -118,4 +118,5 @@ run_tests()
   return ${STATUS}
 }
 
+set -x
 run_tests "$@"
