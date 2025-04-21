@@ -66,6 +66,7 @@ run_tests()
 
   # Don't do a build here, because in CI workflow, server image is built with GitHub Action
   docker compose --progress=plain up --no-build --wait --wait-timeout=10 "${TYPE}"
+  echo GOT TO HERE
   echo_warnings "${TYPE}"
   copy_in_saver_test_data
 
