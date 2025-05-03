@@ -37,7 +37,6 @@ $ make demo
 * [GET alive](docs/api.md#get-alive)  
 * [GET ready](docs/api.md#get-ready)
 * [GET sha](docs/api.md#get-sha)
-* [GET base_image](docs/api.md#get-base-image)
 * ...
 
 - - - -

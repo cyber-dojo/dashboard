@@ -17,7 +17,6 @@ services:
     build:
       args:
         - COMMIT_SHA
-        - BASE_IMAGE
       context: .
     container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}
     depends_on:
@@ -41,7 +40,6 @@ services:
     build:
       args:
         - COMMIT_SHA
-        - BASE_IMAGE
       context: source/client
     container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}
     depends_on:
