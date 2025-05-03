@@ -167,7 +167,7 @@ jobs:
 
       - name: Run SonarCloud scan
         env:
-          SONAR_TOKEN: ${{ secrets.KOSLI_SONAR_API_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         uses: SonarSource/sonarqube-scan-action@v4
 
       - name: Setup Kosli CLI
@@ -181,7 +181,7 @@ jobs:
         run:
           kosli attest sonar
             --name=dashboard.sonarcloud-scan
-            --sonar-api-token="${{ secrets.KOSLI_SONAR_API_TOKEN }}"
+            --sonar-api-token="${{ secrets.SONARCLOUD_TOKEN }}"
 
 
   build-image:
