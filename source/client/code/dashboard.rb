@@ -5,8 +5,6 @@ class Dashboard
     @externals = externals
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - -
-
   def ready?
     dashboard.ready?
   end

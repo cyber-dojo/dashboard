@@ -51,7 +51,6 @@ build_image()
 
   echo "Building server"
   echo "COMMIT_SHA=${COMMIT_SHA}"
-  echo "BASE_IMAGE=${BASE_IMAGE}"
   docker compose build server
   #if [ "${type}" == 'client' ]; then
   #  docker compose build client

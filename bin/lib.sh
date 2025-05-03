@@ -1,31 +1,6 @@
 #!/usr/bin/env bash
 set -Eeu
 
-echo_base_image()
-{
-  # This is set to the env-var BASE_IMAGE which is set as a [docker compose build] --build-arg
-  # and used the Dockerfile's 'FROM ${BASE_IMAGE}' statement
-  # This BASE_IMAGE abstraction is to facilitate the base_image_update.yml workflow
-  # which is an work-in-progress experiment to look into automating deployment to the staging environment
-  # (https://beta.cyber-dojo.org) of a Dockerfile base-image update (eg to fix snyk vulnerabilities).
-  echo_base_image_via_curl
-  # echo_base_image_via_code
-}
-
-echo_base_image_via_curl()
-{
-  local -r json="$(curl --fail --silent --request GET https://beta.cyber-dojo.org/dashboard/base_image)"
-  echo "${json}" | jq -r '.base_image'
-}
-
-echo_base_image_via_code()
-{
-  # An alternative echo_base_image for local development, or initial base-image upgrade
-  local -r tag=759c4e9
-  local -r digest=d5f87f343a9f88a598b810c0f02b81db0bb67319701a956aec3577cbd51c1c24
-  echo "cyberdojo/sinatra-base:${tag}@sha256:${digest}"
-}
-
 echo_env_vars()
 {
   #--------------------
@@ -43,9 +18,6 @@ echo_env_vars()
   #--------------------
   # Set env-vars for this repo
 
-  if [[ ! -v BASE_IMAGE ]] ; then
-    echo BASE_IMAGE="$(echo_base_image)"  # --build-arg
-  fi
   if [[ ! -v COMMIT_SHA ]] ; then
     echo COMMIT_SHA="$(image_sha)"  # --build-arg
   fi
@@ -117,23 +89,6 @@ remove_all_but_latest()
     fi
   done
   docker system prune --force
-}
-
-exit_non_zero_if_bad_base_image()
-{
-  # Called in setup job in .github/workflows/main.yml
-  base_image="${1}"
-  regex=":[a-z0-9]{7}@sha256:[a-z0-9]{64}$"
-  if [[ ${base_image} =~ $regex ]]; then
-    echo "PASSED: base_image=${base_image}"
-  else
-    stderr "base_image=${base_image}"
-    stderr "must have a 7-digit short-sha tag and a full 64-digit digest, Eg"
-    stderr "  name  : cyberdojo/sinatra-base"
-    stderr "  tag   : 559d354"
-    stderr "  digest: ddab9080cd0bbd8e976a18bdd01b37b66e47fe83b0db396e65dc3014bad17fd3"
-    exit 42
-  fi
 }
 
 exit_non_zero_unless_file_exists()
