@@ -1,5 +1,5 @@
 FROM cyberdojo/sinatra-base:b7983a9@sha256:a1c5ca730991d00943185a6d77270cd9fefef0ef5156eb2e98604cbd0ece95d5
-# The FROM statement above is typically set via an automated pull-request from from sinatra-base repo
+# The FROM statement above is typically set via an automated pull-request from the sinatra-base repo
 LABEL maintainer=jon@jaggersoft.com
 
 ARG COMMIT_SHA
