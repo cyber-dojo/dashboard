@@ -310,7 +310,7 @@ jobs:
 
       - name: Display current compliance
         run:
-          kosli get trail "${KOSLI_TRAIL}" --debug=false
+          kosli get trail "${KOSLI_TRAIL}"
         
       - name: Kosli SDLC gate to short-circuit the workflow
         run:
