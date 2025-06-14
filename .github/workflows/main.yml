@@ -13,7 +13,6 @@ env:
   KOSLI_ORG:           ${{ vars.KOSLI_ORG }}                   # cyber-dojo
   KOSLI_FLOW:          ${{ vars.KOSLI_FLOW }}                  # dashboard-ci
   KOSLI_TRAIL:         ${{ github.sha }}
-  KOSLI_ARTIFACT_TYPE: oci
 
   AWS_ECR_ID:          ${{ vars.AWS_ECR_ID }}
   AWS_REGION:          ${{ vars.AWS_REGION }}
@@ -205,9 +204,9 @@ jobs:
 
   unit-tests:
     runs-on: ubuntu-latest
-    needs: [setup, build-image]
+    needs: [build-image]
     env:
-      IMAGE_NAME: ${{ needs.setup.outputs.image_name }}
+      IMAGE_NAME: ${{ needs.build-image.outputs.tagged_image_name }}
     steps:
       - name: Download docker image
         uses: cyber-dojo/download-artifact@main
@@ -237,6 +236,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run:
           kosli attest junit ${IMAGE_NAME}
+            --artifact-type=oci
             --name=dashboard.unit-test 
             --results-dir=./reports/server/junit
 
@@ -245,6 +245,7 @@ jobs:
         run: |
           KOSLI_COMPLIANT=$([ "${{ steps.coverage.outcome }}" == 'success' ] && echo true || echo false)          
           kosli attest generic ${IMAGE_NAME} \
+            --artifact-type=oci
             --description="unit-test branch-coverage and metrics" \
             --name=dashboard.unit-test-coverage \
             --user-data=./reports/server/coverage_metrics.json
