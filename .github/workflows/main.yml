@@ -206,7 +206,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image]
     env:
-      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     steps:
       - name: Download docker image
@@ -299,7 +298,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image, rubocop-lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, sonarcloud-scan]
     env:
-      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     steps:
       - name: Setup Kosli CLI
@@ -326,7 +324,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image, sdlc-control-gate]
     env:
-      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     environment:
       name: staging
@@ -367,7 +364,7 @@ jobs:
       working_directory:      deployment/terraform/
       tf_apply:               true
       tf_version:             v1.9.1
-      tf_additional_env_vars: '{"TF_VAR_TAGGED_IMAGE": "${{ needs.setup.outputs.ecr_registry }}/${{ needs.setup.outputs.service_name }}:${{ needs.setup.outputs.image_tag }}@sha256:${{ needs.build-image.outputs.digest }}"}'
+      tf_additional_env_vars: '{"TF_VAR_TAGGED_IMAGE": "${{ needs.build-image.outputs.tagged_image_name }}@sha256:${{ needs.build-image.outputs.digest }}"}'
 
 
 # Deployment to aws-prod Environment is done with a Release/Promotion workflow.

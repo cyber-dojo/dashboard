@@ -20,6 +20,11 @@ show_help()
 EOF
 }
 
+exit_non_zero()
+{
+  kill -INT $$
+}
+
 check_args()
 {
   case "${1:-}" in
@@ -28,16 +33,20 @@ check_args()
       exit 0
       ;;
     'server' | 'client')
+      if [ "${CI:-}" == 'true' ]; then
+        stderr "In CI workflow, image must be built with Github Action"
+        exit_non_zero
+      fi
       ;;
     '')
       show_help
       stderr "no argument - must be 'client' or 'server'"
-      exit 42
+      exit_non_zero
       ;;
     *)
       show_help
       stderr "argument is '${1:-}' - must be 'client' or 'server'"
-      exit 42
+      exit_non_zero
   esac
 }
 
