@@ -309,11 +309,6 @@ jobs:
         run:
           kosli get trail "${KOSLI_TRAIL}"
 
-      - name: Download docker image
-        uses: cyber-dojo/download-artifact@main
-        with:
-          image_digest: ${{ needs.build-image.outputs.digest }}
-
       - name: Kosli SDLC gate to short-circuit the workflow
         run:
           kosli assert artifact
