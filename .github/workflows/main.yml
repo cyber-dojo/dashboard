@@ -236,7 +236,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run:
           kosli attest junit ${IMAGE_NAME}
-            --artifact-type=oci
+            --artifact-type=docker
             --name=dashboard.unit-test 
             --results-dir=./reports/server/junit
 
@@ -289,7 +289,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run:
           kosli attest snyk "${IMAGE_NAME}" 
-            --artifact-type=oci
+            --artifact-type=docker
             --attachments=.snyk
             --name=dashboard.snyk-container-scan 
             --scan-results="${SARIF_FILENAME}"
@@ -310,11 +310,16 @@ jobs:
       - name: Display current compliance
         run:
           kosli get trail "${KOSLI_TRAIL}"
-        
+
+      - name: Download docker image
+        uses: cyber-dojo/download-artifact@main
+        with:
+          image_digest: ${{ needs.build-image.outputs.digest }}
+
       - name: Kosli SDLC gate to short-circuit the workflow
         run:
           kosli assert artifact "${IMAGE_NAME}"
-            --artifact-type=oci
+            --artifact-type=docker
             --environment=${KOSLI_AWS_BETA}
 
 
@@ -336,10 +341,15 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
+      - name: Download docker image
+        uses: cyber-dojo/download-artifact@main
+        with:
+          image_digest: ${{ needs.build-image.outputs.digest }}
+
       - name: Report approval of deployment to Kosli
         run:
           kosli report approval "${IMAGE_NAME}"
-            --artifact-type=oci
+            --artifact-type=docker
             --approver="${{ github.actor }}"
             --environment=${KOSLI_AWS_BETA}
 
