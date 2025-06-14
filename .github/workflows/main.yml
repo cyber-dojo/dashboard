@@ -206,7 +206,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image]
     env:
-      IMAGE_NAME: ${{ needs.build-image.outputs.tagged_image_name }}
+      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     steps:
       - name: Download docker image
         uses: cyber-dojo/download-artifact@main
@@ -235,8 +236,7 @@ jobs:
       - name: Attest JUnit test evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run:
-          kosli attest junit ${IMAGE_NAME}
-            --artifact-type=docker
+          kosli attest junit
             --name=dashboard.unit-test 
             --results-dir=./reports/server/junit
 
@@ -244,8 +244,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run: |
           KOSLI_COMPLIANT=$([ "${{ steps.coverage.outcome }}" == 'success' ] && echo true || echo false)          
-          kosli attest generic ${IMAGE_NAME} \
-            --artifact-type=oci \
+          kosli attest generic \
             --description="unit-test branch-coverage and metrics" \
             --name=dashboard.unit-test-coverage \
             --user-data=./reports/server/coverage_metrics.json
@@ -255,8 +254,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image]
     env:
-      IMAGE_NAME:     ${{ needs.build-image.outputs.tagged_image_name }}
-      SARIF_FILENAME: snyk.container.scan.json
+      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
+      SARIF_FILENAME:    snyk.container.scan.json
     steps:
       - name: Download docker image
         uses: cyber-dojo/download-artifact@main
@@ -288,8 +288,7 @@ jobs:
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run:
-          kosli attest snyk "${IMAGE_NAME}" 
-            --artifact-type=docker
+          kosli attest snyk
             --attachments=.snyk
             --name=dashboard.snyk-container-scan 
             --scan-results="${SARIF_FILENAME}"
@@ -300,7 +299,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image, rubocop-lint, pull-request, unit-tests, snyk-container-scan, snyk-code-scan, sonarcloud-scan]
     env:
-      IMAGE_NAME: ${{ needs.build-image.outputs.tagged_image_name }}
+      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     steps:
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
@@ -318,8 +318,7 @@ jobs:
 
       - name: Kosli SDLC gate to short-circuit the workflow
         run:
-          kosli assert artifact "${IMAGE_NAME}"
-            --artifact-type=docker
+          kosli assert artifact
             --environment=${KOSLI_AWS_BETA}
 
 
@@ -327,7 +326,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image, sdlc-control-gate]
     env:
-      IMAGE_NAME: ${{ needs.build-image.outputs.tagged_image_name }}
+      IMAGE_NAME:        ${{ needs.build-image.outputs.tagged_image_name }}
+      KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
     environment:
       name: staging
       url:  https://beta.cyber-dojo.org
@@ -348,8 +348,7 @@ jobs:
 
       - name: Report approval of deployment to Kosli
         run:
-          kosli report approval "${IMAGE_NAME}"
-            --artifact-type=docker
+          kosli report approval
             --approver="${{ github.actor }}"
             --environment=${KOSLI_AWS_BETA}
 
