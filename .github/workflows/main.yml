@@ -245,7 +245,7 @@ jobs:
         run: |
           KOSLI_COMPLIANT=$([ "${{ steps.coverage.outcome }}" == 'success' ] && echo true || echo false)          
           kosli attest generic ${IMAGE_NAME} \
-            --artifact-type=oci
+            --artifact-type=oci \
             --description="unit-test branch-coverage and metrics" \
             --name=dashboard.unit-test-coverage \
             --user-data=./reports/server/coverage_metrics.json
