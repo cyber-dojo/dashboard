@@ -48,7 +48,7 @@ curl_json_body_200()
     echo FAILED
     echo
     cat "$(log_filename)"
-    exit 42
+    exit_non_zero
   fi
 }
 
@@ -76,7 +76,7 @@ curl_plain_200()
     echo FAILED
     echo
     cat "$(log_filename)"
-    exit 42
+    exit_non_zero
   fi
 }
 
