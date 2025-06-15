@@ -179,8 +179,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run: |
           sleep 32
-          kosli attest sonar
-            --name=dashboard.sonarcloud-scan
+          kosli attest sonar \
+            --name=dashboard.sonarcloud-scan \
             --sonar-api-token="${{ secrets.SONARCLOUD_TOKEN }}"
 
 
