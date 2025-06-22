@@ -212,12 +212,16 @@ jobs:
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
+      - name: Give time for SonarCloud scan to complete
+        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        run:
+          sleep 16
+
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
-        run: |
-          sleep 16
-          kosli attest sonar \
-            --name=dashboard.sonarcloud-scan \
+        run:
+          kosli attest sonar
+            --name=dashboard.sonarcloud-scan
             --sonar-api-token="${{ secrets.SONARCLOUD_TOKEN }}"
 
 
