@@ -215,6 +215,7 @@ jobs:
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run: |
+          echo "${{ github.event.pull_request.title }}" 
           sleep 16
           kosli attest sonar \
             --name=dashboard.sonarcloud-scan \
