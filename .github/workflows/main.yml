@@ -283,7 +283,8 @@ jobs:
       - name: Attest coverage evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
         run: |
-          export KOSLI_COMPLIANT=$([ "${{ steps.coverage.outcome }}" == 'success' ] && echo true || echo false)          
+          KOSLI_COMPLIANT=$([ "${{ steps.coverage.outcome }}" == 'success' ] && echo true || echo false)
+          export KOSLI_COMPLIANT
           kosli attest generic \
             --description="unit-test branch-coverage and metrics" \
             --name=dashboard.unit-test-coverage \
