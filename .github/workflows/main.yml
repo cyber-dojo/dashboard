@@ -96,7 +96,7 @@ jobs:
       - name: Attest pull-request evidence to Kosli
         run:
           kosli attest pullrequest github
-            --debug=true
+            --dry-run=true
             --github-token="${{ secrets.GITHUB_TOKEN }}"
             --name=pull-request
 
