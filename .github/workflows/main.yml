@@ -46,8 +46,7 @@ jobs:
         run: |
           ECR_REGISTRY="${AWS_ECR_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
           IMAGE_TAG="${GITHUB_SHA:0:7}"
-          IMAGE_NAME="${ECR_REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG}"
-          
+          IMAGE_NAME="${ECR_REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG}"          
           { 
             echo "aws_account_id_beta=${AWS_ACCOUNT_ID_BETA}"             
             echo "ecr_registry=${ECR_REGISTRY}"                 
@@ -64,6 +63,12 @@ jobs:
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
+
+      - name: Create Kosli Flow
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run:
+          kosli create flow "${KOSLI_FLOW}"
+            --description="UX for a group practice dashboard"
 
       - name: Begin Kosli Trail
         if: ${{ github.ref == 'refs/heads/main' }}
