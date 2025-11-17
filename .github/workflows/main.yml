@@ -139,13 +139,13 @@ jobs:
           make rubocop_lint
 
       - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest junit
             --name=dashboard.rubocop-lint
@@ -179,13 +179,13 @@ jobs:
             .
 
       - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest snyk
             --attachments=.snyk          
@@ -212,13 +212,13 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v4
 
       - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest sonar
             --max-wait=16
@@ -273,20 +273,20 @@ jobs:
           make coverage_server
 
       - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest JUnit test evidence to Kosli
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest junit
             --name=dashboard.unit-test 
             --results-dir=./reports/server/junit
 
       - name: Attest coverage evidence to Kosli
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           KOSLI_COMPLIANT=$([ "${{ steps.coverage.outcome }}" == 'success' ] && echo true || echo false)
           export KOSLI_COMPLIANT
@@ -329,13 +329,13 @@ jobs:
             --sarif-file-output="${SARIF_FILENAME}" 
 
       - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: kosli-dev/setup-cli-action@v2
         with:
           version: ${{ vars.KOSLI_CLI_VERSION }}
 
       - name: Attest evidence to Kosli
-        if: ${{ github.ref == 'refs/heads/main' && (success() || failure()) }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest snyk
             --attachments=.snyk
