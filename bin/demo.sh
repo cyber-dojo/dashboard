@@ -19,7 +19,7 @@ curl_smoke_test()
   curl_plain_200 assets/app.js  'content-type: text/javascript'
 
   curl_plain_200 show/FxWwrr dashboard-page
-  open "http://localhost/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
+  open "http://localhost:80/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
 }
 
 curl_json()
@@ -86,11 +86,20 @@ server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
 demo()
 {
-  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" server
+  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" dashboard
   docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
-  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" nginx
-  docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 nginx
-  docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 server
+  #docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" nginx
+
+  docker compose \
+    --file "$(repo_root)/docker-compose.yml" \
+    run \
+      --detach \
+      --name test_dashboard_nginx \
+      --service-ports \
+      nginx
+
+  #docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 nginx
+  #docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 server
 
   copy_in_saver_test_data
   curl_smoke_test
