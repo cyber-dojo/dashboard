@@ -144,10 +144,7 @@ copy_in_saver_test_data()
 
 echo_warnings()
 {
-  echo INSIDE echo_warnings
   local -r SERVICE_NAME="${1}" # {client|server}
-  echo "CONTAINER_NAME=:${CONTAINER_NAME:-}:"
-  docker logs "${CONTAINER_NAME}"
   local -r DOCKER_LOG=$(docker logs "${CONTAINER_NAME}" 2>&1)
   # Handle known warnings (eg waiting on Gem upgrade)
   # local -r SHADOW_WARNING="server.rb:(.*): warning: shadowing outer local variable - filename"

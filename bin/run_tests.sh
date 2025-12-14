@@ -64,9 +64,15 @@ run_tests()
   local -r CONTAINER_COVERAGE_DIR="/tmp/reports"
   local -r HOST_REPORTS_DIR="${ROOT_DIR}/reports/${TYPE}"
 
+  if [ "${TYPE}" == 'server' ]; then 
+    local -r SERVICE=dashboard
+  else 
+    local -r SERVICE=client
+  fi
+
   # Don't do a build here, because in CI workflow, server image is built with GitHub Action
-  docker compose --progress=plain up --no-build --wait --wait-timeout=10 "${TYPE}"
-  echo_warnings "${TYPE}"
+  docker compose --progress=plain up --no-build --wait --wait-timeout=10 "${SERVICE}"
+  echo_warnings "${SERVICE}"
   copy_in_saver_test_data
 
   echo '=================================='
@@ -103,7 +109,7 @@ run_tests()
   exit_non_zero_unless_file_exists "${HOST_REPORTS_DIR}/test_metrics.json"
   exit_non_zero_unless_file_exists "${HOST_REPORTS_DIR}/coverage_metrics.json"
 
-  echo "${TYPE} test branch-coverage report is at:"
+  echo "${SERVICE} test branch-coverage report is at:"
   echo "${HOST_REPORTS_DIR}/index.html"
   echo
   echo "${TYPE} test status == ${STATUS}"
