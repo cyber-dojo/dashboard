@@ -1,0 +1,22 @@
+
+The demo opens REf1t8 but this is not a version 2 kata so it does not work 
+when you click on a traffic-light and get the review page. Specifically, 
+on the review page < > navigation if you click the [first<] button you 
+get a javascript error:
+
+Uncaught TypeError: Cannot read properties of undefined (reading 'content')
+    at outputRefresher (5U2J18:1465:60)
+    at 5U2J18:1458:9
+    at HTMLDivElement.<anonymous> (5U2J18:670:11)
+
+  const outputRefresher = (event) => {
+    const stdout = makeNoDiffOutput('stdout', event.stdout.content);
+    ...
+  }
+
+  Looks like event does not have stdout, or event.stdout does not have content.
+  Fixing this for v0,v1 is not so important.
+  But I do need a v2 demo.
+
+
+
