@@ -46,6 +46,19 @@ echo_env_vars()
   local -r AWS_ACCOUNT_ID=244531986313
   local -r AWS_REGION=eu-central-1
   echo CYBER_DOJO_DASHBOARD_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/dashboard"
+
+  # Here you can add SHA/TAG env-vars for any service whose
+  # local repos you have edited, have new git commits in,
+  # and have built new images from. Their build scripts
+  # finish by printing echo env-var statements you need to
+  # add to this function if you want the new images to be
+  # part of the dev-loop/demo. For example:
+  #
+  # echo CYBER_DOJO_SAVER_SHA=491a1d64acc721eaaa1d0338c3bb43fbfadaf78b
+  # echo CYBER_DOJO_SAVER_TAG=491a1d6
+
+  echo CYBER_DOJO_SAVER_SHA=d6766949d512390cf3331e563f3f833b8e3e641e
+  echo CYBER_DOJO_SAVER_TAG=d676694  
 }
 
 run_versioner()
