@@ -15,6 +15,8 @@ Uncaught TypeError: Cannot read properties of undefined (reading 'content')
   }
 
   Looks like event does not have stdout, or event.stdout does not have content.
+  Fixing this for v0,v1 is not so important.
+  But I do need a v2 demo.
 
 TODO: create a script that 
 - creates group
@@ -25,8 +27,4 @@ TODO: create a script that
 - load tgz file into saver in demo
 - in demo, open the dashboard using group ID
 - note these would be generally useful scripts for all microservices
-
-TODO:
-- put full docker-compose.yml into all microservice repos
-- add 'make demo' to all microservice repos
 
