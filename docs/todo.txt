@@ -1,14 +1,13 @@
 
-The demo opens REf1t8 but this is not a version 2 kata
-so it does not work when you click on a traffic-light and
-get the review page. Specifically, the < > navigation buttons
-do not work. If you click the [first<] button it does not
-work and you get a javascript error:
+The demo opens REf1t8 but this is not a version 2 kata so it does not work 
+when you click on a traffic-light and get the review page. Specifically, 
+on the review page < > navigation if you click the [first<] button you 
+get a javascript error:
 
 Uncaught TypeError: Cannot read properties of undefined (reading 'content')
     at outputRefresher (5U2J18:1465:60)
     at 5U2J18:1458:9
-    at HTMLDivElement.<anonymous> (5U2J18:670:11)\
+    at HTMLDivElement.<anonymous> (5U2J18:670:11)
 
   const outputRefresher = (event) => {
     const stdout = makeNoDiffOutput('stdout', event.stdout.content);
@@ -22,8 +21,12 @@ TODO: create a script that
 - creates 3 avatars
 - makes specific calls to saver for each avatar
 - creates tgz file holding data for group and 3 avatars
-
-TODO: 
 - run the script to create tgz file with known ID
 - load tgz file into saver in demo
 - in demo, open the dashboard using group ID
+- note these would be generally useful scripts for all microservices
+
+TODO:
+- put full docker-compose.yml into all microservice repos
+- add 'make demo' to all microservice repos
+

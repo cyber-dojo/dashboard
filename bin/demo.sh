@@ -55,6 +55,7 @@ curl_json_body_200()
 curl_plain()
 {
   local -r route="${1}"   # eg dashboard/choose
+
   curl  \
     --fail \
     --request GET \
@@ -68,6 +69,7 @@ curl_plain_200()
 {
   local -r route="${1}"   # eg dashboard/choose
   local -r pattern="${2}" # eg Hello
+  
   echo -n "GET ${route} => 200 ...|${pattern} "
 
   if curl_plain "${route}" && grep --quiet 200 "$(log_filename)" && grep --quiet "${pattern}" "$(log_filename)"; then
@@ -86,9 +88,8 @@ server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
 demo()
 {
-  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" dashboard
-  docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
-  #docker compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" nginx
+  docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" dashboard
+  docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
 
   docker compose \
     --file "$(repo_root)/docker-compose.yml" \
@@ -97,9 +98,6 @@ demo()
       --name test_dashboard_nginx \
       --service-ports \
       nginx
-
-  #docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 nginx
-  #docker compose --progress=plain up --detach --no-build --wait --wait-timeout=10 server
 
   copy_in_saver_test_data
   curl_smoke_test

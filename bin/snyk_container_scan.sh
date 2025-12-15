@@ -6,6 +6,10 @@ source "${ROOT_DIR}/bin/lib.sh"
 export $(echo_env_vars)
 exit_non_zero_unless_installed snyk
 
-snyk container test ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG} \
-      --json-file-output="${ROOT_DIR}/snyk.container.scan.json" \
-      --policy-path="${ROOT_DIR}/.snyk"
+IMAGE_NAME="${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}"
+JSON_FILE_OUTPUT="${ROOT_DIR}/snyk.container.scan.json"
+POLICY_PATH="${ROOT_DIR}/.snyk"
+
+snyk container test "${IMAGE_NAME}" \
+  --json-file-output="${JSON_FILE_OUTPUT}" \
+  --policy-path="${POLICY_PATH}"

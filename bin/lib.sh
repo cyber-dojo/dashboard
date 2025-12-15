@@ -8,6 +8,7 @@ echo_env_vars()
 
   local -r asset_builder_port=5135
   local -r asset_env_filename="$(repo_root)/.env.asset_builder"
+
   echo "# This file is generated in bin/lib.sh echo_env_vars()" > "${asset_env_filename}"
   echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}     >> "${asset_env_filename}"
   echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}
@@ -25,10 +26,10 @@ echo_env_vars()
   local -r env_filename="$(repo_root)/.env"
   echo "# This file is generated in bin/lib.sh echo_env_vars()" > "${env_filename}"
   echo CYBER_DOJO_DASHBOARD_CLIENT_PORT=9999                   >> "${env_filename}"
-  docker run --rm cyberdojo/versioner | grep PORT              >> "${env_filename}"
+  run_versioner | grep PORT                                    >> "${env_filename}"
 
   # Get identities of all docker-compose.yml dependent services (from versioner)
-  docker run --rm cyberdojo/versioner
+  run_versioner 
 
   echo CYBER_DOJO_DASHBOARD_SHA="$(image_sha)"
   echo CYBER_DOJO_DASHBOARD_TAG="$(image_tag)"
@@ -45,6 +46,13 @@ echo_env_vars()
   local -r AWS_ACCOUNT_ID=244531986313
   local -r AWS_REGION=eu-central-1
   echo CYBER_DOJO_DASHBOARD_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/dashboard"
+}
+
+run_versioner()
+{
+  # Hide platform warnings
+  docker run --rm cyberdojo/versioner >/tmp/log.stdout 2>/tmp/log.stderr
+  cat /tmp/log.stdout
 }
 
 image_sha()
