@@ -3,14 +3,14 @@
 require 'simplecov'
 require_relative 'simplecov_formatter_json'
 
-APP_DIR =  ENV['APP_DIR']
+APP_DIR = ENV.fetch('APP_DIR')
 
 SimpleCov.start do
-  coverage_dir(ENV['COVERAGE_ROOT'])
+  coverage_dir(ENV.fetch('COVERAGE_ROOT'))
   enable_coverage(:branch)
   primary_coverage(:branch)
   filters.clear
-  add_filter("test/id58_test_base.rb")
+  add_filter('test/id58_test_base.rb')
   root(APP_DIR)
 
   code_tab = ENV.fetch('COVERAGE_CODE_TAB_NAME')
