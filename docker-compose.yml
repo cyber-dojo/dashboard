@@ -61,6 +61,7 @@ services:
     read_only: true
     restart: no
     volumes:
+      - ./source/server:/dashboard/source:ro
       - ./test:/dashboard/test:ro
       - type: tmpfs
         target: /tmp
