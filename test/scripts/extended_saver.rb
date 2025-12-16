@@ -13,9 +13,12 @@ class ExtendedSaver < ExternalSaver
     super(ExternalHttp.new)
   end
 
-  def alive?
-    @http.get(__method__, {})
-  end
+  # def ready?
+  # def group_manifest(id)
+  # def group_joined(id)
+  # def katas_events(ids, indexes)
+
+  # TODO: need more here... group_create(), kata_create(), ran_tests(), etc
 
   def kata_file_create(id, index, files, filename)
     @http.post(__method__, { id: id, index: index, files: files, filename: filename })

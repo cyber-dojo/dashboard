@@ -7,7 +7,7 @@ require_relative 'extended_saver'
 def create_v2_dashboard
   p('Creating v2 dashboard')
   saver = ExtendedSaver.new
-  p(saver.alive?)
+  p(saver.ready?)
 end
 
 create_v2_dashboard
