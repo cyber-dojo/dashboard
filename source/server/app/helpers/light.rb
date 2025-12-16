@@ -4,7 +4,6 @@ class Light
   def initialize(summary, previous_index = 0)
     @summary = summary
     @summary['previous_index'] = previous_index
-    #@previous_index = previous_index
   end
 
   def index

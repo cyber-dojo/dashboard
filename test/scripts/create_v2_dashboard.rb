@@ -1,9 +1,10 @@
-#!/usr/bin/env ruby
-# This has to run inside a docker-container so it can call the saver-service
+# frozen_string_literal: true
+
+# This has to run inside a docker-container so it can call the dependent services
 
 require_relative 'extended_saver'
 
-def create_v2_dashboard()
+def create_v2_dashboard
   p('Creating v2 dashboard')
   saver = ExtendedSaver.new
   p(saver.alive?)
@@ -11,7 +12,9 @@ end
 
 create_v2_dashboard
 
-# Need a externals-languages-start-points 
+# Need an externals-languages-start-points
+# and exercises-start-points, which have to be combined in some way...
+# Can steal from creator repo I think
 
 # all=$(kosli_get languages-start-points/manifests)
 # manifests=$(echo "${all}" | jq '.manifests')

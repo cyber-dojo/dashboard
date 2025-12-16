@@ -18,7 +18,7 @@ create_v2_dashboard()
   docker exec \
     --user "${USER}" \
     "${CONTAINER_NAME}" \
-      sh -c "/dashboard/test/scripts/create_v2_dashboard.rb"
+      sh -c "ruby /dashboard/test/scripts/create_v2_dashboard.rb"
 }
 
 create_v2_dashboard 
