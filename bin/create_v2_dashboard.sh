@@ -25,3 +25,5 @@ name=$(echo "${names}" | jq '.[2]') # eg "Bash 5.2.37, bats 1.12.0"
 
 echo "${name}"
 # Would it be better/faster to make this a python script under test/ ?
+# ExternalSaver with new kata_file_create() etc methods can inherit from
+# its source/server equivalent.

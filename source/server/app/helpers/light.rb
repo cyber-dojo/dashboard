@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
 class Light
-  def initialize(summary)
+  def initialize(summary, previous_index = nil)
     @summary = summary
+    if previous_index.nil?
+      @previous_index = index - 1
+    else
+      @previous_index = previous_index
+    end
   end
 
   def index
     @summary['index']
+  end
+
+  def previous_index
+    @previous_index
   end
 
   def time_a

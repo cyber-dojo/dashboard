@@ -13,8 +13,11 @@ module GathererHelper
 
     gid = params[:id]
     externals.saver.group_joined(gid).each do |index, o|
+      previous_index = 0
       lights = o['events'].map do |event|
-        Light.new(event)
+        light = Light.new(event, previous_index)
+        previous_index = light.index
+        light
       end.select(&:light?)
 
       unless lights == []

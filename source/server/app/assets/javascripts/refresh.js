@@ -92,8 +92,6 @@ $(() => {
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
-  let previousIndex = undefined;
-
   const refreshTableBodyWith = (avatars) => {
     $tBody.empty();
     Object.keys(avatars).forEach((groupIndex) => {
@@ -102,7 +100,6 @@ $(() => {
       const $tr = $('<tr>');
       const $fixedColumn = $('<div>', { class:'fixed-column' });
       $tBody.append($tr.append($('<th>').append($fixedColumn)));
-      previousIndex = 0;
       const args = appendAllLights($tr, kataId, groupIndex, avatar['lights']);
       $fixedColumn.append($avatarImage(kataId, groupIndex));
       $fixedColumn.append($trafficLightsPieChart(args.counts, kataId));
@@ -180,16 +177,16 @@ $(() => {
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const setupHandlers = ($light, light, groupIndex, kataId) => {
     const nowIndex = light.index;
-    $light.click(() => window.open(reviewUrl(kataId, previousIndex, nowIndex)));
-    cd.setupTrafficLightTip($light, kataId, groupIndex, light, previousIndex, nowIndex);
+    $light.click(() => window.open(reviewUrl(kataId)));
+    cd.setupTrafficLightTip($light, kataId, groupIndex, light);
     previousIndex = nowIndex;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const reviewUrl = (kataId, wasIndex, nowIndex) => {
+  const reviewUrl = (kataId, light) => {
     return `/review/show/${kataId}` +
-      `?was_index=${wasIndex}` +
-      `&now_index=${nowIndex}`;
+      `?was_index=${light.previousIndex}` +
+      `&now_index=${light.index}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
