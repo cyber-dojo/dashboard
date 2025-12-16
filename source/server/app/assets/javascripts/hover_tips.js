@@ -13,9 +13,9 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  cd.setupTrafficLightTip = ($light, kataId, avatarIndex, light) => { //}, wasIndex, nowIndex) => {
+  cd.setupTrafficLightTip = ($light, kataId, avatarIndex, light) => {
     setTip($light, () => {
-      const args = { id:kataId, was_index:light.previousIndex, now_index:light.index };
+      const args = { id:kataId, was_index:light.previous_index, now_index:light.index };
       cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {
         const $tip = $(document.createDocumentFragment());
         $tip.append($trafficLightSummary(kataId, avatarIndex, light));

@@ -176,16 +176,14 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const setupHandlers = ($light, light, groupIndex, kataId) => {
-    const nowIndex = light.index;
-    $light.click(() => window.open(reviewUrl(kataId)));
+    $light.click(() => window.open(reviewUrl(kataId, light)));
     cd.setupTrafficLightTip($light, kataId, groupIndex, light);
-    previousIndex = nowIndex;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const reviewUrl = (kataId, light) => {
     return `/review/show/${kataId}` +
-      `?was_index=${light.previousIndex}` +
+      `?was_index=${light.previous_index}` +
       `&now_index=${light.index}`;
   };
 

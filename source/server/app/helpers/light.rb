@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 class Light
-  def initialize(summary, previous_index = nil)
+  def initialize(summary, previous_index = 0)
     @summary = summary
-    if previous_index.nil?
-      @previous_index = index - 1
-    else
-      @previous_index = previous_index
-    end
+    @summary['previous_index'] = previous_index
+    #@previous_index = previous_index
   end
 
   def index
@@ -15,15 +12,19 @@ class Light
   end
 
   def previous_index
-    @previous_index
+    @summary['previous_index']
   end
 
-  def time_a
-    @summary['time']
+  def light?
+    index != 0 && colour != :""
   end
 
   def time
     Time.mktime(*time_a)
+  end
+
+  def time_a
+    @summary['time']
   end
 
   def predicted
@@ -32,10 +33,6 @@ class Light
 
   def colour
     (@summary['colour'] || '').to_sym
-  end
-
-  def light?
-    index != 0 && colour != :""
   end
 
   def revert

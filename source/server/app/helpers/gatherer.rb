@@ -12,7 +12,7 @@ module GathererHelper
     @all_indexes = {}
 
     gid = params[:id]
-    externals.saver.group_joined(gid).each do |index, o|
+    externals.saver.group_joined(gid).each do |avatar_index, o|
       previous_index = 0
       lights = o['events'].map do |event|
         light = Light.new(event, previous_index)
@@ -22,7 +22,7 @@ module GathererHelper
 
       unless lights == []
         @all_lights[o['id']] = lights
-        @all_indexes[o['id']] = index.to_i
+        @all_indexes[o['id']] = avatar_index.to_i
       end
     end
     manifest = externals.saver.group_manifest(gid)
