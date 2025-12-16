@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -Eeu
 
+# Run this after doing 'make demo'
+
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "${ROOT_DIR}/bin/lib.sh"
 exit_non_zero_unless_installed docker
