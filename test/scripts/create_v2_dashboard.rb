@@ -2,21 +2,29 @@
 
 # This has to run inside a docker-container so it can call the dependent services
 
-require_relative 'extended_saver'
+require 'json'
+require_relative 'external_exercises_start_points'
+require_relative 'external_languages_start_points'
+require_relative 'external_saver'
 
 def create_v2_dashboard
   p('Creating v2 dashboard')
-  saver = ExtendedSaver.new
-  p(saver.ready?)
+  lsp = ExternalLanguagesStartPoints.new 
+  esp = ExternalExercisesStartPoints.new
+  saver = ExternalSaver.new
+
+  lsp_names = lsp.manifests.keys
+  lsp_name = lsp_names[2] # eg "Bash 5.2.37, bats 1.12.0"
+  esp_names = esp.manifests.keys # eg "Fizz Buzz"
+  esp_name = esp_names[19] 
+  
+  manifest = lsp.manifest(lsp_name)
+  exercise = esp.manifest(esp_name)
+  manifest['visible_files'].merge!(exercise['visible_files'])
+  manifest['exercise'] = exercise['display_name']
+  id = saver.group_create(manifest)
+  puts(id)
+
 end
 
 create_v2_dashboard
-
-# Need an externals-languages-start-points, externals-exercises-start-points
-# Then externals-creator to actual creator group
-# Then saver.group_join()
-
-# all=$(kosli_get languages-start-points/manifests)
-# manifests=$(echo "${all}" | jq '.manifests')
-# names=$(echo "${manifests}" | jq 'keys')
-# name=$(echo "${names}" | jq '.[2]') # eg "Bash 5.2.37, bats 1.12.0"
