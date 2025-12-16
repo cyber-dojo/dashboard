@@ -18,7 +18,7 @@ class ExtendedSaver < ExternalSaver
   # def group_joined(id)
   # def katas_events(ids, indexes)
 
-  # TODO: need more here... group_create(), kata_create(), ran_tests(), etc
+  # TODO: need more here... group_join(), kata_create(), ran_tests(), etc
 
   def kata_file_create(id, index, files, filename)
     @http.post(__method__, { id: id, index: index, files: files, filename: filename })

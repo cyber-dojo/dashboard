@@ -12,9 +12,9 @@ end
 
 create_v2_dashboard
 
-# Need an externals-languages-start-points
-# and exercises-start-points, which have to be combined in some way...
-# Can steal from creator repo I think
+# Need an externals-languages-start-points, externals-exercises-start-points
+# Then externals-creator to actual creator group
+# Then saver.group_join()
 
 # all=$(kosli_get languages-start-points/manifests)
 # manifests=$(echo "${all}" | jq '.manifests')
