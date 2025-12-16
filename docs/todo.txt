@@ -1,7 +1,4 @@
 
-TODO:
-- is there a tooltip for the pie-chart?
-
 TODO: create a script that 
 - creates group
 - creates 3 avatars
