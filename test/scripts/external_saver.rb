@@ -61,6 +61,7 @@ class ExternalSaver
     @http.post(__method__, { id: id, index: index, files: files })
   end
 
-  # TODO: ran_tests()
-
+  def kata_ran_tests
+    # TODO: ran_tests()
+  end
 end

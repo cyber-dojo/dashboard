@@ -9,22 +9,21 @@ require_relative 'external_saver'
 
 def create_v2_dashboard
   p('Creating v2 dashboard')
-  lsp = ExternalLanguagesStartPoints.new 
+  lsp = ExternalLanguagesStartPoints.new
   esp = ExternalExercisesStartPoints.new
   saver = ExternalSaver.new
 
   lsp_names = lsp.manifests.keys
   lsp_name = lsp_names[2] # eg "Bash 5.2.37, bats 1.12.0"
   esp_names = esp.manifests.keys # eg "Fizz Buzz"
-  esp_name = esp_names[19] 
-  
+  esp_name = esp_names[19]
+
   manifest = lsp.manifest(lsp_name)
   exercise = esp.manifest(esp_name)
   manifest['visible_files'].merge!(exercise['visible_files'])
   manifest['exercise'] = exercise['display_name']
   id = saver.group_create(manifest)
   puts(id)
-
 end
 
 create_v2_dashboard
