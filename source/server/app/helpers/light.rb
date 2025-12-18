@@ -1,20 +1,29 @@
 # frozen_string_literal: true
 
 class Light
-  def initialize(summary)
+  def initialize(summary, previous_index = 0)
     @summary = summary
+    @summary['previous_index'] = previous_index
   end
 
   def index
     @summary['index']
   end
 
-  def time_a
-    @summary['time']
+  def previous_index
+    @summary['previous_index']
+  end
+
+  def light?
+    index != 0 && colour != :""
   end
 
   def time
     Time.mktime(*time_a)
+  end
+
+  def time_a
+    @summary['time']
   end
 
   def predicted
@@ -23,10 +32,6 @@ class Light
 
   def colour
     (@summary['colour'] || '').to_sym
-  end
-
-  def light?
-    index != 0 && colour != :""
   end
 
   def revert

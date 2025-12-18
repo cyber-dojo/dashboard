@@ -55,15 +55,18 @@ build_image()
   check_args "$@"
   local -r type="${1}"
 
+  if [ "${type}" == 'server' ]; then
+    local -r service=dashboard
+  else 
+    local -r service=client
+  fi
+
   containers_down
   remove_old_images
 
   echo "Building server"
   echo "COMMIT_SHA=${COMMIT_SHA}"
-  docker compose build server
-  #if [ "${type}" == 'client' ]; then
-  #  docker compose build client
-  #fi
+  docker compose build "${service}"
 
   local -r image_name="${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}"
   local -r sha_in_image=$(docker run --rm --entrypoint="" "${image_name}" sh -c 'echo -n ${SHA}')

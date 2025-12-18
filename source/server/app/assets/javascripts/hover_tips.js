@@ -13,12 +13,12 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  cd.setupTrafficLightTip = ($light, kataId, avatarIndex, light, wasIndex, nowIndex) => {
+  cd.setupTrafficLightTip = ($light, kataId, avatarIndex, light) => {
     setTip($light, () => {
-      const args = { id:kataId, was_index:wasIndex, now_index:nowIndex };
+      const args = { id:kataId, was_index:light.previous_index, now_index:light.index };
       cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {
         const $tip = $(document.createDocumentFragment());
-        $tip.append($trafficLightSummary($light, kataId, avatarIndex, light, nowIndex));
+        $tip.append($trafficLightSummary(kataId, avatarIndex, light));
         $tip.append($diffLinesTable(diffSummary));
         cd.showHoverTip($light, $tip);
       });
@@ -26,10 +26,10 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  const $trafficLightSummary = ($light, kataId, avatarIndex, light, index) => {
+  const $trafficLightSummary = (kataId, avatarIndex, light) => {
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
-    $tr.append($trafficLightCountTd(light.colour, index));
+    $tr.append($trafficLightCountTd(light.colour, light.index));
     $tr.append($trafficLightImageTd(light.colour));
     $tr.append($trafficLightMiniTextTd(kataId, light));
     return $('<table>').append($tr);

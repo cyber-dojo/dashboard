@@ -17,6 +17,12 @@ module HttpJsonHash
       end
     end
 
+    def post(path, args)
+      request(path, args) do |uri|
+        @http.post(uri)
+      end
+    end
+
     private
 
     def request(path, args)

@@ -176,17 +176,15 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const setupHandlers = ($light, light, groupIndex, kataId) => {
-    //const colour = light.colour;
-    const nowIndex = light.index;
-    $light.click(() => window.open(reviewUrl(kataId, nowIndex-1, nowIndex)));
-    cd.setupTrafficLightTip($light, kataId, groupIndex, light, nowIndex-1, nowIndex);
+    $light.click(() => window.open(reviewUrl(kataId, light)));
+    cd.setupTrafficLightTip($light, kataId, groupIndex, light);
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const reviewUrl = (kataId, wasIndex, nowIndex) => {
+  const reviewUrl = (kataId, light) => {
     return `/review/show/${kataId}` +
-      `?was_index=${wasIndex}` +
-      `&now_index=${nowIndex}`;
+      `?was_index=${light.previous_index}` +
+      `&now_index=${light.index}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -

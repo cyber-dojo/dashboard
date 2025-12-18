@@ -1,82 +1,10 @@
 
+networks:
+  cyber-dojo:
+    driver: bridge
+    name: cyber-dojo
+
 services:
-
-  nginx:
-    build:
-      context: test/nginx_stub
-    container_name: test_dashboard_nginx
-    depends_on:
-      - client
-    image: cyberdojo/nginx_dashboard_stub
-    ports: [ 80:80 ]
-    user: root
-
-  server:
-    image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
-    user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
-    build:
-      args:
-        - COMMIT_SHA
-      context: .
-    container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}
-    depends_on:
-      - differ
-      - saver
-    env_file: [ .env ]
-    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
-    read_only: true
-    restart: no
-    volumes:
-      - ./test:/dashboard/test:ro
-      - type: tmpfs
-        target: /tmp
-        tmpfs:
-          mode: 01777
-          size: 10485760  # 10MB
-
-  client:
-    image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
-    user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
-    build:
-      args:
-        - COMMIT_SHA
-      context: source/client
-    container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}
-    depends_on:
-      - server
-    env_file: [ .env ]
-    ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
-    read_only: true
-    restart: no
-    volumes:
-      - ./test:/dashboard/test:ro
-      - type: tmpfs
-        target: /tmp
-        tmpfs:
-          mode: 01777
-          size: 10485760  # 10MB
-
-  differ:
-    depends_on:
-      - saver
-    image: ${CYBER_DOJO_DIFFER_IMAGE}:${CYBER_DOJO_DIFFER_TAG}
-    user: nobody
-    env_file: [ .env ]
-    read_only: true
-    restart: "no"
-    tmpfs: /tmp
-
-  saver:
-    image: ${CYBER_DOJO_SAVER_IMAGE}:${CYBER_DOJO_SAVER_TAG}
-    user: saver
-    ports: [ "${CYBER_DOJO_SAVER_PORT}:${CYBER_DOJO_SAVER_PORT}" ]
-    env_file: [ .env ]
-    init: true
-    read_only: true
-    restart: no
-    tmpfs:
-      - /cyber-dojo:uid=19663,gid=65533
-      - /tmp:uid=19663,gid=65533
 
   asset_builder:
     image: ${CYBER_DOJO_ASSET_BUILDER_IMAGE}:${CYBER_DOJO_ASSET_BUILDER_TAG}
@@ -94,3 +22,149 @@ services:
         tmpfs:
           mode: 01777
           size: 10485760  # 10MB
+
+  client:
+    image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
+    build:
+      args:
+        - COMMIT_SHA
+      context: source/client
+    container_name: ${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}
+    depends_on:
+      - dashboard
+    env_file: [ .env ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}:${CYBER_DOJO_DASHBOARD_CLIENT_PORT}" ]
+    read_only: true
+    restart: no
+    volumes:
+      - ./test:/dashboard/test:ro
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          mode: 01777
+          size: 10485760  # 10MB
+
+  dashboard:
+    image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
+    build:
+      args:
+        - COMMIT_SHA
+      context: .
+    container_name: ${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}
+    depends_on:
+      - differ
+      - saver
+    env_file: [ .env ]
+    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
+    read_only: true
+    restart: no
+    volumes:
+      - ./source/server:/dashboard/source:ro
+      - ./test:/dashboard/test:ro
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          mode: 01777
+          size: 10485760  # 10MB
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  nginx:
+    image: ${CYBER_DOJO_NGINX_IMAGE}:${CYBER_DOJO_NGINX_TAG}
+    depends_on:
+      - web
+    user: root
+    init: true
+    container_name: test_dashboard_nginx
+    ports: [ "${CYBER_DOJO_NGINX_PORT}:80" ]
+    restart: "no"
+
+  web:
+    depends_on:
+      - creator
+      - differ
+      - runner
+      - dashboard
+    image: ${CYBER_DOJO_WEB_IMAGE}:${CYBER_DOJO_WEB_TAG}
+    ports: [ "${CYBER_DOJO_WEB_PORT}:${CYBER_DOJO_WEB_PORT}" ]
+    user: nobody
+    container_name: test_dashboard_web
+    env_file: [ .env ]
+    tmpfs: /tmp
+    restart: no
+
+  differ:
+    depends_on:
+      - saver
+    image: ${CYBER_DOJO_DIFFER_IMAGE}:${CYBER_DOJO_DIFFER_TAG}
+    container_name: test_dashboard_differ
+    user: nobody
+    env_file: [ .env ]
+    read_only: true
+    restart: "no"
+    tmpfs: /tmp
+
+  runner:
+    image: ${CYBER_DOJO_RUNNER_IMAGE}:${CYBER_DOJO_RUNNER_TAG}
+    user: root
+    container_name: test_dashboard_runner
+    env_file: [ .env ]
+    read_only: true
+    tmpfs: /tmp
+    restart: no
+    volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
+
+  saver:
+    image: ${CYBER_DOJO_SAVER_IMAGE}:${CYBER_DOJO_SAVER_TAG}
+    user: saver
+    container_name: test_dashboard_saver
+    ports: [ "${CYBER_DOJO_SAVER_PORT}:${CYBER_DOJO_SAVER_PORT}" ]
+    env_file: [ .env ]
+    init: true
+    read_only: true
+    restart: no
+    tmpfs:
+      - /cyber-dojo:uid=19663,gid=65533
+      - /tmp:uid=19663,gid=65533
+
+  creator:
+    depends_on:
+      - custom-start-points
+      - exercises-start-points
+      - languages-start-points
+    image: ${CYBER_DOJO_CREATOR_IMAGE}:${CYBER_DOJO_CREATOR_TAG}
+    user: nobody
+    container_name: test_dashboard_creator
+    env_file: [ .env ]
+    read_only: true
+    tmpfs: /tmp
+    restart: no
+
+  custom-start-points:
+    image: ${CYBER_DOJO_CUSTOM_START_POINTS_IMAGE}:${CYBER_DOJO_CUSTOM_START_POINTS_TAG}
+    user: nobody
+    container_name: test_dashboard_custom_start_points
+    env_file: [ .env ]
+    read_only: true
+    tmpfs: /tmp
+    restart: no
+
+  exercises-start-points:
+    image: ${CYBER_DOJO_EXERCISES_START_POINTS_IMAGE}:${CYBER_DOJO_EXERCISES_START_POINTS_TAG}
+    user: nobody
+    container_name: test_dashboard_exercises_start_points
+    env_file: [ .env ]
+    read_only: true
+    tmpfs: /tmp
+    restart: no
+
+  languages-start-points:
+    image: ${CYBER_DOJO_LANGUAGES_START_POINTS_IMAGE}:${CYBER_DOJO_LANGUAGES_START_POINTS_TAG}
+    user: nobody
+    container_name: test_dashboard_languages_start_points
+    env_file: [ .env ]
+    read_only: true
+    tmpfs: /tmp
+    restart: no

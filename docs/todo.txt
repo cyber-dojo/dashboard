@@ -1,0 +1,16 @@
+
+TODO: create a script that 
+- creates group
+- creates 3 avatars
+- makes specific calls to saver for each avatar
+- creates tgz file holding data for group and 3 avatars
+- run the script to create tgz file with known ID
+- load tgz file into saver in demo
+- in demo, open the dashboard using group ID
+- note these would be generally useful scripts for all microservices
+
+TODO: fill in example of kata_XXX methods in saver's docs/api.md 
+
+TODO: update saver api.md document with info on new return type.
+
+

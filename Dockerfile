@@ -7,9 +7,12 @@ RUN apk add --upgrade c-ares=1.34.6-r0 # https://security.snyk.io/vuln/SNYK-ALPI
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}
 
-WORKDIR /dashboard
-COPY source/server .
+ARG APP_DIR=/dashboard
+ENV APP_DIR=${APP_DIR}
+
+WORKDIR ${APP_DIR}/source
+COPY source/server/ .
 USER nobody
-HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /dashboard/config/healthcheck.sh
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD ./config/healthcheck.sh
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
-CMD [ "/dashboard/config/up.sh" ]
+CMD ["./config/up.sh"]

@@ -3,16 +3,21 @@
 require 'simplecov'
 require_relative 'simplecov_formatter_json'
 
+APP_DIR = ENV.fetch('APP_DIR')
+
 SimpleCov.start do
-  enable_coverage :branch
+  coverage_dir(ENV.fetch('COVERAGE_ROOT'))
+  enable_coverage(:branch)
+  primary_coverage(:branch)
   filters.clear
   add_filter('test/id58_test_base.rb')
-  coverage_dir(ENV.fetch('COVERAGE_ROOT'))
-  # add_group('debug') { |source| puts source.filename; false }
+  root(APP_DIR)
+
   code_tab = ENV.fetch('COVERAGE_CODE_TAB_NAME')
   test_tab = ENV.fetch('COVERAGE_TEST_TAB_NAME')
-  add_group(code_tab) { |source| source.filename =~ %r{^/dashboard/app/} }
-  add_group(test_tab) { |source| source.filename =~ %r{^/dashboard/test/} }
+  # add_group('debug') { |the| puts(the.filename); false }
+  add_group(code_tab) { |the| the.filename.start_with?("#{APP_DIR}/source/") }
+  add_group(test_tab) { |the| the.filename.start_with?("#{APP_DIR}/test/") }
 end
 
 formatters = [

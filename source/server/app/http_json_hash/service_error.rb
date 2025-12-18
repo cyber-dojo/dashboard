@@ -7,7 +7,7 @@ module HttpJsonHash
       @args = args
       @name = name
       @body = body
-      super(message)
+      super(message + "\n#{path}" + "\n#{body}")
     end
     attr_reader :path, :args, :name, :body
   end

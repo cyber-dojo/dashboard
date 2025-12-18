@@ -1,5 +1,7 @@
 AllCops:
-    NewCops: enable
+  NewCops: enable
+  Exclude:
+    - test/scripts/**
 
 Layout/LineLength:
   Exclude:

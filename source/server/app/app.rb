@@ -85,6 +85,7 @@ class App < AppBase
 
   def light_json(light)
     element = {
+      previous_index: light.previous_index,
       index: light.index,
       colour: light.colour
     }

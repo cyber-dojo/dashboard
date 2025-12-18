@@ -15,6 +15,11 @@ module HttpJsonHash
       unpacked(response.body, path.to_s, args)
     end
 
+    def post(path, args)
+      response = @requester.post(path, args)
+      unpacked(response.body, path.to_s, args)
+    end
+
     private
 
     def unpacked(body, path, args)
@@ -28,6 +33,7 @@ module HttpJsonHash
     end
 
     def service_error(path, args, body, message)
+      # puts("XXXX #{path} - #{body} - #{message}")
       raise ::HttpJsonHash::ServiceError.new(path, args, @name, body, message)
     end
   end
