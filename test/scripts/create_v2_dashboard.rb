@@ -46,7 +46,7 @@ def create_v2_dashboard
   summary = {
     duration: 1.234,
     colour: 'red',
-    predicted: nil,
+    predicted: '',
     revert_if_wrong: false
   }
   index = saver.kata_ran_tests(kid, index, files, stdout, stderr, status, summary)
