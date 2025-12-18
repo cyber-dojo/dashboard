@@ -27,13 +27,19 @@ def create_v2_dashboard
   kid = saver.group_join(gid)
   puts("Kata ID=#{kid}")
 
-  # kata_file_create(kid)
-  # kata_file_delete(kid)
-  # kata_file_rename(kid)
-  # kata_file_switch(kid)
-  # kata_ran_tests(kid)
+  files = manifest['visible_files']
+  new_filename = 'wibble.txt'
+  files[new_filename] = { 'content' => '' }
+  saver.kata_file_create(kid, index=1, files, filename=new_filename)
 
-  # events = kata_events(kid)
+  # saver.kata_file_delete(kid, index, files, filename)
+  # saver.kata_file_rename(kid, index, files, old_filename, new_filename)
+  # saver.kata_file_switch(kid, index, files)
+
+  # saver.kata_ran_tests(kid)
+
+  events = saver.kata_events(kid)
+  puts(events)
 end
 
 create_v2_dashboard

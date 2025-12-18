@@ -32,6 +32,10 @@ class ExternalSaver
     @http.get(__method__, { id: id })
   end
 
+  def kata_events(id)
+    @http.get(__method__, { id: id })
+  end
+
   def katas_events(ids, indexes)
     @http.get(__method__, { ids: ids, indexes: indexes })
   end
