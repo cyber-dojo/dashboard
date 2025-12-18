@@ -99,12 +99,40 @@ def create_v2_dashboard
   #      "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>0}}
   #
   # Diff 3 - 4
-  #
+  # Nothing - it is now a pure test-outcome event
+  # ~~~~~~~~~~~~~~~~~
   # Diff 0 - 4
   # ----{"type"=>"changed", "new_filename"=>"cyber-dojo.sh", "old_filename"=>"cyber-dojo.sh", "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>23}}
   # ----{"type"=>"created", "new_filename"=>"wibble.txt", "old_filename"=>nil, "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>0}}
   #
   # This looks right.
+  # What about in web's review page? 
+  # Diff 0 - 1
+  # http://localhost/review/show/SR3Fxc?was_index=0&now_index=1
+  # Correctly showing cyber-dojo.sh has changed
+  #
+  # Diff 1 - 2
+  # http://localhost/review/show/SR3Fxc?was_index=1&now_index=2
+  # Correctly showing wibble.txt was created, but not selected (cyber-dojo.sh is)
+  #
+  # Diff 2 - 3
+  # http://localhost/review/show/SR3Fxc?was_index=2&now_index=3
+  # Correctly showing wibble.txt is edited
+  #
+  # Diff 3 - 4
+  # http://localhost/review/show/SR3Fxc?was_index=3&now_index=4
+  # Correctly showing no diff, index=4 on review page, red traffic-light has underbar.
+  #
+  # Diff 0 - 4
+  # http://localhost/review/show/SR3Fxc?was_index=0&now_index=4
+  # Incorrectly showing same as 3-4
+  # Is this because web's review page is actually changing this to 3-4?
+  #
+  # Diff 0 - 3
+  # http://localhost/review/show/SR3Fxc?was_index=0&now_index=3
+  # Inciorrectly showing same as 2-3
+  # Again suggesting web's review has changed this to 2-3
+
 end
 
 def show_diff(id, was_index, now_index)
