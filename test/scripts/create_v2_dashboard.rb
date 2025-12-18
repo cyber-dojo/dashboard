@@ -22,8 +22,18 @@ def create_v2_dashboard
   exercise = esp.manifest(esp_name)
   manifest['visible_files'].merge!(exercise['visible_files'])
   manifest['exercise'] = exercise['display_name']
-  id = saver.group_create(manifest)
-  puts(id)
+  gid = saver.group_create(manifest)
+  puts("Group ID=#{gid}")
+  kid = saver.group_join(gid)
+  puts("Kata ID=#{kid}")
+
+  # kata_file_create(kid)
+  # kata_file_delete(kid)
+  # kata_file_rename(kid)
+  # kata_file_switch(kid)
+  # kata_ran_tests(kid)
+
+  # events = kata_events(kid)
 end
 
 create_v2_dashboard

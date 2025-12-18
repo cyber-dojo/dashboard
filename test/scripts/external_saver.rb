@@ -62,6 +62,15 @@ class ExternalSaver
   end
 
   def kata_ran_tests
-    # TODO: ran_tests()
+    @http.post(__method__,
+    { # rubocop:disable Layout/ArgumentAlignment
+      id: id,
+      index: index,
+      files: files,
+      stdout: stdout,
+      stderr: stderr,
+      status: status,
+      summary: summary
+    })
   end
 end
