@@ -30,16 +30,31 @@ def create_v2_dashboard
   files = manifest['visible_files']
   new_filename = 'wibble.txt'
   files[new_filename] = { 'content' => '' }
-  saver.kata_file_create(kid, index=1, files, filename=new_filename)
+  files['cyber-dojo.sh']['content'] += '#comment'
+  index = 1
+  index = saver.kata_file_create(kid, index, files, filename=new_filename)
 
-  # saver.kata_file_delete(kid, index, files, filename)
-  # saver.kata_file_rename(kid, index, files, old_filename, new_filename)
-  # saver.kata_file_switch(kid, index, files)
+  files[new_filename]['content'] += 'Hello world'
+  index = saver.kata_file_switch(kid, index, files)
 
-  # saver.kata_ran_tests(kid)
+  # index = saver.kata_file_delete(kid, index, files, filename)
+  # index = saver.kata_file_rename(kid, index, files, old_filename, new_filename)
+
+  stdout = { 'content' => '', 'truncated' => false }
+  stderr = { 'content' => '', 'truncated' => false }
+  status = '0'
+  summary = {
+    duration: 1.234,
+    colour: 'red',
+    predicted: nil,
+    revert_if_wrong: false
+  }
+  index = saver.kata_ran_tests(kid, index, files, stdout, stderr, status, summary)
 
   events = saver.kata_events(kid)
+
   puts(events)
+  puts("http://localhost:80/dashboard/show/#{gid}?auto_refresh=false&minute_columns=true")
 end
 
 create_v2_dashboard

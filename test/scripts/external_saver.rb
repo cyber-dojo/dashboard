@@ -65,7 +65,7 @@ class ExternalSaver
     @http.post(__method__, { id: id, index: index, files: files })
   end
 
-  def kata_ran_tests
+  def kata_ran_tests(id, index, files, stdout, stderr, status, summary)
     @http.post(__method__,
     { # rubocop:disable Layout/ArgumentAlignment
       id: id,
