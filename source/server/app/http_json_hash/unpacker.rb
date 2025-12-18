@@ -33,6 +33,7 @@ module HttpJsonHash
     end
 
     def service_error(path, args, body, message)
+      # puts("XXXX #{path} - #{body} - #{message}")
       raise ::HttpJsonHash::ServiceError.new(path, args, @name, body, message)
     end
   end

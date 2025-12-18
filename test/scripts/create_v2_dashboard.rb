@@ -3,6 +3,7 @@
 # This has to run inside a docker-container so it can call the dependent services
 
 require 'json'
+require_relative 'external_differ'
 require_relative 'external_exercises_start_points'
 require_relative 'external_languages_start_points'
 require_relative 'external_saver'
@@ -74,7 +75,33 @@ def create_v2_dashboard
   # gives the same
   #
   # So initial impressions look like differ is not working across the new non-test events.
+  # Next step could be to add external-differ and see what various diffs are.
 
+  show_diff(kid, 0, 1)
+  show_diff(kid, 1, 2)
+  show_diff(kid, 2, 3)
+  show_diff(kid, 3, 4)
+  show_diff(kid, 0, 4)
+
+  # I think there is an error in saver.kata_file_create()
+  # It is showing
+  # Diff 0 - 1
+  # ----{"type"=>"changed", "new_filename"=>"cyber-dojo.sh", "old_filename"=>"cyber-dojo.sh", "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>23}}
+  # ----{"type"=>"created", "new_filename"=>"wibble.txt", "old_filename"=>nil, "line_counts"=>{"added"=>0, "deleted"=>0, "same"=>0}}
+  # When it should only be showing "changed" for cyber-dojo.sh
+  # and "created" for wibble.txt should be in the next index (1->2)
+end
+
+def show_diff(id, was_index, now_index)
+  differ = ExternalDiffer.new
+  diff = differ.diff_summary(id, was_index, now_index)
+  puts()
+  puts("Diff #{was_index} - #{now_index}")
+  diff.each do |entry|
+    if entry["type"] != "unchanged"
+      puts("----#{entry}")
+    end
+  end
 end
 
 create_v2_dashboard
