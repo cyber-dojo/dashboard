@@ -31,10 +31,11 @@ def create_v2_dashboard
 
   files = manifest['visible_files']
   new_filename = 'wibble.txt'
-  files[new_filename] = { 'content' => '' }
   files['cyber-dojo.sh']['content'] += '#comment'
   index = 1
   index = saver.kata_file_create(kid, index, files, filename=new_filename)
+  # VIP that new_filename is added only now.
+  files[new_filename] = { 'content' => '' }
   # { index:1, event:edit-file, filename:'cyber-dojo.sh'}
   # { index:2, event:create-file, filename:'wibble.txt'}
 
@@ -74,7 +75,7 @@ def create_v2_dashboard
   # http://localhost/review/show/L5Gw6Y?was_index=0&now_index=4
   # gives the same
   #
-  # So initial impressions look like differ is not working across the new non-test events.
+  # So initial impressions look like differ is not working *across* the new non-test events.
   # Next step could be to add external-differ and see what various diffs are.
 
   show_diff(kid, 0, 1)
@@ -86,10 +87,24 @@ def create_v2_dashboard
   # I think there is an error in saver.kata_file_create()
   # It is showing
   # Diff 0 - 1
+  # ----{"type"=>"changed", "new_filename"=>"cyber-dojo.sh", "old_filename"=>"cyber-dojo.sh", 
+  #      "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>23}}
+  #
+  # Diff 1 - 2
+  # ----{"type"=>"created", "new_filename"=>"wibble.txt", "old_filename"=>nil, 
+  #     "line_counts"=>{"added"=>0, "deleted"=>0, "same"=>0}}
+  #
+  # Diff 2 - 3
+  # ----{"type"=>"changed", "new_filename"=>"wibble.txt", "old_filename"=>"wibble.txt", 
+  #      "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>0}}
+  #
+  # Diff 3 - 4
+  #
+  # Diff 0 - 4
   # ----{"type"=>"changed", "new_filename"=>"cyber-dojo.sh", "old_filename"=>"cyber-dojo.sh", "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>23}}
-  # ----{"type"=>"created", "new_filename"=>"wibble.txt", "old_filename"=>nil, "line_counts"=>{"added"=>0, "deleted"=>0, "same"=>0}}
-  # When it should only be showing "changed" for cyber-dojo.sh
-  # and "created" for wibble.txt should be in the next index (1->2)
+  # ----{"type"=>"created", "new_filename"=>"wibble.txt", "old_filename"=>nil, "line_counts"=>{"added"=>1, "deleted"=>0, "same"=>0}}
+  #
+  # This looks right.
 end
 
 def show_diff(id, was_index, now_index)
