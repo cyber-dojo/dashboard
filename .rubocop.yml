@@ -1,5 +1,7 @@
 AllCops:
-    NewCops: enable
+  NewCops: enable
+  Exclude:
+    - test/scripts/**
 
 Layout/LineLength:
   Exclude:
@@ -14,19 +16,12 @@ Layout/SpaceInsideReferenceBrackets:
   Exclude:
     - test/server/check_test_metrics.rb
 
-Layout/TrailingWhitespace:
-  Exclude:
-    - test/scripts/external_exercises_start_points.rb 
-    - test/scripts/external_languages_start_points.rb 
-    - test/scripts/external_saver.rb 
-
 Lint/IneffectiveAccessModifier:
   Exclude:
     - source/server/app/app_base.rb
 
 Metrics/AbcSize:
   Exclude:
-    - test/scripts/create_v2_dashboard.rb
     - test/simplecov_formatter_json.rb
     - test/id58_test_base.rb
     - test/server/check_test_metrics.rb
@@ -55,7 +50,6 @@ Metrics/ModuleLength:
 
 Metrics/MethodLength:
   Exclude:
-    - test/scripts/create_v2_dashboard.rb
     - test/id58_test_base.rb
     - test/slim_json_reporter.rb
     - test/simplecov_formatter_json.rb
