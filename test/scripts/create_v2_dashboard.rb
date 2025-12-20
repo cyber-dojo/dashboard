@@ -4,25 +4,14 @@
 
 require 'json'
 require_relative 'external_differ'
-require_relative 'external_exercises_start_points'
-require_relative 'external_languages_start_points'
 require_relative 'external_saver'
 
 def create_v2_dashboard
   p('Creating v2 dashboard')
-  lsp = ExternalLanguagesStartPoints.new
-  esp = ExternalExercisesStartPoints.new
   saver = ExternalSaver.new
+  manifest = saver.group_manifest('REf1t8')
+  manifest['version'] = 2
 
-  lsp_names = lsp.manifests.keys
-  lsp_name = lsp_names[2] # eg "Bash 5.2.37, bats 1.12.0"
-  esp_names = esp.manifests.keys # eg "Fizz Buzz"
-  esp_name = esp_names[19]
-
-  manifest = lsp.manifest(lsp_name)
-  exercise = esp.manifest(esp_name)
-  manifest['visible_files'].merge!(exercise['visible_files'])
-  manifest['exercise'] = exercise['display_name']
   gid = saver.group_create(manifest)
   puts("Group ID=#{gid}")
   kid = saver.group_join(gid)
@@ -113,6 +102,8 @@ def create_v2_dashboard
   # Diff 1 - 2
   # http://localhost/review/show/SR3Fxc?was_index=1&now_index=2
   # Correctly showing wibble.txt was created, but not selected (cyber-dojo.sh is)
+  # See web repo, source/app/views/review/lib/_pick_file.html.erb
+  # which shows a bias to not selecting .txt files.
   #
   # Diff 2 - 3
   # http://localhost/review/show/SR3Fxc?was_index=2&now_index=3
