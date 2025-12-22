@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'td_gapper'
-require_relative 'light'
+require_relative 'event'
 
 # mixin
 module GathererHelper
@@ -14,12 +14,14 @@ module GathererHelper
     gid = params[:id]
     externals.saver.group_joined(gid).each do |avatar_index, o|
       previous_index = 0
-      lights = o['events'].map do |event|
-        light = Light.new(event, previous_index)
-        previous_index = light.index
-        light
-      end.select(&:light?)
-
+      lights = []
+      o['events'].each do |event|
+        event = Event.new(event, previous_index)
+        if event.light?
+          previous_index = event.index
+          lights.append(event)
+        end
+      end
       unless lights == []
         @all_lights[o['id']] = lights
         @all_indexes[o['id']] = avatar_index.to_i

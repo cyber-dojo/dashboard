@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Light
+class Event
   def initialize(summary, previous_index = 0)
     @summary = summary
     @summary['previous_index'] = previous_index
