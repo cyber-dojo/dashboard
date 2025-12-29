@@ -3,13 +3,27 @@ TODO: create a script that
 - creates group
 - creates 3 avatars
 - makes specific calls to saver for each avatar
-- creates tgz file holding data for group and 3 avatars
-- run the script to create tgz file with known ID
-- load tgz file into saver in demo
-- in demo, open the dashboard using group ID
-- note these would be generally useful scripts for all microservices
+- replace demo script with this so it opens a v2 dashboard
 
-TODO: fill in example of kata_XXX methods in saver's docs/api.md 
+TODO: later, the script can be used to
+- create tgz file 
+- load tgz file into demos
+- Note: these would be generally useful scripts for all microservices
+
+TODO: update demo to show version2 group kata 
+
+TODO: fill in example of kata_XXX methods in saver's docs/api.md
+All the following will benefit from seeing the format of, eg 
+files == { 'filename' => {'content' => '...', 'truncated' => false }} etc
+- kata_file_create()
+- kata_file_delete()
+- kata_file_rename()
+- kata_file_switch()
+- kata_ran_tests()
+- kata_predicted_right()
+- kata_predicted_wrong()
+- kata_reverted()
+- kata_checked_out()
 
 TODO: update saver api.md document with info on new return type.
 

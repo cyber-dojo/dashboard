@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Light
+class Event
   def initialize(summary, previous_index = 0)
     @summary = summary
     @summary['previous_index'] = previous_index
@@ -15,7 +15,8 @@ class Light
   end
 
   def light?
-    index != 0 && colour != :""
+    colours = %i[red red_special amber amber_special green green_special]
+    index != 0 && colours.include?(colour)
   end
 
   def time
