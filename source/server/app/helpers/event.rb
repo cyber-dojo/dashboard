@@ -15,7 +15,8 @@ class Event
   end
 
   def light?
-    index != 0 && colour != :""
+    colours = [:red, :red_special, :amber, :amber_special, :green, :green_special]
+    index != 0 && colours.include?(colour)
   end
 
   def time

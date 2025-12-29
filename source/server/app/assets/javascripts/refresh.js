@@ -182,9 +182,11 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const reviewUrl = (kataId, light) => {
+    const wasIndex = light.previous_index;
+    const nowIndex = light.index; 
     return `/review/show/${kataId}` +
-      `?was_index=${light.previous_index}` +
-      `&now_index=${light.index}`;
+      `?was_index=${wasIndex}` +
+      `&now_index=${nowIndex}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
