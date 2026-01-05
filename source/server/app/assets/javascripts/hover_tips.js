@@ -29,7 +29,7 @@
   const $trafficLightSummary = (kataId, avatarIndex, light) => {
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
-    $tr.append($trafficLightCountTd(light.colour, light.index));
+    $tr.append($trafficLightCountTd(light.colour, light.major_index));
     $tr.append($trafficLightImageTd(light.colour));
     $tr.append($trafficLightMiniTextTd(kataId, light));
     return $('<table>').append($tr);
