@@ -25,9 +25,11 @@ echo_env_vars()
   fi
 
   local -r env_filename="$(repo_root)/.env"
-  echo "# This file is generated in bin/lib.sh echo_env_vars()" > "${env_filename}"
-  echo CYBER_DOJO_DASHBOARD_CLIENT_PORT=9999                   >> "${env_filename}"
-  run_versioner | grep PORT                                    >> "${env_filename}"
+  {
+    echo "# This file is generated in bin/lib.sh echo_env_vars()"
+    echo CYBER_DOJO_DASHBOARD_CLIENT_PORT=9999
+    run_versioner | grep PORT
+  } > "${env_filename}"
 
   # Get identities of all docker-compose.yml dependent services (from versioner)
   run_versioner 
@@ -55,8 +57,8 @@ echo_env_vars()
   # add to this function if you want the new images to be
   # part of the dev-loop/demo. For example:
   #
-  # echo CYBER_DOJO_SAVER_SHA=491a1d64acc721eaaa1d0338c3bb43fbfadaf78b
-  # echo CYBER_DOJO_SAVER_TAG=491a1d6
+  # echo CYBER_DOJO_WEB_SHA=e49a0d92d8ec37f386545e503bc2dfc4bf9c1557
+  # echo CYBER_DOJO_WEB_TAG=e49a0d9  
 }
 
 run_versioner()

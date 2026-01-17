@@ -122,36 +122,29 @@
 
   // - - - - - - - - - - - - - - - - - - - -
   const $diffLinesTable = (diffs) => {
+    let count = 0;
     const $table = $('<table>', { class:'filenames' });
-    const $tr = $('<tr>');
-    // column icons
-    $tr.append($linesCountIconTd('deleted', '&mdash;'));
-    $tr.append($linesCountIconTd('added', '+'));
-    $tr.append($linesCountIconTd('same', '='));
-    $tr.append($('<td>'));
-    $tr.append($('<td>'));
-    $table.append($tr);
-    // cyber-dojo.sh cannot be deleted so there is always one file
     const filenames = diffs.map(diff => diffFilename(diff));
     sortedFilenames(filenames).forEach(filename => {
       const fileDiff = diffs.find(diff => diffFilename(diff) === filename);
-      const $tr = $('<tr>');
-      $tr.append($lineCountTd('deleted', fileDiff));
-      $tr.append($lineCountTd('added', fileDiff));
-      $tr.append($lineCountTd('same', fileDiff));
-      $tr.append($diffTypeTd(fileDiff));
-      $tr.append($diffFilenameTd(fileDiff));
-      $table.append($tr);
+      const addedCount = fileDiff.line_counts['added'];
+      const deletedCount = fileDiff.line_counts['deleted'];
+      if (fileDiff.type != 'unchanged') {
+        count += 1;
+        const $tr = $('<tr>');
+        $tr.append($lineCountTd('deleted', fileDiff));
+        $tr.append($lineCountTd('added', fileDiff));
+        $tr.append($diffTypeTd(fileDiff));
+        $tr.append($diffFilenameTd(fileDiff));
+        $table.append($tr);
+      }      
     });
-    return $table;
-  };
-
-  // - - - - - - - - - - - - - - - - - - - -
-  const $linesCountIconTd = (type, glyph) => {
-    const $icon = $('<div>', {
-      class:`diff-line-count-icon ${type}`
-    }).html(glyph);
-    return $('<td>').append($icon);
+    if (count == 0) {
+      return '';
+    }
+    else {    
+      return $table;
+    }
   };
 
   // - - - - - - - - - - - - - - - - - - - -
