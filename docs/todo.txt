@@ -26,5 +26,3 @@ files == { 'filename' => {'content' => '...', 'truncated' => false }} etc
 - kata_checked_out()
 
 TODO: update saver api.md document with info on new return type.
-
-
