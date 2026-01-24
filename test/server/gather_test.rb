@@ -5,16 +5,14 @@ require_source 'helpers/gatherer'
 require_source 'helpers/avatars_progress'
 
 class GatheredTest < TestBase
-  def self.id58_prefix
-    '450'
-  end
 
   include GathererHelper
 
   attr_reader :params
 
-  test 's46',
-       'contract-test for gather from saved cyber-dojo group v0' do
+  test '450s46', %w(
+  | contract-test for gather from saved cyber-dojo group v0
+  ) do
     id = 'chy6BJ'
     expected_indexes = {
       'k5ZTk0' => 11
@@ -31,8 +29,9 @@ class GatheredTest < TestBase
     gather_check(expected_indexes, expected_lights)
   end
 
-  test 's47',
-       'contract-test for gather from saved cyber-dojo group v1' do
+  test '450s47', %w(
+  | contract-test for gather from saved cyber-dojo group v1
+  ) do
     id = 'LyQpFr'
     expected_indexes = {
       'rUqcey' => 26,

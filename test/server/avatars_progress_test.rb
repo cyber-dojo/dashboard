@@ -6,17 +6,15 @@ require_source 'helpers/gatherer'
 require_source 'helpers/avatars_progress'
 
 class AvatarsProgressTest < TestBase
-  def self.id58_prefix
-    '0D6'
-  end
 
   include AvatarsProgressHelper
   include KataTestData
 
   attr_reader :params
 
-  test 'b46',
-       'contract-test v0' do
+  test '0D6b46', %w(
+  | contract-test v0
+  ) do
     @params = { id: V0_GROUP_ID }
     expected = [
       {
@@ -30,8 +28,9 @@ class AvatarsProgressTest < TestBase
     assert_equal expected, actual
   end
 
-  test 'b47',
-       'contract-test v1' do
+  test '0D6b47', %w(
+  | contract-test v1
+  ) do
     @params = { id: V1_GROUP_ID }
     expected = [
       {
