@@ -4,11 +4,6 @@ require_relative 'test_base'
 require_source 'helpers/td_gapper'
 
 class TdGapperTest < TestBase
-  def self.id58_prefix
-    '449'
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def id58_setup
     @gapper = TdGapper.new(start, seconds_per_td, max_seconds_uncollapsed)
@@ -18,8 +13,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test 'AC6',
-       'number' do
+  test '449AC6', %w(
+  | number
+  ) do
     # 0 : 2:30:00 - 2:30:20
     # 1 : 2:30:20 - 2:30:40
     # 2 : 2:30:40 - 2:31:00
@@ -35,8 +31,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test 'F5E',
-       'stats' do
+  test '449F5E', %w(
+  | stats
+  ) do
     # 0 : 2:30:00 - 2:30:20
     # 1 : 2:30:20 - 2:30:40
     # 2 : 2:30:40 - 2:31:00
@@ -70,8 +67,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test 'E42',
-       'vertical bleed' do
+  test '449E42', %w(
+  | vertical bleed
+  ) do
     all_lights =
       {
         hippo_id => [t1 = make_light(30, 21), # 1
@@ -95,8 +93,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '315',
-       'collapsed table' do
+  test '449315', %w(
+  | collapsed table
+  ) do
     # 30 mins = 30 x 3 x 20 secs = 90 tds
     td_nos = [0, 1, 4, 5]
     expected =
@@ -121,8 +120,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '634',
-       'strip removes lightless tds from both ends' do
+  test '449634', %w(
+  | strip removes lightless tds from both ends
+  ) do
     t1 = make_light(30, 21) # 1
     t2 = make_light(31, 33) # 4
     t3 = make_light(30, 25) # 1
@@ -149,8 +149,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '220',
-       'fully gapped no traffic_lights yet' do
+  test '449220', %w(
+  | fully gapped no traffic_lights yet
+  ) do
     all_lights = {}
     now = [year, month, day + 1, hour, 32, 23] # td 4327
     actual = gapper.fully_gapped(all_lights, now)
@@ -160,8 +161,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '9F3',
-       'fully gapped with no collapsing and no td-holes' do
+  test '4499F3', %w(
+  | fully gapped with no collapsing and no td-holes
+  ) do
     all_lights =
       {
         hippo_id => [t1 = make_light(30, 21), # 1
@@ -184,8 +186,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '9F4',
-       'fully gapped with collapsing and td-holes' do
+  test '4499F4', %w(
+  | fully gapped with collapsing and td-holes
+  ) do
     start = Time.mktime(year, month, day, hour, 0, 0)
     @gapper = TdGapper.new(start, 60, 60 * 4)
 
@@ -283,8 +286,9 @@ class TdGapperTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '9F7',
-       'time-ticks with no katas is {}' do
+  test '4499F7', %w(
+  | time-ticks with no katas is {}
+  ) do
     all_lights = {}
     now = [year, month, day + 1, hour, 32, 23] # td 4327
     gapped = gapper.fully_gapped(all_lights, now)
@@ -293,8 +297,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '9F5',
-       'time-ticks with no collapsing and no td-holes' do
+  test '4499F5', %w(
+  | time-ticks with no collapsing and no td-holes
+  ) do
     start = Time.mktime(year, month, day, hour, 0, 0)
     @gapper = TdGapper.new(start, 60, 60 * 4)
 
@@ -324,8 +329,9 @@ class TdGapperTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '9F6',
-       'time-ticks with collapsing and td-holes' do
+  test '4499F6', %w(
+  | time-ticks with collapsing and td-holes
+  ) do
     start = Time.mktime(year, month, day, hour, 0, 0)
     @gapper = TdGapper.new(start, 60, 60 * 4)
 
