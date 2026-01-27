@@ -87,6 +87,8 @@ class App < AppBase
     element = {
       previous_index: light.previous_index,
       index: light.index,
+      major_index: light.major_index,
+      minor_index: light.minor_index,
       colour: light.colour
     }
     element['predicted'] = light.predicted if light.predicted && light.predicted != 'none'

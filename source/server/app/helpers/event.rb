@@ -10,6 +10,14 @@ class Event
     @summary['index']
   end
 
+  def major_index
+    @summary['major_index']
+  end
+
+  def minor_index
+    @summary['minor_index']
+  end
+
   def previous_index
     @summary['previous_index']
   end
