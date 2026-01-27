@@ -114,7 +114,7 @@ $(() => {
       class:'avatar-image',
         alt:'avatar image'
     });
-    $img.click(() => window.open(cd.reviewUrl(kataId, -1, -1)));
+    $img.click(() => window.open(cd.reviewUrl(kataId, -1)));
     const apostrophe = '&#39;'
     cd.setupAvatarNameHoverTip($img, 'review ', groupIndex, `${apostrophe}s<br/>current code`);
     return $img;
@@ -182,11 +182,7 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const reviewUrl = (kataId, light) => {
-    const wasIndex = light.previous_index;
-    const nowIndex = light.index; 
-    return `/review/show/${kataId}` +
-      `?was_index=${wasIndex}` +
-      `&now_index=${nowIndex}`;
+    return `/review/show/${kataId}?now_index=${light.index}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -27,6 +27,7 @@ Metrics/MethodLength:
     - source/server/app/helpers/td_gapper.rb
     - source/server/app/helpers/gatherer.rb
     - source/server/app/helpers/avatars_progress.rb
+    - source/server/app/app.rb
 
 Metrics/PerceivedComplexity:
   Exclude:
