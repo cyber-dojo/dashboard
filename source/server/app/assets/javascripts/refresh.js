@@ -170,11 +170,17 @@ $(() => {
         setupHandlers($light, light, groupIndex, kataId);
 
         unless(args.counts[colour], () => args.counts[colour] = 0);
-        args.counts[colour] += 1;
-        args.lastColour = colour; // (for colour of traffic-lights-count)
+        if (isRAG(colour)) {
+          args.counts[colour] += 1;
+          args.lastColour = colour; // (for colour of traffic-lights-count)
+        }
       });
     }
     args.parity = (args.parity === 'odd' ? 'even' : 'odd');
+  };
+
+  const isRAG = (colour) => {
+    return colour.startsWith('red') || colour.startsWith('amber') || colour.startsWith('green');
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
