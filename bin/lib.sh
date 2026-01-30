@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -Eeu
 
+readonly TMP_DIR="$(mktemp -d /tmp/dashboard.XXXXXXX)"
+remove_tmp_dir() { rm -rf "${TMP_DIR}" > /dev/null; }
+trap remove_tmp_dir INT EXIT
+
 echo_env_vars()
 {
   #--------------------
@@ -58,7 +62,7 @@ echo_env_vars()
   # part of the dev-loop/demo. For example:
   #
   # echo CYBER_DOJO_WEB_SHA=e49a0d92d8ec37f386545e503bc2dfc4bf9c1557
-  # echo CYBER_DOJO_WEB_TAG=e49a0d9  
+  # echo CYBER_DOJO_WEB_TAG=e49a0d9
 }
 
 run_versioner()
@@ -158,7 +162,17 @@ copy_in_saver_test_data()
   local -r SRC_PATH=${ROOT_DIR}/test/data/cyber-dojo
   local -r DEST_PATH=/cyber-dojo
   # You cannot docker cp to a tmpfs, so tar-piping instead...
-  cd ${SRC_PATH} \
+
+  # Copy src-path, which contains v0 and v1 katas, to TMP_DIR
+  cp -r "${SRC_PATH}" "${TMP_DIR}"
+
+  # Untar saver_data.v2.tgz, which contains .git dirs inside, to TMP_DIR
+  pushd "${TMP_DIR}"
+  tar -zxf "${ROOT_DIR}/test/data/saver_data.v2.tgz"
+  popd
+
+  # tar-pipe v0, v1, v2 katas, from TMP_DIR, into saver container
+  cd "${TMP_DIR}/cyber-dojo" \
     && tar --no-xattrs -c . \
     | docker exec -i ${SAVER_CID} tar x -C ${DEST_PATH}
 }
