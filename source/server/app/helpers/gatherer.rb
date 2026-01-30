@@ -17,7 +17,7 @@ module GathererHelper
       lights = []
       o['events'].each do |event|
         event = Event.new(event, previous_index)
-        if is_visible?(event)
+        if visible?(event)
           previous_index = event.index
           lights.append(event)
         end
@@ -34,8 +34,8 @@ module GathererHelper
     @gapped = gapper.fully_gapped(@all_lights, externals.time.now)
     @time_ticks = gapper.time_ticks(@gapped)
   end
-  
-  def is_visible?(event)
+
+  def visible?(event)
     if detailed?
       true
     else
@@ -57,5 +57,4 @@ module GathererHelper
   def detailed?
     params['detailed'] == 'true'
   end
-
 end
