@@ -1,12 +1,5 @@
 
-- publish new versioner so clicking on file-event takes you to correct review.
-
-- add detailed=true/false to main URL
-
 - with detailed[x] the count of lights is wrong 
 
 - with detailed[x] the tool-tips for file-events need 
   to be major_index.minor_index in a grey colour.
-
-
-  
