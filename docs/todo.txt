@@ -1,5 +1,3 @@
 
-- with detailed[x] the count of lights is wrong 
-
 - with detailed[x] the tool-tips for file-events need 
   in a grey colour
