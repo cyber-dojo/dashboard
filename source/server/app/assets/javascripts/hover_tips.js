@@ -28,7 +28,7 @@
   const $trafficLightSummary = (kataId, avatarIndex, light) => {
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
-    $tr.append($trafficLightCountTd(light.colour, light.major_index));
+    $tr.append($trafficLightCountTd(light));
     $tr.append($trafficLightImageTd(light.colour));
     $tr.append($trafficLightMiniTextTd(kataId, light));
     return $('<table>').append($tr);
@@ -103,7 +103,11 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  const $trafficLightCountTd = (colour, index) => {
+  const $trafficLightCountTd = (event) => {
+    const colour = event.colour;
+    const index = (event.minor_index == 0)
+      ? `${event.major_index}`
+      : `${event.major_index}.${event.minor_index}`;
     const $count = $('<span>', {
       class:`traffic-light-count ${colour}`
     }).text(index);
