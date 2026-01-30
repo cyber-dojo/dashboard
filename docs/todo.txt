@@ -1,3 +1,4 @@
 
-- with detailed[x] the tool-tips for file-events need 
-  in a grey colour
+- clicking on the avatar is supposed to take you to their latest code.
+  It doesn't. 
+  Seems cd.reviewUrl() function is missing.
