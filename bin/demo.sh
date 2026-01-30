@@ -26,7 +26,7 @@ curl_smoke_test()
   else # v2
     GID=uqELXR
   fi
-  open "http://localhost:80/dashboard/show/${GID}?auto_refresh=true&minute_columns=true&detailed=true"
+  open "http://localhost:80/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
 }
 
 curl_json()

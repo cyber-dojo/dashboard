@@ -12,7 +12,7 @@ $(() => {
 
   const $checkBox = $('#detailed-checkbox');
 
-  const initially = cd.urlParam('detailed', 'true');
+  const initially = cd.urlParam('detailed', 'false');
 
   $checkBox.attr('checked', initially === 'true')
            .click(() => $checkBox.onClick());

@@ -2,3 +2,5 @@
 - clicking on the avatar is supposed to take you to their latest code.
   It doesn't. 
   Seems cd.reviewUrl() function is missing.
+
+- ensure default for detailed = false
