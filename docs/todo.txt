@@ -2,3 +2,7 @@
 - clicking on the avatar is supposed to take you to their latest code.
   It doesn't. 
   Seems cd.reviewUrl() function is missing.
+
+- supposed to only show an avatar if it has at least one RAG.
+  check this...
+  for detailed[x] I think we want at least one file-event.

@@ -117,7 +117,7 @@ $(() => {
       class:'avatar-image',
         alt:'avatar image'
     });
-    $img.click(() => window.open(cd.reviewUrl(kataId, -1)));
+    $img.click(() => window.open(cd.reviewUrl(kataId, { index: -1 })));
     const apostrophe = '&#39;'
     cd.setupAvatarNameHoverTip($img, 'review ', groupIndex, `${apostrophe}s<br/>current code`);
     return $img;
@@ -185,12 +185,12 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const setupHandlers = ($light, light, groupIndex, kataId) => {
-    $light.click(() => window.open(reviewUrl(kataId, light)));
+    $light.click(() => window.open(cd.reviewUrl(kataId, light)));
     cd.setupTrafficLightTip($light, kataId, groupIndex, light);
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const reviewUrl = (kataId, light) => {
+  cd.reviewUrl = (kataId, light) => {
     return `/review/show/${kataId}?now_index=${light.index}`;
   };
 
