@@ -1,4 +1,3 @@
-/*global cd,$*/
 'use strict';
 $(() => {
 
@@ -12,7 +11,11 @@ $(() => {
     // A public cd.function so its callable from heartbeat() and
     // when auto-refresh/minute-columns checkboxes are clicked.
     const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
-    const args = { minute_columns:minuteColumns };
+    const detailed = cd.detailed.isChecked() ? 'true' : 'false';
+    const args = { 
+      minute_columns:minuteColumns,
+      detailed:detailed
+    };
     $.getJSON(`/dashboard/heartbeat/${cd.id()}`, args, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
