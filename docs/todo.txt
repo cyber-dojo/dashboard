@@ -1,4 +1,11 @@
 
+- if detailed[x] and you click a RAG, it would be nice if
+  the review opened in detailed[x] mode.
+
 - supposed to only show an avatar if it has at least one RAG.
   check this...
-  for detailed[x] I think we want at least one file-event.
+  for detailed[x] I think we want at least one file-event?
+  Confirmed. Start a new avatar, in detailed[ ] OFF, you dont see it.
+  In detailed[x] you do.
+  Is this ok?
+
