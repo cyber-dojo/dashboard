@@ -57,6 +57,18 @@
     else if (cd.lib.isCheckout(light)) {
       return trafficLightCheckoutInfo(kataId, light);
     }
+    else if (light.colour == 'file_create') {
+      return 'file created';
+    }
+    else if (light.colour == 'file_delete') {
+      return 'file deleted';
+    }
+    else if (light.colour == 'file_rename') {
+      return 'file renamed';      
+    }
+    else if (light.colour == 'file_edit') {
+      return 'file edited';
+    }
     else {
       return cssColour(light.colour);
     }
