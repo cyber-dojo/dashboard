@@ -1,4 +1,3 @@
-/*global cd*/
 'use strict';
 (() => {
 
