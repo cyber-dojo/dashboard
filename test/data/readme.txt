@@ -14,3 +14,7 @@ saver
 /cyber-dojo/groups/Ly/Qp/Fr                       Python, unittest (has progress_regex)
 /cyber-dojo/groups/Fx/Ww/rr/26/kata.id ==> rUqcey (26==koala)
 /cyber-dojo/groups/Fx/Ww/rr/27/kata.id ==> 38w9NC (27==leopard)
+
+
+saver_data.v2.tgz was created from a web demo, using its 
+bin/copy_out_saver_test_data.sh script.

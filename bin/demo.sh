@@ -19,7 +19,14 @@ curl_smoke_test()
   curl_plain_200 assets/app.js  'content-type: text/javascript'
 
   curl_plain_200 show/FxWwrr dashboard-page
-  open "http://localhost:80/dashboard/show/REf1t8?auto_refresh=true&minute_columns=true"
+  if [ "${v:-}" == '0' ]; then
+    GID=FxWwrr
+  elif [ "${v:-}" == '1' ]; then
+    GID=REf1t8
+  else # v2
+    GID=uqELXR
+  fi
+  open "http://localhost:80/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
 }
 
 curl_json()
