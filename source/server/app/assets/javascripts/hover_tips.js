@@ -39,7 +39,10 @@
   };
 
   const miniTextInfo = (kataId, light) => {
-    if (light.colour === 'pulling') {
+    if (light.index == 0) {
+      return 'kata created';
+    }
+    else if (light.colour === 'pulling') {
       return 'image being prepared';
     }
     else if (light.colour === 'timed_out') {
