@@ -4,6 +4,7 @@ set -Eeu
 readonly my_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly assets_dir="${my_dir}/../source/server/app/assets"
 source "${my_dir}/lib.sh"
+source "${my_dir}/echo_env_vars.sh"
 export $(echo_env_vars)
 
 exit_non_zero_unless_installed docker curl
