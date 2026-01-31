@@ -1,7 +1,8 @@
 
 #age-panel,
 #auto-refresh-panel,
-#minute-columns-panel
+#minute-columns-panel,
+#detailed-panel
 {
   @include edged-panel();
   @include plaintext-font();

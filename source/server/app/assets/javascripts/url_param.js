@@ -1,4 +1,3 @@
-/*global cd*/
 'use strict';
 
 cd.urlParam = (name, fallBack) => {

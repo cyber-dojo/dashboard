@@ -1,4 +1,3 @@
-/*global cd,$*/
 'use strict';
 $(() => {
 
@@ -12,7 +11,11 @@ $(() => {
     // A public cd.function so its callable from heartbeat() and
     // when auto-refresh/minute-columns checkboxes are clicked.
     const minuteColumns = cd.minuteColumns.isChecked() ? 'true' : 'false';
-    const args = { minute_columns:minuteColumns };
+    const detailed = cd.detailed.isChecked() ? 'true' : 'false';
+    const args = { 
+      minute_columns:minuteColumns,
+      detailed:detailed
+    };
     $.getJSON(`/dashboard/heartbeat/${cd.id()}`, args, (data) => {
       refreshTableHeadWith(data.time_ticks);
       refreshTableBodyWith(data.avatars);
@@ -114,7 +117,7 @@ $(() => {
       class:'avatar-image',
         alt:'avatar image'
     });
-    $img.click(() => window.open(cd.reviewUrl(kataId, -1)));
+    $img.click(() => window.open(cd.reviewUrl(kataId, { index: -1 })));
     const apostrophe = '&#39;'
     cd.setupAvatarNameHoverTip($img, 'review ', groupIndex, `${apostrophe}s<br/>current code`);
     return $img;
@@ -167,22 +170,29 @@ $(() => {
         setupHandlers($light, light, groupIndex, kataId);
 
         unless(args.counts[colour], () => args.counts[colour] = 0);
-        args.counts[colour] += 1;
-        args.lastColour = colour; // (for colour of traffic-lights-count)
+        if (isRAG(colour)) {
+          args.counts[colour] += 1;
+          args.lastColour = colour; // (for colour of traffic-lights-count)
+        }
       });
     }
     args.parity = (args.parity === 'odd' ? 'even' : 'odd');
   };
 
+  const isRAG = (colour) => {
+    return colour.startsWith('red') || colour.startsWith('amber') || colour.startsWith('green');
+  };
+
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const setupHandlers = ($light, light, groupIndex, kataId) => {
-    $light.click(() => window.open(reviewUrl(kataId, light)));
+    $light.click(() => window.open(cd.reviewUrl(kataId, light)));
     cd.setupTrafficLightTip($light, kataId, groupIndex, light);
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  const reviewUrl = (kataId, light) => {
-    return `/review/show/${kataId}?now_index=${light.index}`;
+  cd.reviewUrl = (kataId, light) => {
+    const diff = cd.detailed.isChecked() ? '&diff=detailed' : '';
+    return `/review/show/${kataId}?now_index=${light.index}${diff}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -

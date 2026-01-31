@@ -3,6 +3,7 @@ set -Eeu
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT_DIR}/bin/lib.sh"
+source "${ROOT_DIR}/bin/echo_env_vars.sh"
 exit_non_zero_unless_installed docker
 export $(echo_env_vars)
 
@@ -93,7 +94,7 @@ run_tests()
     --env COVERAGE_TEST_TAB_NAME=test \
     --user "${USER}" \
     "${CONTAINER_NAME}" \
-      sh -c "/dashboard/test/run.sh ${CONTAINER_COVERAGE_DIR} ${TEST_LOG} ${TYPE} ${*:2}"
+      sh -c "/dashboard/test/run.sh ${CONTAINER_COVERAGE_DIR} ${TEST_LOG} ${TYPE} ${*:2} ${tid:-}"
   local -r STATUS=$?
   set -e
 

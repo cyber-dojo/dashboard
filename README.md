@@ -17,8 +17,7 @@ $ make image_server
 $ make test_server
 
 # To run only specific tests
-$ ./bin/run_tests.sh {-h|--help}
-$ ./bin/run_tests.sh server 449AC6
+$ make test_server tid=449AC6
 
 # To check coverage metrics
 $ make coverage_server
@@ -30,7 +29,7 @@ $ make snyk_container_scan
 $ make rubocop_lint
 
 # To run demo
-$ make demo
+$ make demo v=2
 ```
 
 - - - -

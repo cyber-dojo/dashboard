@@ -14,7 +14,7 @@ $(() => {
 
   const initially = cd.urlParam('minute_columns', 'true');
 
-  $checkBox.attr('checked', initially === 'true')
+  $checkBox.attr('checked', initially == 'true')
            .click(() => $checkBox.onClick());
 
   $checkBox.isChecked = () => $checkBox.prop('checked');
@@ -26,7 +26,7 @@ $(() => {
             .onClick();
   });
 
-  cd.minuteColumns = $checkBox; // public as cd.refresh() calls isChecked()
+  cd.minuteColumns = $checkBox; // public to allow cd.minuteColumns.isChecked()
 
   const tip = [
     'toggle the one-minute',

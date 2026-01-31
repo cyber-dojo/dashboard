@@ -1,4 +1,3 @@
-/*global cd,$*/
 'use strict';
 (() => {
 
@@ -29,7 +28,7 @@
   const $trafficLightSummary = (kataId, avatarIndex, light) => {
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
-    $tr.append($trafficLightCountTd(light.colour, light.major_index));
+    $tr.append($trafficLightCountTd(light));
     $tr.append($trafficLightImageTd(light.colour));
     $tr.append($trafficLightMiniTextTd(kataId, light));
     return $('<table>').append($tr);
@@ -40,7 +39,10 @@
   };
 
   const miniTextInfo = (kataId, light) => {
-    if (light.colour === 'pulling') {
+    if (light.index == 0) {
+      return 'kata created';
+    }
+    else if (light.colour === 'pulling') {
       return 'image being prepared';
     }
     else if (light.colour === 'timed_out') {
@@ -57,6 +59,18 @@
     }
     else if (cd.lib.isCheckout(light)) {
       return trafficLightCheckoutInfo(kataId, light);
+    }
+    else if (light.colour == 'file_create') {
+      return 'file created';
+    }
+    else if (light.colour == 'file_delete') {
+      return 'file deleted';
+    }
+    else if (light.colour == 'file_rename') {
+      return 'file renamed';      
+    }
+    else if (light.colour == 'file_edit') {
+      return 'file edited';
     }
     else {
       return cssColour(light.colour);
@@ -104,7 +118,11 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  const $trafficLightCountTd = (colour, index) => {
+  const $trafficLightCountTd = (event) => {
+    const colour = event.colour;
+    const index = (event.minor_index == 0)
+      ? `${event.major_index}`
+      : `${event.major_index}.${event.minor_index}`;
     const $count = $('<span>', {
       class:`traffic-light-count ${colour}`
     }).text(index);
