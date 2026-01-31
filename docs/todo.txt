@@ -1,4 +1,0 @@
-
-- if there are a large number of file-events and you click detailed[x]
-  make sure the display auto-scrolls horizontally so the most recent 
-  events are in view.
