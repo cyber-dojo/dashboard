@@ -191,7 +191,8 @@ $(() => {
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   cd.reviewUrl = (kataId, light) => {
-    return `/review/show/${kataId}?now_index=${light.index}`;
+    const diff = cd.detailed.isChecked() ? '&diff=detailed' : '';
+    return `/review/show/${kataId}?now_index=${light.index}${diff}`;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -14,7 +14,7 @@ $(() => {
 
   const initially = cd.urlParam('detailed', 'false');
 
-  $checkBox.attr('checked', initially === 'true')
+  $checkBox.attr('checked', initially == 'true')
            .click(() => $checkBox.onClick());
 
   $checkBox.isChecked = () => $checkBox.prop('checked');
@@ -26,7 +26,7 @@ $(() => {
             .onClick();
   });
 
-  cd.detailed = $checkBox; // public as cd.refresh() calls isChecked()
+  cd.detailed = $checkBox; // public to allow cd.detailed.isChecked()/refresh()
 
   const tip = [
     'toggle detailed events',

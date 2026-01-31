@@ -14,7 +14,7 @@ $(() => {
 
   const initially = cd.urlParam('auto_refresh', 'true');
 
-  $checkBox.attr('checked', initially === 'true')
+  $checkBox.attr('checked', initially == 'true')
            .click(() => $checkBox.onClick());
 
   $checkBox.isChecked = () => $checkBox.prop('checked');
@@ -30,7 +30,7 @@ $(() => {
              .onClick();
   });
 
-  cd.autoRefresh = $checkBox; // public as heartbeat() calls isChecked()
+  cd.autoRefresh = $checkBox; // public to allow cd.autoRefresh.isChecked()
 
   const tip = [
     'toggle the 10 second',
