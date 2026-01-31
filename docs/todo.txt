@@ -2,11 +2,3 @@
 - if there are a large number of file-events and you click detailed[x]
   make sure the display auto-scrolls horizontally so the most recent 
   events are in view.
-
-- supposed to only show an avatar if it has at least one RAG.
-  check this...
-  for detailed[x] I think we want at least one file-event?
-  Confirmed. Start a new avatar, in detailed[ ] OFF, you dont see it.
-  In detailed[x] you do.
-  Is this ok?
-
