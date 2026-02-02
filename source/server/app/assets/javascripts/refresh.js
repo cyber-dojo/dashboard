@@ -39,7 +39,7 @@ $(() => {
         });
         $tHeadTr.append($th);
       });
-      $tHeadTr.append($('<th>')); // to match scroll-marker
+      $tHeadTr.append($('<th>')); // to match scroll-handle
     }
     setAge();
   };
