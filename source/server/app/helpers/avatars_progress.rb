@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # mixin
 module AvatarsProgressHelper
   module_function

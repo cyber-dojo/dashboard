@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rack/test'
 require_relative '../id58_test_base'
 require_source 'app'

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'test_base'
 require_source 'helpers/gatherer'
 require_source 'helpers/avatars_progress'

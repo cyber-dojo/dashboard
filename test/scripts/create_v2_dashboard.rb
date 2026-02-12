@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This has to run inside a docker-container so it can call the dependent services
 
 require 'json'

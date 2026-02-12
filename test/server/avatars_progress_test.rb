@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'test_base'
 require_relative '../data/cyber-dojo/kata_test_data'
 require_source 'helpers/gatherer'

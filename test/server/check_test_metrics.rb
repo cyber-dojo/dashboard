@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Uses data from two json files:
 # - reports/server/test_metrics.json     generated in slim_json_reporter.rb by minitest. See id58_test_base.rb
 # - reports/server/coverage_metrics.json generated in simplecov_formatter_json.rb by simplecov. See coverage.rb

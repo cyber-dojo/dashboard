@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'require_source'
 require_source 'external_http'
 require_source 'http_json_hash/service'

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'external_dashboard'
 require_relative 'external_http'
 require_relative 'external_saver'
