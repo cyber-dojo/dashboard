@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'td_gapper'
 require_relative 'event'
 

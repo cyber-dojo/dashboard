@@ -45,7 +45,10 @@ Style/CaseEquality:
     - source/server/config/config.ru
     - source/server/app/app_base.rb
 
-
 Style/Documentation:
   Exclude:
     - source/**/*.rb
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - source/**/*

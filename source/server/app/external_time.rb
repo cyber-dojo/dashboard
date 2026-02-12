@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ExternalTime
   def now
     t = Time.now

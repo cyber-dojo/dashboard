@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Event
   def initialize(summary, previous_index = 0)
     @summary = summary

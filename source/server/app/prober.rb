@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # k8s/curl probing + identity
 class Prober
   def initialize(externals)
