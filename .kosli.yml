@@ -11,8 +11,6 @@ trail:
           type: junit
         - name: snyk-code-scan
           type: snyk
-        - name: snyk-container-scan
-          type: snyk
         - name: sonarcloud-scan
           type: sonar
         - name: unit-test
