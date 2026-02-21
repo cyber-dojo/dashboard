@@ -9,7 +9,7 @@ trail:
       attestations:
         - name: rubocop-lint
           type: junit
-        - name: snyk-code-scan
+        - name: snyk-container-scan
           type: snyk
         - name: sonarcloud-scan
           type: sonar
