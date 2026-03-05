@@ -119,7 +119,7 @@ $(() => {
     });
     $img.click(() => window.open(cd.reviewUrl(kataId, { index: -1 })));
     const apostrophe = '&#39;'
-    cd.setupAvatarNameHoverTip($img, 'review ', groupIndex, `${apostrophe}s<br/>current code`);
+    cd.setupAvatarNameHoverTip($img, 'Review ', groupIndex, `${apostrophe}s<br/>current code`);
     return $img;
   };
 
