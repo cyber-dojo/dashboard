@@ -5,7 +5,7 @@ The dashboard repo had a github-issue Trail-level control, as follows:
     needs: [kosli-trail]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Kosli CLI
         uses: kosli-dev/setup-cli-action@v2
