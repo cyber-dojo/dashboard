@@ -157,7 +157,7 @@ jobs:
       - name: Run SonarCloud scan
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-        uses: SonarSource/sonarqube-scan-action@v4
+        uses: SonarSource/sonarqube-scan-action@v7
 
       - name: Setup Kosli CLI
         if: ${{ github.ref == 'refs/heads/main' }}
