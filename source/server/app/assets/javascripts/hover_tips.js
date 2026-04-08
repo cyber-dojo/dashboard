@@ -26,12 +26,27 @@
 
   // - - - - - - - - - - - - - - - - - - - -
   const $trafficLightSummary = (kataId, avatarIndex, light) => {
+    const $table = $('<table>');
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
     $tr.append($trafficLightCountTd(light));
     $tr.append($trafficLightImageTd(light.colour));
     $tr.append($trafficLightMiniTextTd(kataId, light));
-    return $('<table>').append($tr);
+    $table.append($tr);
+    if (light.time) {
+      const $dtTr = $('<tr>');
+      const $dtTd = $('<td>', { colspan: 4, class: 'datetime' });
+      $dtTd.text(formatDateTime(light.time));
+      $dtTr.append($dtTd);
+      $table.append($dtTr);
+    }
+    return $table;
+  };
+
+  const formatDateTime = (timeA) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    const [year, month, day, hour, minute, second] = timeA;
+    return `${year}:${pad(month)}:${pad(day)} ${pad(hour)}:${pad(minute)}:${pad(second)}`;
   };
 
   const $trafficLightMiniTextTd = (kataId, light) => {
