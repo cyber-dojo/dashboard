@@ -28,3 +28,17 @@ Clicking the active widget toggles its direction (▲↔▼). Clicking the inact
 - `source/server/app/assets/stylesheets/fixed-column.scss` — CSS for `.sort-header` and `.sort-widget` / `.sort-active`.
 - `source/server/app/assets/javascripts/pre-built-app.js` — rebuilt via `make assets` (Docker).
 - `source/server/app/assets/stylesheets/pre-built-app.css` — rebuilt via `make assets` (Docker).
+
+## Datetime in event hovertips
+
+Each traffic-light event's hovertip now shows a datetime row (row 2) immediately below the avatar/count/colour row (row 1), in the format `CCYY:MM:DD HH:MM:SS`.
+
+### Key files changed
+
+- `source/server/app/app.rb` — `light_json` now includes `time: light.time_a` in the JSON payload. `light.time_a` returns the `[year,month,day,hour,min,sec,usec]` array stored by the saver.
+- `source/server/app/assets/javascripts/hover_tips.js`
+  - `$trafficLightSummary()` appends a second `<tr>` with a `<td colspan=4 class="datetime">` when `light.time` is present.
+  - `formatDateTime(timeA)` zero-pads each component and renders as `CCYY:MM:DD HH:MM:SS`.
+- `source/server/app/assets/stylesheets/lib/hover-tip.scss` — `.hover-tip .datetime` rule (small, grey, matching `.mini-text`).
+- `source/server/app/assets/javascripts/pre-built-app.js` — rebuilt via `make assets` (Docker).
+- `source/server/app/assets/stylesheets/pre-built-app.css` — rebuilt via `make assets` (Docker).
