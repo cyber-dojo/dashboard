@@ -7,6 +7,20 @@ $(() => {
   const $tBody = $('table tbody', $lights);
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const sortState = {
+    column: cd.urlParam('sort_by', 'name'), // 'name' or 'lights'
+    direction: 'asc',                       // 'asc' or 'desc'
+    toggle: (col) => {
+      if (sortState.column === col) {
+        sortState.direction = (sortState.direction === 'asc' ? 'desc' : 'asc');
+      } else {
+        sortState.column = col;
+        sortState.direction = 'asc';
+      }
+    }
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   cd.refresh = () => {
     // A public cd.function so its callable from heartbeat() and
     // when auto-refresh/minute-columns checkboxes are clicked.
@@ -27,8 +41,8 @@ $(() => {
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   const refreshTableHeadWith = (timeTicks) => {
     $tHeadTr.empty();
+    $tHeadTr.append($('<th>').append($sortHeaderDiv())); // always: matches fixed-column
     if (cd.minuteColumns.isChecked()) {
-      $tHeadTr.append($('<th>')); // to match avatar-image|pie-chart|traffic-light-count
       Object.keys(timeTicks).forEach((minutes) => { // eg minutes == "1"
         const minute = timeTicks[minutes];          // eg minute == [ days,hours,minutes ]
         const $th = $('<th>');                      // or minute == { "collapsed":525 }
@@ -42,6 +56,25 @@ $(() => {
       $tHeadTr.append($('<th>')); // to match scroll-handle
     }
     setAge();
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const $sortHeaderDiv = () => {
+    const arrow = (col) => {
+      if (sortState.column !== col) { return ''; }
+      return sortState.direction === 'asc' ? ' ▲' : ' ▼';
+    };
+    const activeClass = (col) => 'sort-widget' + (sortState.column === col ? ' sort-active' : '');
+
+    const $name = $('<span>', { class: activeClass('name') })
+      .text('Name' + arrow('name'))
+      .click(() => { sortState.toggle('name'); cd.refresh(); });
+
+    const $lightsCount = $('<span>', { class: activeClass('lights') })
+      .text('Lights' + arrow('lights'))
+      .click(() => { sortState.toggle('lights'); cd.refresh(); });
+
+    return $('<div>', { class: 'sort-header' }).append($name).append($lightsCount);
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,7 +130,7 @@ $(() => {
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   const refreshTableBodyWith = (avatars) => {
     $tBody.empty();
-    Object.keys(avatars).forEach((groupIndex) => {
+    sortedAvatarKeys(avatars).forEach((groupIndex) => {
       const avatar = avatars[groupIndex];
       const kataId = avatar['kata_id'];
       const $tr = $('<tr>');
@@ -108,6 +141,30 @@ $(() => {
       $fixedColumn.append($trafficLightsPieChart(args.counts, kataId));
       $fixedColumn.append($trafficLightsCount(args));
     });
+  };
+
+  //- - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const sortedAvatarKeys = (avatars) => {
+    const keys = Object.keys(avatars);
+    const dir = sortState.direction === 'asc' ? 1 : -1;
+    if (sortState.column === 'lights') {
+      return keys.sort((a, b) => dir * (totalLightCount(avatars[a]) - totalLightCount(avatars[b])));
+    }
+    return keys.sort((a, b) => dir * (parseInt(a) - parseInt(b)));
+  };
+
+  const totalLightCount = (avatar) => {
+    let total = 0;
+    Object.values(avatar['lights']).forEach((lights) => {
+      if (Array.isArray(lights)) {
+        lights.forEach((light) => {
+          if (isRAG(light.colour)) {
+            total += 1;
+          }
+        });
+      }
+    });
+    return total;
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
