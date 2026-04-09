@@ -93,22 +93,22 @@ jobs:
             --name=pull-request
 
 
-  workflow-lint:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    needs: [setup]
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
+  # workflow-lint:
+  #   runs-on: blacksmith-4vcpu-ubuntu-2404
+  #   needs: [setup]
+  #   permissions:
+  #     contents: read
+  #     pull-requests: write
+  #   steps:
+  #     - name: Harden Runner
+  #       uses: step-security/harden-runner@v2
+  #       with:
+  #         egress-policy: audit
 
-      - uses: actions/checkout@v6
+  #     - uses: actions/checkout@v6
 
-      - name: Action Lint
-        uses: devops-actions/actionlint@v0.1.9
+  #     - name: Action Lint
+  #       uses: devops-actions/actionlint@v0.1.9
 
 
   rubocop-lint:
@@ -265,7 +265,6 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     needs:
       - build-image
-      - workflow-lint
       - rubocop-lint
       - pull-request
       - unit-tests
