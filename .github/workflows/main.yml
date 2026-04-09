@@ -22,7 +22,7 @@ env:
 jobs:
 
   setup:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     outputs:
       aws_account_id_beta:      ${{ steps.vars.outputs.aws_account_id_beta }}
       ecr_registry:             ${{ steps.vars.outputs.ecr_registry }}
@@ -67,7 +67,7 @@ jobs:
 
   pull-request:
     if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [setup]
     permissions:
       id-token:      write
@@ -94,7 +94,7 @@ jobs:
 
 
   workflow-lint:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [setup]
     permissions:
       contents: read
@@ -112,7 +112,7 @@ jobs:
 
 
   rubocop-lint:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [setup]
     steps:
       - name: Harden Runner
@@ -141,7 +141,7 @@ jobs:
 
 
   sonarcloud-scan:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [setup]
     steps:
       - name: Harden Runner
@@ -195,7 +195,7 @@ jobs:
   # https://github.com/cyber-dojo/snyk-container-test/blob/main/action.yml
   snyk-container-scan:
     needs: [build-image]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     permissions:
       id-token: write
       contents: write
@@ -210,7 +210,7 @@ jobs:
 
 
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [build-image]
     env:
       KOSLI_FINGERPRINT: ${{ needs.build-image.outputs.digest }}
@@ -262,7 +262,7 @@ jobs:
 
   sdlc-control-gate:
     if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs:
       - build-image
       - workflow-lint
