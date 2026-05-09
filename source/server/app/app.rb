@@ -38,16 +38,6 @@ class App < AppBase
     end
   end
 
-  get '/group_manifest' do
-    content_type :json
-    externals.saver.group_manifest(params[:id]).to_json
-  end
-
-  get '/diff_summary' do
-    content_type :json
-    externals.differ.diff_summary(params[:id], params[:was_index].to_i, params[:now_index].to_i).to_json
-  end
-
   get '/progress/:id', provides: [:json] do
     respond_to do |wants|
       wants.json do

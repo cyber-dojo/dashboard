@@ -18,9 +18,10 @@
     setTip($light, () => {
       const args = { id:kataId, was_index:light.previous_index, now_index:light.index };
       const params = new URLSearchParams(args);
-      fetch(`/dashboard/diff_summary?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+      fetch(`/differ/diff_summary?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
         .then(r => r.json())
-        .then(diffSummary => {
+        .then(json => {
+          const diffSummary = json.diff_summary;
           const $tip = $(document.createDocumentFragment());
           $tip.append($trafficLightSummary(kataId, avatarIndex, light));
           $tip.append($diffLinesTable(diffSummary));
