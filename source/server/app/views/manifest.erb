@@ -7,9 +7,10 @@ $(() => {
   cd.progressRegexs = () => [];
 
   const params = new URLSearchParams({id: cd.id()});
-  fetch(`/dashboard/group_manifest?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+  fetch(`/saver/group_manifest?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
     .then(r => r.json())
-    .then(manifest => {
+    .then(json => {
+      const manifest = json.group_manifest;
       cd.highlightFilenames = () => manifest.highlight_filenames;
       cd.extensionFilenames = () => manifest.filename_extension;
       cd.progressRegexs     = () => manifest.progress_regexs;
