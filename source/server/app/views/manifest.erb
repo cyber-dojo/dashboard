@@ -6,17 +6,20 @@ $(() => {
   cd.extensionFilenames = () => [];
   cd.progressRegexs = () => [];
 
-  cd.getJSON('saver', 'group_manifest', {id:cd.id()}, (manifest) => {
-    cd.highlightFilenames = () => manifest.highlight_filenames;
-    cd.extensionFilenames = () => manifest.filename_extension;
-    cd.progressRegexs     = () => manifest.progress_regexs;
-    $('#display-name-box').html(manifest.display_name);
-    $('#exercise-name-box').html(manifest.exercise);
-    $('#id-box').html(manifest.id);
-    if (cd.progressRegexs().length === 0) {
-      $('#progress-button-box').hide();
-    }
-  });
+  const params = new URLSearchParams({id: cd.id()});
+  fetch(`/dashboard/group_manifest?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+    .then(r => r.json())
+    .then(manifest => {
+      cd.highlightFilenames = () => manifest.highlight_filenames;
+      cd.extensionFilenames = () => manifest.filename_extension;
+      cd.progressRegexs     = () => manifest.progress_regexs;
+      $('#display-name-box').html(manifest.display_name);
+      $('#exercise-name-box').html(manifest.exercise);
+      $('#id-box').html(manifest.id);
+      if (cd.progressRegexs().length === 0) {
+        $('#progress-button-box').hide();
+      }
+    });
 
 });
 </script>

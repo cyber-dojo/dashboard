@@ -16,19 +16,21 @@ $(() => {
 
 
   const openProgressDialog = () => {
-	  $.getJSON(`/dashboard/progress/${cd.id()}`, {}, (data) => {
-      const node = $(progressTable(data.katas));
-      $('.avatar-image', node).click(event => {
-        const id = $(event.currentTarget).data('id');
-        window.open(`/kata/edit/${id}`);
+    fetch(`/dashboard/progress/${cd.id()}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => r.json())
+      .then(data => {
+        const node = $(progressTable(data.katas));
+        $('.avatar-image', node).click(event => {
+          const id = $(event.currentTarget).data('id');
+          window.open(`/kata/edit/${id}`);
+        });
+        node.dialog({
+          autoOpen: true,
+             modal: true,
+             title: dialogTitle('progress?'),
+          maxWidth: 600
+        });
       });
-      node.dialog({
-        autoOpen: true,
-           modal: true,
-           title: dialogTitle('progress?'),
-        maxWidth: 600
-      });
-    });
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - -

@@ -30,12 +30,15 @@ $(() => {
       minute_columns:minuteColumns,
       detailed:detailed
     };
-    $.getJSON(`/dashboard/heartbeat/${cd.id()}`, args, (data) => {
-      refreshTableHeadWith(data.time_ticks);
-      refreshTableBodyWith(data.avatars);
-      cd.pieChart($(`#${cssId} .pie`));
-      $('.scroll-handle').scrollIntoView();
-    });
+    const params = new URLSearchParams(args);
+    fetch(`/dashboard/heartbeat/${cd.id()}?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => r.json())
+      .then(data => {
+        refreshTableHeadWith(data.time_ticks);
+        refreshTableBodyWith(data.avatars);
+        cd.pieChart($(`#${cssId} .pie`));
+        $('.scroll-handle').scrollIntoView();
+      });
   };
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -

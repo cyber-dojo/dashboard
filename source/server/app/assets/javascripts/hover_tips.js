@@ -3,11 +3,13 @@
 
   cd.setupAvatarNameHoverTip = ($avatar, prefix, avatarIndex, suffix) => {
     setTip($avatar, () => {
-      $.getJSON('/images/avatars/names.json', '', (avatarsNames) => {
-        const avatarName = avatarsNames[avatarIndex];
-        const tip = `${prefix}${avatarName}${suffix}`;
-        showHoverTip($avatar, tip);
-      });
+      fetch('/images/avatars/names.json', { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(avatarsNames => {
+          const avatarName = avatarsNames[avatarIndex];
+          const tip = `${prefix}${avatarName}${suffix}`;
+          showHoverTip($avatar, tip);
+        });
     });
   };
 
@@ -15,12 +17,15 @@
   cd.setupTrafficLightTip = ($light, kataId, avatarIndex, light) => {
     setTip($light, () => {
       const args = { id:kataId, was_index:light.previous_index, now_index:light.index };
-      cd.getJSON('differ', 'diff_summary', args, (diffSummary) => {
-        const $tip = $(document.createDocumentFragment());
-        $tip.append($trafficLightSummary(kataId, avatarIndex, light));
-        $tip.append($diffLinesTable(diffSummary));
-        cd.showHoverTip($light, $tip);
-      });
+      const params = new URLSearchParams(args);
+      fetch(`/dashboard/diff_summary?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(diffSummary => {
+          const $tip = $(document.createDocumentFragment());
+          $tip.append($trafficLightSummary(kataId, avatarIndex, light));
+          $tip.append($diffLinesTable(diffSummary));
+          cd.showHoverTip($light, $tip);
+        });
     });
   };
 
@@ -324,7 +329,7 @@
   // - - - - - - - - - - - - - - - - - - - -
   const setTip = (node, setTipCallBack) => {
     // The speed of the mouse could exceed
-    // the speed of the getJSON callback...
+    // the speed of the fetch callback...
     // The mouse-has-left attribute caters for this.
     node.mouseenter(() => {
       node.removeClass('mouse-has-left');
