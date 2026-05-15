@@ -8,6 +8,7 @@ services:
 
   asset_builder:
     image: ${CYBER_DOJO_ASSET_BUILDER_IMAGE}:${CYBER_DOJO_ASSET_BUILDER_TAG}
+    platform: linux/amd64
     user: nobody
     container_name: ${CYBER_DOJO_ASSET_BUILDER_CONTAINER_NAME}
     ports: [ "${CYBER_DOJO_ASSET_BUILDER_PORT}:${CYBER_DOJO_ASSET_BUILDER_PORT}" ]
@@ -25,6 +26,7 @@ services:
 
   client:
     image: ${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    platform: linux/amd64
     user: ${CYBER_DOJO_DASHBOARD_CLIENT_USER}
     build:
       args:
@@ -47,6 +49,7 @@ services:
 
   dashboard:
     image: ${CYBER_DOJO_DASHBOARD_IMAGE}:${CYBER_DOJO_DASHBOARD_TAG}
+    platform: linux/amd64
     user: ${CYBER_DOJO_DASHBOARD_SERVER_USER}
     build:
       args:
@@ -73,6 +76,7 @@ services:
 
   nginx:
     image: ${CYBER_DOJO_NGINX_IMAGE}:${CYBER_DOJO_NGINX_TAG}
+    platform: linux/amd64
     depends_on:
       - web
     user: root
@@ -88,6 +92,7 @@ services:
       - runner
       - dashboard
     image: ${CYBER_DOJO_WEB_IMAGE}:${CYBER_DOJO_WEB_TAG}
+    platform: linux/amd64
     ports: [ "${CYBER_DOJO_WEB_PORT}:${CYBER_DOJO_WEB_PORT}" ]
     user: nobody
     container_name: test_dashboard_web
@@ -99,6 +104,7 @@ services:
     depends_on:
       - saver
     image: ${CYBER_DOJO_DIFFER_IMAGE}:${CYBER_DOJO_DIFFER_TAG}
+    platform: linux/amd64
     container_name: test_dashboard_differ
     user: nobody
     env_file: [ .env ]
@@ -108,6 +114,7 @@ services:
 
   runner:
     image: ${CYBER_DOJO_RUNNER_IMAGE}:${CYBER_DOJO_RUNNER_TAG}
+    platform: linux/amd64
     user: root
     container_name: test_dashboard_runner
     env_file: [ .env ]
@@ -118,6 +125,7 @@ services:
 
   saver:
     image: ${CYBER_DOJO_SAVER_IMAGE}:${CYBER_DOJO_SAVER_TAG}
+    platform: linux/amd64
     user: saver
     container_name: test_dashboard_saver
     ports: [ "${CYBER_DOJO_SAVER_PORT}:${CYBER_DOJO_SAVER_PORT}" ]
@@ -135,6 +143,7 @@ services:
       - exercises-start-points
       - languages-start-points
     image: ${CYBER_DOJO_CREATOR_IMAGE}:${CYBER_DOJO_CREATOR_TAG}
+    platform: linux/amd64
     user: nobody
     container_name: test_dashboard_creator
     env_file: [ .env ]
@@ -144,6 +153,7 @@ services:
 
   custom-start-points:
     image: ${CYBER_DOJO_CUSTOM_START_POINTS_IMAGE}:${CYBER_DOJO_CUSTOM_START_POINTS_TAG}
+    platform: linux/amd64
     user: nobody
     container_name: test_dashboard_custom_start_points
     env_file: [ .env ]
@@ -153,6 +163,7 @@ services:
 
   exercises-start-points:
     image: ${CYBER_DOJO_EXERCISES_START_POINTS_IMAGE}:${CYBER_DOJO_EXERCISES_START_POINTS_TAG}
+    platform: linux/amd64
     user: nobody
     container_name: test_dashboard_exercises_start_points
     env_file: [ .env ]
@@ -162,6 +173,7 @@ services:
 
   languages-start-points:
     image: ${CYBER_DOJO_LANGUAGES_START_POINTS_IMAGE}:${CYBER_DOJO_LANGUAGES_START_POINTS_TAG}
+    platform: linux/amd64
     user: nobody
     container_name: test_dashboard_languages_start_points
     env_file: [ .env ]
