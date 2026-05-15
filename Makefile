@@ -2,7 +2,7 @@
 assets:
 	@${PWD}/bin/build_assets.sh
 
-image_server: assets
+image_server:
 	@${PWD}/bin/build_image.sh server
 
 test_server:

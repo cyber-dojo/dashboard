@@ -14,7 +14,7 @@ echo_env_vars()
   
   echo CYBER_DOJO_ASSET_BUILDER_PORT=${asset_builder_port}
   echo CYBER_DOJO_ASSET_BUILDER_IMAGE=cyberdojo/asset_builder
-  echo CYBER_DOJO_ASSET_BUILDER_TAG=2bbe111
+  echo CYBER_DOJO_ASSET_BUILDER_TAG=f2bcab7
   echo CYBER_DOJO_ASSET_BUILDER_CONTAINER_NAME=asset_builder
 
   #--------------------
