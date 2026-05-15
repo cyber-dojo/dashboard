@@ -17,8 +17,8 @@ ENV APP_DIR=${APP_DIR}
 
 WORKDIR ${APP_DIR}/source
 COPY source/server/ .
-COPY --from=assets /tmp/out/app.css app/assets/stylesheets/pre-built-app.css
-COPY --from=assets /tmp/out/app.js  app/assets/javascripts/pre-built-app.js
+COPY --from=assets /tmp/out/app.css /dashboard/assets/app.css
+COPY --from=assets /tmp/out/app.js  /dashboard/assets/app.js
 USER nobody
 HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD ./config/healthcheck.sh
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
