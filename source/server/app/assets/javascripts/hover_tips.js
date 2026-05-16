@@ -3,13 +3,9 @@
 
   cd.setupAvatarNameHoverTip = ($avatar, prefix, avatarIndex, suffix) => {
     setTip($avatar, () => {
-      fetch('/images/avatars/names.json', { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
-        .then(r => r.json())
-        .then(avatarsNames => {
-          const avatarName = avatarsNames[avatarIndex];
-          const tip = `${prefix}${avatarName}${suffix}`;
-          showHoverTip($avatar, tip);
-        });
+      const avatarName = cd.lib.avatarName(avatarIndex);
+      const tip = `${prefix}${avatarName}${suffix}`;
+      showHoverTip($avatar, tip);
     });
   };
 
