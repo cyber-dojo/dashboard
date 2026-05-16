@@ -19,3 +19,6 @@ snyk_container_scan:
 
 demo:
 	@${PWD}/bin/demo.sh
+
+demo_data:
+	@${PWD}/bin/demo_data.sh

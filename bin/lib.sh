@@ -100,9 +100,11 @@ copy_in_saver_test_data()
   tar --no-xattrs -c -C "${ROOT_DIR}/test/data" cyber-dojo \
     | docker exec -i ${SAVER_CID} tar x -C /
 
-  # tar-pipe v2 katas directly into the saver container, bypassing the host filesystem
-  docker exec -i ${SAVER_CID} tar --no-xattrs -zxf - -C / \
-    < "${ROOT_DIR}/test/data/saver_data.v2.tgz"
+  # tar-pipe v2 katas directly into the saver container, bypassing the host filesystem.
+  # Timestamps in events.json are rewritten on the fly to simulate a session starting now.
+  ruby "${ROOT_DIR}/bin/rewrite_demo_timestamps.rb" \
+    < "${ROOT_DIR}/test/data/saver_data.v2.tgz" \
+    | docker exec -i ${SAVER_CID} tar --no-xattrs -zxf - -C /
 }
 
 echo_warnings()

@@ -10,28 +10,15 @@ Usage: bin/create_group_kata.sh [traffic_light_count] [avatar_count]
 
 Creates a bash/bats FizzBuzz group kata in the running saver, prints the group ID (GID).
 
-Step-by-step: create new demo kata and load it into demo
----------------------------------------------------------
+To create new demo data and persist it:
+----------------------------------------
 1. Start the demo:
      make demo
 
-2. Create a new group kata (tune counts as needed; start small):
-     bash bin/create_group_kata.sh 5 20
-   Note the GID printed on the last line.
+2. Create and save new demo data (runs this script, copies out tgz, updates GID):
+     make demo_data
 
-3. Verify it looks right in the dashboard:
-     open "http://localhost/dashboard/show/<GID>?auto_refresh=true&minute_columns=true"
-
-4. Save the saver data to the tgz:
-     bash bin/copy_out_saver_data.sh
-
-5. Update bin/demo.sh, changing the GID line to:
-     GID=<new_GID>
-
-6. Run make demo again to verify the new tgz loads correctly:
-     make demo
-
-7. Commit the updated tgz and demo.sh.
+3. Commit the updated tgz and demo.sh.
 HELP
   exit 0
 fi
