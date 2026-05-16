@@ -2,7 +2,7 @@
 
 # Connects to the saver (its port is exposed to the host) and creates a v2
 # group kata: Bash, bats / Fizz Buzz, with 16 avatars joined.
-# Each avatar gets N red/amber/green traffic-light cycles (N = first arg, default 3).
+# Each avatar gets a random number of test runs with random traffic-light colours.
 # Prints the group ID on completion.
 
 require 'json'
@@ -13,12 +13,12 @@ AVATAR_COUNT = ARGV.fetch(1, '16').to_i
 SAVER_HOST   = 'localhost'
 SAVER_PORT   = ENV.fetch('CYBER_DOJO_SAVER_PORT', '4537').to_i
 
-# The substitution chain that produces red -> amber -> green per cycle:
-#   red:   echo "${n}"  ->  echo "WIBBLE"   (wrong output for non-FizzBuzz numbers)
-#   amber: echo "WIBBLE" -> echo "${n       (bash: bad substitution - syntax error)
-#   green: echo "${n     -> echo "${n}"     (back to correct)
-RED_LINE   = 'echo "WIBBLE"'
-AMBER_LINE = 'echo "${n'
+# Each colour is produced by substituting the echo line in hiker.sh:
+#   red:   echo "${n}" -> echo "WIBBLE"  (wrong output)
+#   amber: echo "${n}" -> echo "${n      (bash syntax error)
+#   green: echo "${n}"                   (correct, no substitution needed)
+RED_LINE     = 'echo "WIBBLE"'
+AMBER_LINE   = 'echo "${n'
 GREEN_LINE = 'echo "${n}"'
 
 HIKER_SH = <<~BASH
@@ -99,6 +99,11 @@ RED_STDOUT = "1..4\nnot ok 1 1 gives 1\n" \
 GREEN_STDOUT = "1..4\nok 1 1 gives 1\nok 2 3 gives Fizz\nok 3 5 gives Buzz\n" \
                "ok 4 15 gives FizzBuzz\n\n4 tests, 0 failures"
 
+HIKER_LINE_FOR = { 'red' => RED_LINE, 'amber' => AMBER_LINE, 'green' => GREEN_LINE }.freeze
+STDOUT_FOR     = { 'red' => RED_STDOUT, 'amber' => '',            'green' => GREEN_STDOUT }.freeze
+STDERR_FOR     = { 'red' => '',         'amber' => "./hiker.sh: line 10: `${n': bad substitution", 'green' => '' }.freeze
+STATUS_FOR     = { 'red' => 1,          'amber' => 1,             'green' => 0 }.freeze
+
 MANIFEST = {
   'display_name' => 'Bash, bats',
   'image_name' => 'cyberdojofoundation/bash_bats:53d0c9c',
@@ -146,42 +151,43 @@ def colour(hue)
   { 'colour' => hue, 'predicted' => 'none' }
 end
 
-def red_traffic_light(id, index, files)
-  files['hiker.sh']['content'] = files['hiker.sh']['content'].sub(GREEN_LINE, RED_LINE)
+def traffic_light(id, index, files, original_hiker, hue)
+  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
   args = {
     id: id, index: index, files: files,
-    stdout: file(RED_STDOUT), stderr: file(''),
-    status: 1, summary: colour('red')
+    stdout: file(STDOUT_FOR[hue]),
+    stderr: file(STDERR_FOR[hue]),
+    status: STATUS_FOR[hue],
+    summary: colour(hue)
   }
-  saver_post('kata_ran_tests', args)['next_index']
+  next_index = saver_post('kata_ran_tests', args)['next_index']
+  $stderr.print '.'
+  $stderr.flush
+  next_index
 end
 
-def amber_traffic_light(id, index, files)
-  files['hiker.sh']['content'] = files['hiker.sh']['content'].sub(RED_LINE, AMBER_LINE)
-  args = {
-    id: id, index: index, files: files,
-    stdout: file(''),
-    stderr: file("./hiker.sh: line 10: `${n': bad substitution"),
-    status: 1, summary: colour('amber')
-  }
-  saver_post('kata_ran_tests', args)['next_index']
-end
+COMMENT_LINE = '# ...'
 
-def green_traffic_light(id, index, files)
-  files['hiker.sh']['content'] = files['hiker.sh']['content'].sub(AMBER_LINE, GREEN_LINE)
-  args = {
-    id: id, index: index, files: files,
-    stdout: file(GREEN_STDOUT), stderr: file(''),
-    status: 0, summary: colour('green')
-  }
-  saver_post('kata_ran_tests', args)['next_index']
+def extra_file_edits(id, index, files)
+  rand(1..2).times do
+    files['hiker.sh']['content'] += "#{COMMENT_LINE}\n"
+    index = saver_post('kata_file_edit', { id: id, index: index, files: files })
+    $stderr.print '.'
+    $stderr.flush
+    files['hiker.sh']['content'] = files['hiker.sh']['content'].delete_suffix("#{COMMENT_LINE}\n")
+    index = saver_post('kata_file_edit', { id: id, index: index, files: files })
+    $stderr.print '.'
+    $stderr.flush
+  end
+  index
 end
 
 def rag_cycle(id, index, files, original_hiker)
-  files['hiker.sh']['content'] = original_hiker
-  index = red_traffic_light(id, index, files)
-  index = amber_traffic_light(id, index, files)
-  green_traffic_light(id, index, files)
+  rand(1..4).times do
+    index = extra_file_edits(id, index, files) if rand < 0.6
+    index = traffic_light(id, index, files, original_hiker, %w[red amber green].sample)
+  end
+  index
 end
 
 def create_avatar(gid, count)
@@ -196,4 +202,5 @@ end
 gid = saver_post('group_create', { manifest: MANIFEST })
 actual_avatar_count = [1, (AVATAR_COUNT / 2) + rand(AVATAR_COUNT + 1)].max
 actual_avatar_count.times { create_avatar(gid, COUNT) }
+$stderr.puts
 puts gid

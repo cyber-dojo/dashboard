@@ -19,8 +19,8 @@ curl_smoke_test()
   curl_plain_200 assets/app.css 'content-type: text/css'
   curl_plain_200 assets/app.js  'content-type: text/javascript'
 
-  curl_plain_200 show/FxWwrr dashboard-page
-  GID=cT7V67
+  local -r GID=$(cat "${ROOT_DIR}/test/data/demo_gid.txt")
+  curl_plain_200 "show/${GID}" dashboard-page
   open "http://localhost:80/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
 }
 
