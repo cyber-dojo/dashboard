@@ -100,9 +100,9 @@ GREEN_STDOUT = "1..4\nok 1 1 gives 1\nok 2 3 gives Fizz\nok 3 5 gives Buzz\n" \
                "ok 4 15 gives FizzBuzz\n\n4 tests, 0 failures"
 
 HIKER_LINE_FOR = { 'red' => RED_LINE, 'amber' => AMBER_LINE, 'green' => GREEN_LINE }.freeze
-STDOUT_FOR     = { 'red' => RED_STDOUT, 'amber' => '',            'green' => GREEN_STDOUT }.freeze
-STDERR_FOR     = { 'red' => '',         'amber' => "./hiker.sh: line 10: `${n': bad substitution", 'green' => '' }.freeze
-STATUS_FOR     = { 'red' => 1,          'amber' => 1,             'green' => 0 }.freeze
+STDOUT_FOR     = { 'red' => RED_STDOUT, 'amber' => '', 'green' => GREEN_STDOUT }.freeze
+STDERR_FOR     = { 'red' => '', 'amber' => "./hiker.sh: line 10: `${n': bad substitution", 'green' => '' }.freeze
+STATUS_FOR     = { 'red' => 1, 'amber' => 1, 'green' => 0 }.freeze
 
 MANIFEST = {
   'display_name' => 'Bash, bats',
@@ -151,18 +151,25 @@ def colour(hue)
   { 'colour' => hue, 'predicted' => 'none' }
 end
 
-def traffic_light(id, index, files, original_hiker, hue)
-  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
-  args = {
+def log_dot
+  $stderr.print '.'
+  $stderr.flush
+end
+
+def ran_tests_args(id, index, files, hue)
+  {
     id: id, index: index, files: files,
     stdout: file(STDOUT_FOR[hue]),
     stderr: file(STDERR_FOR[hue]),
     status: STATUS_FOR[hue],
     summary: colour(hue)
   }
-  next_index = saver_post('kata_ran_tests', args)['next_index']
-  $stderr.print '.'
-  $stderr.flush
+end
+
+def traffic_light(id, index, files, original_hiker, hue)
+  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
+  next_index = saver_post('kata_ran_tests', ran_tests_args(id, index, files, hue))['next_index']
+  log_dot
   next_index
 end
 
@@ -172,12 +179,10 @@ def extra_file_edits(id, index, files)
   rand(1..2).times do
     files['hiker.sh']['content'] += "#{COMMENT_LINE}\n"
     index = saver_post('kata_file_edit', { id: id, index: index, files: files })
-    $stderr.print '.'
-    $stderr.flush
+    log_dot
     files['hiker.sh']['content'] = files['hiker.sh']['content'].delete_suffix("#{COMMENT_LINE}\n")
     index = saver_post('kata_file_edit', { id: id, index: index, files: files })
-    $stderr.print '.'
-    $stderr.flush
+    log_dot
   end
   index
 end
