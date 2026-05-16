@@ -92,22 +92,17 @@ stderr()
 copy_in_saver_test_data()
 {
   local -r SAVER_CID=$(docker ps --filter status=running --format '{{.Names}}' | grep "saver")
-  local -r SRC_PATH=${ROOT_DIR}/test/data/cyber-dojo
-  local -r DEST_PATH=/cyber-dojo
   # You cannot docker cp to a tmpfs, so tar-piping instead...
+  # The v2 tgz is piped directly into the container to avoid macOS case-insensitive
+  # filesystem collapsing case-distinct directory names (e.g. katas/Ks/ and katas/ks/).
 
-  # Copy src-path, which contains v0 and v1 katas, to TMP_DIR
-  cp -r "${SRC_PATH}" "${TMP_DIR}"
+  # tar-pipe v0 and v1 katas from the host into the saver container
+  tar --no-xattrs -c -C "${ROOT_DIR}/test/data" cyber-dojo \
+    | docker exec -i ${SAVER_CID} tar x -C /
 
-  # Untar saver_data.v2.tgz, which contains .git dirs inside, to TMP_DIR
-  pushd "${TMP_DIR}"
-  tar -zxf "${ROOT_DIR}/test/data/saver_data.v2.tgz"
-  popd
-
-  # tar-pipe v0, v1, v2 katas, from TMP_DIR, into saver container
-  cd "${TMP_DIR}/cyber-dojo" \
-    && tar --no-xattrs -c . \
-    | docker exec -i ${SAVER_CID} tar x -C ${DEST_PATH}
+  # tar-pipe v2 katas directly into the saver container, bypassing the host filesystem
+  docker exec -i ${SAVER_CID} tar --no-xattrs -zxf - -C / \
+    < "${ROOT_DIR}/test/data/saver_data.v2.tgz"
 }
 
 echo_warnings()
