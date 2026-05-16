@@ -115,7 +115,10 @@ MANIFEST = {
   'version' => 2,
   'highlight_filenames' => [],
   'max_seconds' => 10,
-  'progress_regexs' => []
+  'progress_regexs' => [
+    '\\d+ tests, [1-9]\\d* failure',
+    '\\d+ tests, 0 failures'
+  ]
 }.freeze
 
 def saver_get(path, args)
