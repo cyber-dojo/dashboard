@@ -23,7 +23,8 @@
       $.data(document.body, key, totalCount);
 
       const ctx = $node[0].getContext('2d');
-      new Chart(ctx, {
+      // S1848 suppressed: Chart.js renders into ctx as a constructor side-effect; no reference needed.
+      new Chart(ctx, { // NOSONAR javascript:S1848
         type: 'pie',
         data: {
           datasets: [{
