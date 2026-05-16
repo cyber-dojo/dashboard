@@ -291,27 +291,67 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
+  const nativePosition = (tipEl, myStr, atStr, $anchor) => {
+    const anchor = $anchor[0].getBoundingClientRect();
+    const tip    = tipEl.getBoundingClientRect();
+    const sx = window.scrollX;
+    const sy = window.scrollY;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const parseSide = (str) => {
+      let h = 'center', v = 'center', vOff = 0;
+      str.trim().split(/\s+/).forEach(word => {
+        const m = word.match(/^(left|right|top|bottom)([+-]\d+)?$/);
+        if (!m) return;
+        const base = m[1], off = m[2] ? parseInt(m[2], 10) : 0;
+        if (base === 'left' || base === 'right') { h = base; }
+        else { v = base; vOff = off; }
+      });
+      return { h, v, vOff };
+    };
+
+    const at = parseSide(atStr);
+    const my = parseSide(myStr);
+
+    const atX = at.h === 'left'  ? anchor.left  + sx
+              : at.h === 'right' ? anchor.right  + sx
+              : anchor.left + anchor.width / 2 + sx;
+    const atY = at.v === 'top'    ? anchor.top    + sy + at.vOff
+              : at.v === 'bottom' ? anchor.bottom + sy + at.vOff
+              : anchor.top + anchor.height / 2 + sy + at.vOff;
+
+    const myX = my.h === 'left'  ? 0
+              : my.h === 'right' ? tip.width
+              : tip.width / 2;
+    const myY = my.v === 'top'    ? my.vOff
+              : my.v === 'bottom' ? tip.height + my.vOff
+              : tip.height / 2 + my.vOff;
+
+    let left = atX - myX;
+    let top  = atY - myY;
+
+    if (left + tip.width  > sx + vw) { left = anchor.left + sx - tip.width; }
+    if (left < sx)                   { left = sx; }
+    if (top  + tip.height > sy + vh) { top  = anchor.top  + sy - tip.height; }
+    if (top  < sy)                   { top  = sy; }
+
+    tipEl.style.left = left + 'px';
+    tipEl.style.top  = top  + 'px';
+  };
+
+  // - - - - - - - - - - - - - - - - - - - -
   cd.showHoverTip = (node, tip, where) => {
-    if (where === undefined) {
-      where = {};
-    }
+    if (where === undefined) { where = {}; }
     if (where.my === undefined) { where.my = 'top'; }
     if (where.at === undefined) { where.at = 'bottom'; }
     if (where.of === undefined) { where.of = node; }
 
     if (!node.attr('disabled')) {
       if (!node.hasClass('mouse-has-left')) {
-        // position() is the jQuery UI plug-in
-        // https://jqueryui.com/position/
-        const hoverTip = $('<div>', {
-          'class': 'hover-tip'
-        }).html(tip).position({
-          my: where.my,
-          at: where.at,
-          of: where.of,
-          collision: 'flip'
-        });
+        const hoverTip = $('<div>', { 'class': 'hover-tip' }).html(tip);
         hoverTipContainer().html(hoverTip);
+        nativePosition(hoverTip[0], where.my, where.at, where.of);
       }
     }
   };
@@ -342,15 +382,9 @@
   const showHoverTip = ($node, tip) => {
     if (!$node.attr('disabled')) {
       if (!$node.hasClass('mouse-has-left')) {
-        const hoverTip = $('<div>', {
-          class:'hover-tip'
-        }).html(tip).position({
-          my: 'left top+50',
-          at: 'bottom right',
-          of: $node,
-          collision: 'flip'
-        });
+        const hoverTip = $('<div>', { class:'hover-tip' }).html(tip);
         hoverTipContainer().html(hoverTip);
+        nativePosition(hoverTip[0], 'left top+50', 'bottom right', $node);
       }
     }
   };
