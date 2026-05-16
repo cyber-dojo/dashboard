@@ -1,15 +1,12 @@
 'use strict';
 (() => {
 
-  // Chart.js http://www.chartjs.org/docs/
-
-  const options = {
-    segmentShowStroke: false,
-    segmentStrokeColor: '#757575',
-    animationEasing: 'easeOutExpo',
-    legend: { display: false }
-  };
-
+  /**
+   * Renders a RAG traffic-light pie chart into each canvas node and wires up
+   * a hover tip showing the red/amber/green counts.
+   * Animates only when the traffic-light counts have changed since the last
+   * render, so auto-refresh does not continuously animate unchanged charts.
+   */
   cd.pieChart = ($nodes) => {
     $nodes.each((_,node) => {
       const $node = $(node);
@@ -18,23 +15,41 @@
       const    amberCount = count('amber');
       const    greenCount = count('green');
       const timedOutCount = count('timed-out');
+      const   totalCount  = redCount + amberCount + greenCount + timedOutCount;
 
-      const data = [
-          { value:      redCount, color: '#F00' },
-          { value:    amberCount, color: '#FF0' },
-          { value:    greenCount, color: '#0F0' },
-          { value: timedOutCount, color: 'darkGray' }
-      ];
+      const key = $node.data('key');
+      // Only animate when the data has changed since the last render.
+      const animate = ($.data(document.body, key) !== totalCount);
+      $.data(document.body, key, totalCount);
 
       const ctx = $node[0].getContext('2d');
-      const key = $node.data('key');
-      const totalCount = redCount + amberCount + greenCount + timedOutCount;
-      const animation = ($.data(document.body, key) != totalCount); // [X]
-      options['animation'] = animation;
-      new Chart(ctx).Pie(data, options);
-      // [X] Store totalCount against pie-chart ready for
-      // pie chart animation on refresh
-      $.data(document.body, key, totalCount); // [X]
+      // S1848 suppressed: Chart.js renders into ctx as a constructor side-effect; no reference needed.
+      new Chart(ctx, { // NOSONAR javascript:S1848
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: [redCount, amberCount, greenCount, timedOutCount],
+            backgroundColor: ['#F00', '#FF0', '#0F0', 'darkGray'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: false,
+          events: [],
+          animation: animate && { easing: 'easeOutExpo' },
+          plugins: {
+            legend:  { display: false },
+            tooltip: { enabled: false }
+          }
+        }
+      });
+
+      cd.setupTrafficLightCountHoverTip($node.parent(), {
+        red:       redCount,
+        amber:     amberCount,
+        green:     greenCount,
+        timed_out: timedOutCount
+      });
     });
   };
 

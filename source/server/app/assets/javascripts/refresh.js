@@ -217,6 +217,7 @@ $(() => {
           $minuteBox.append($predictImage(light));
         }
         const colour = light.colour;
+        let $light;
         if (cd.lib.isRevert(light)) {
           $light = $revertImage(colour);
         }
@@ -289,19 +290,9 @@ $(() => {
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - -
   const $trafficLightsPieChart = (counts, kataId) => {
-    // Here be dragons...
-    // Sizing a canvas appears to be horribly delicate.
-    // See https://www.chartjs.org/docs/latest/general/responsive.html
-    // The code below works, and gives a circular 26px diameter pie-chart :-)
-    // All attempts to convert to $('<div>',{...}) syntax failed.
-    // jQuery appears to change the width/height attributes and
-    // to also put them inside a style attribute.
-    // All attempts to use a .scss file also failed.
     return '' +
       `<div
-         class="pie-chart-wrapper"
-         width="26px"
-         height="26px">
+         class="pie-chart-wrapper">
          <canvas
            class="pie"
            data-red-count="${counts.red || 0}"
@@ -309,8 +300,8 @@ $(() => {
            data-green-count="${counts.green || 0}"
            data-timed-out-count="${counts.timedOut || 0}"
            data-key="${kataId}"
-           width="26px"
-           height="26px">
+           width="20"
+           height="20">
          </canvas>
        </div>`;
   };
