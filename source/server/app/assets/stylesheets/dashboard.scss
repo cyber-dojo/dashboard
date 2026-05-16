@@ -18,25 +18,24 @@
 
 #dashboard-page
 {
-  margin: { left:35px; top:0px; }
+  margin: { left:35px; right:35px; top:0px; }
 
   .table-scroll
   {
-    max-width: 1000px;
     max-height: 520px;
     z-index: 1;
     overflow-x: auto;
     overflow-y: auto;
     table
     {
-      width: 100%;
+      // max-content keeps the table sized to its content so it does not
+      // expand to fill max-width on a sparse dashboard, while keeping
+      // display:table so position:sticky works for the full scroll range.
+      width: max-content;
       height: 100%;
       margin: auto;
       border-collapse: separate;
       border-spacing: 0;
-      // stop cells expanding to fill max-width which looks
-      // wrong on a new dashboard with only a few traffic-lights
-      display: inline-block !important;
     }
     th, td { vertical-align: middle; }
     thead th
