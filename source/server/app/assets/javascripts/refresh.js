@@ -37,7 +37,7 @@ $(() => {
         refreshTableHeadWith(data.time_ticks);
         refreshTableBodyWith(data.avatars);
         cd.pieChart($(`#${cssId} .pie`));
-        $('.scroll-handle').scrollIntoView();
+        document.querySelector('.scroll-handle').scrollIntoView({ behavior:'smooth', block:'nearest', inline:'nearest' });
       });
   };
 
