@@ -20,7 +20,7 @@ curl_smoke_test()
   curl_plain_200 assets/app.js  'content-type: text/javascript'
 
   curl_plain_200 show/FxWwrr dashboard-page
-  GID=Djk4kg
+  GID=cT7V67
   open "http://localhost:80/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
 }
 
