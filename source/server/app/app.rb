@@ -38,7 +38,7 @@ class App < AppBase
     end
   end
 
-  get '/dashboard/diff_summary', provides: [:json] do
+  get '/diff_summary', provides: [:json] do
     respond_to do |wants|
       wants.json do
         id = params[:id]
