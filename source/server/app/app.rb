@@ -38,6 +38,17 @@ class App < AppBase
     end
   end
 
+  get '/dashboard/diff_summary', provides: [:json] do
+    respond_to do |wants|
+      wants.json do
+        id = params[:id]
+        was_index = params[:was_index].to_i
+        now_index = params[:now_index].to_i
+        json({ diff_summary: externals.saver.diff_summary(id, was_index, now_index) })
+      end
+    end
+  end
+
   get '/progress/:id', provides: [:json] do
     respond_to do |wants|
       wants.json do
