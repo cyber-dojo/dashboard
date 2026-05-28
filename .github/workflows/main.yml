@@ -71,18 +71,15 @@ jobs:
       contents:      read
       pull-requests: read
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
+      - uses: step-security/harden-runner@v2
         with:
           egress-policy: audit
 
       - uses: cyber-dojo/pinned-checkout@main
-      #- uses: actions/checkout@v6
 
       - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v3
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest pull-request evidence to Kosli
         run:
@@ -124,9 +121,7 @@ jobs:
 
       - name: Setup Kosli CLI
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: kosli-dev/setup-cli-action@v3
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
+        uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -156,9 +151,7 @@ jobs:
 
       - name: Setup Kosli CLI
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: kosli-dev/setup-cli-action@v3
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
+        uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -230,9 +223,7 @@ jobs:
 
       - name: Setup Kosli CLI
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: kosli-dev/setup-cli-action@v3
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
+        uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest JUnit test evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -271,9 +262,8 @@ jobs:
           egress-policy: audit
 
       - name: Setup Kosli CLI
-        uses: kosli-dev/setup-cli-action@v3
-        with:
-          version: ${{ vars.KOSLI_CLI_VERSION }}
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Display current compliance
         run:
