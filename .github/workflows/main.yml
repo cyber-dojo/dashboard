@@ -77,9 +77,7 @@ jobs:
 
       - uses: cyber-dojo/pinned-checkout@main
 
-      - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: cyber-dojo/setup-kosli-cli@main
+      - uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest pull-request evidence to Kosli
         run:
@@ -119,9 +117,7 @@ jobs:
         run:
           make rubocop_lint
 
-      - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: cyber-dojo/setup-kosli-cli@main
+      - uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -149,9 +145,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         uses: SonarSource/sonarqube-scan-action@v7
 
-      - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: cyber-dojo/setup-kosli-cli@main
+      - uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -221,9 +215,7 @@ jobs:
         run:
           make coverage_server
 
-      - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: cyber-dojo/setup-kosli-cli@main
+      - uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Attest JUnit test evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -261,9 +253,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Setup Kosli CLI
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: cyber-dojo/setup-kosli-cli@main
+      - uses: cyber-dojo/setup-kosli-cli@main
 
       - name: Display current compliance
         run:
