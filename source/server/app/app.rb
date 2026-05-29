@@ -104,6 +104,7 @@ class App < AppBase
     element['predicted'] = light.predicted if light.predicted && light.predicted != 'none'
     element['revert'] = light.revert if light.revert
     element['checkout'] = light.checkout if light.checkout
+    element['filename'] = light.filename if light.filename
     element
   end
 

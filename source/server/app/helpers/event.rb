@@ -48,4 +48,8 @@ class Event
   def checkout
     @summary['checkout']
   end
+
+  def filename
+    @summary['filename'] || @summary['new_filename']
+  end
 end

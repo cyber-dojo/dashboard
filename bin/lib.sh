@@ -26,6 +26,32 @@ containers_down()
   docker compose down --remove-orphans --volumes
 }
 
+stop_containers_using_our_ports()
+{
+  local -r ports=(
+    "${CYBER_DOJO_ASSET_BUILDER_PORT}"
+    "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}"
+    "${CYBER_DOJO_CUSTOM_START_POINTS_PORT}"
+    "${CYBER_DOJO_EXERCISES_START_POINTS_PORT}"
+    "${CYBER_DOJO_LANGUAGES_START_POINTS_PORT}"
+    "${CYBER_DOJO_CREATOR_PORT}"
+    "${CYBER_DOJO_DASHBOARD_PORT}"
+    "${CYBER_DOJO_DIFFER_PORT}"
+    "${CYBER_DOJO_NGINX_PORT}"
+    "${CYBER_DOJO_RUNNER_PORT}"
+    "${CYBER_DOJO_SAVER_PORT}"
+    "${CYBER_DOJO_WEB_PORT}"
+  )
+  for port in "${ports[@]}"; do
+    local containers
+    containers=$(docker ps --filter "publish=${port}" --format "{{.Names}}")
+    if [ -n "${containers}" ]; then
+      echo "Stopping containers on port ${port}: ${containers}"
+      echo "${containers}" | xargs docker stop
+    fi
+  done
+}
+
 remove_old_images()
 {
   echo Removing old images
@@ -43,7 +69,7 @@ remove_all_but_latest()
   for image_name in $(echo "${docker_image_ls}" | grep "${name}:")
   do
     if [ "${image_name}" != "${name}:latest" ]; then
-      docker image rm "${image_name}"
+      docker image rm --force "${image_name}"
     fi
   done
   docker system prune --force

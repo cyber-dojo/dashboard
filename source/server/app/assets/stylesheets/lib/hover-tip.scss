@@ -26,3 +26,17 @@
   color: lighten(Gray,10%);
   font-size: 12px;
 }
+
+.hover-tip .diff-filename
+{
+  padding-left: 6px;
+}
+
+.hover-tip .diff-filename.test-file
+{
+  color: steelblue;
+}
+
+.hover-tip .diff-filename.non-test-file
+{
+}
