@@ -32,7 +32,6 @@
     const $tr = $('<tr>');
     $tr.append($avatarImageTd(avatarIndex));
     $tr.append($trafficLightCountTd(light));
-    $tr.append($trafficLightImageTd(light.colour));
     $tr.append($trafficLightMiniTextTd(kataId, light));
     $table.append($tr);
     if (light.time) {
@@ -148,15 +147,6 @@
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  const $trafficLightImageTd = (colour) => {
-    const $img = $('<img>', {
-        src:`/images/traffic-light/${colour}.png`,
-      class:'traffic-light-diff-tip-traffic-light-image'
-    });
-    return $('<td>').append($img);
-  };
-
-  // - - - - - - - - - - - - - - - - - - - -
   const $diffLinesTable = (diffs) => {
     let count = 0;
     const $table = $('<table>', { class:'filenames' });
@@ -170,7 +160,6 @@
         const $tr = $('<tr>');
         $tr.append($lineCountTd('deleted', fileDiff));
         $tr.append($lineCountTd('added', fileDiff));
-        $tr.append($diffTypeTd(fileDiff));
         $tr.append($diffFilenameTd(fileDiff));
         $table.append($tr);
       }      
@@ -186,27 +175,17 @@
   // - - - - - - - - - - - - - - - - - - - -
   const $lineCountTd = (type, file) => {
     const lineCount = file.line_counts[type];
-    const css = lineCount > 0 ? type : '';
-    const $count = $('<div>', {
-      class:`diff-line-count ${css}`,
-      disabled:'disabled'
-    });
-    $count.html(lineCount > 0 ? lineCount : '&nbsp;');
+    const $count = $('<div>', { class:`diff-line-count ${type}` });
+    $count.html(lineCount);
     return $('<td>').append($count);
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  const $diffTypeTd = (diff) => {
-    const $type = $('<div>', {
-      class:`diff-type-marker ${diff.type}`
-    });
-    return $('<td>').append($type);
-  };
-
-  // - - - - - - - - - - - - - - - - - - - -
   const $diffFilenameTd = (diff) => {
-    const $filename = $('<div>', { class:`diff-filename ${diff.type}` });
-    $filename.text(diffFilename(diff));
+    const filename = diffFilename(diff);
+    const testClass = cd.lib.isTestFile(filename) ? 'test-file' : 'non-test-file';
+    const $filename = $('<div>', { class: `diff-filename ${diff.type} ${testClass}` });
+    $filename.text(filename);
     return $('<td>').append($filename);
   };
 

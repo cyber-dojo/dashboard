@@ -180,7 +180,7 @@ def extra_file_edits(id, index, files)
     files['hiker.sh']['content'] += "#{COMMENT_LINE}\n"
     index = saver_post('kata_file_edit', { id: id, index: index, files: files })
     log_dot
-    files['hiker.sh']['content'] = files['hiker.sh']['content'].delete_suffix("#{COMMENT_LINE}\n")
+    files['test_hiker.sh']['content'] += "#{COMMENT_LINE}\n"
     index = saver_post('kata_file_edit', { id: id, index: index, files: files })
     log_dot
   end

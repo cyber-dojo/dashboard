@@ -2,7 +2,7 @@
 assets:
 	@${PWD}/bin/build_assets.sh
 
-image_server:
+image_server: assets
 	@${PWD}/bin/build_image.sh server
 
 test_server:
@@ -17,7 +17,7 @@ rubocop_lint:
 snyk_container_scan:
 	@${PWD}/bin/snyk_container_scan.sh
 
-demo:
+demo: image_server
 	@${PWD}/bin/demo.sh
 
 demo_data:

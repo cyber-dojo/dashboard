@@ -13,14 +13,16 @@ module GathererHelper
     externals.saver.group_joined(gid).each do |avatar_index, o|
       previous_index = 0
       lights = []
+      has_activity = false
       o['events'].each do |event|
         event = Event.new(event, previous_index)
+        has_activity = true if event.index != 0
         if visible?(event)
           previous_index = event.index
           lights.append(event)
         end
       end
-      unless lights == []
+      if has_activity
         @all_lights[o['id']] = lights
         @all_indexes[o['id']] = avatar_index.to_i
       end
@@ -35,7 +37,7 @@ module GathererHelper
 
   def visible?(event)
     if detailed?
-      true
+      event.index != 0
     else
       event.light?
     end

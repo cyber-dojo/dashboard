@@ -90,8 +90,10 @@ server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
 demo()
 {
-  docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" dashboard
-  docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
+  stop_containers_using_our_ports
+  containers_down
+  #docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" dashboard
+  #docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
 
   docker compose \
     --file "$(repo_root)/docker-compose.yml" \

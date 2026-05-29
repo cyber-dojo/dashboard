@@ -224,6 +224,9 @@ $(() => {
         else if (cd.lib.isCheckout(light)) {
           $light = $checkoutImage(colour);
         }
+        else if (isFileEvent(colour)) {
+          $light = $fileEventImage(light);
+        }
         else {
           $light = $ragImage(colour);
         }
@@ -285,6 +288,17 @@ $(() => {
         src: `/images/traffic-light/${colour}.png`,
       class: 'diff-traffic-light',
         alt: `${colour} traffic-light`
+    });
+  };
+
+  const isFileEvent = (colour) => colour.startsWith('file_');
+
+  const $fileEventImage = (light) => {
+    const icon = cd.lib.isTestFile(light.filename) ? 'file_test' : 'file_code';
+    return $('<img>', {
+        src: `/images/traffic-light/${icon}.png`,
+      class: 'diff-traffic-light',
+        alt: `${light.colour} traffic-light`
     });
   };
 
