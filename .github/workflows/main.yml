@@ -29,6 +29,7 @@ jobs:
       gh_actions_iam_role_name: ${{ steps.vars.outputs.gh_actions_iam_role_name }}
       service_name:             ${{ steps.vars.outputs.service_name }}
       image_tag:                ${{ steps.vars.outputs.image_tag }}
+      kosli_flow:               ${{ steps.vars.outputs.kosli_flow }}
       kosli_trail:              ${{ steps.vars.outputs.kosli_trail }}
     steps:
       - uses: cyber-dojo/harden-runner@main
@@ -47,6 +48,7 @@ jobs:
             echo "gh_actions_iam_role_name=gh_actions_services"
             echo "service_name=${SERVICE_NAME}"
             echo "image_tag=${IMAGE_TAG}"
+            echo "kosli_flow=${KOSLI_FLOW}"
             echo "kosli_trail=${KOSLI_TRAIL}"
           } >> "${GITHUB_OUTPUT}"
 
@@ -141,12 +143,12 @@ jobs:
 
 
   snyk-container-scan:
-    needs: [build-image]
+    needs: [setup, build-image]
     uses: cyber-dojo/snyk-scanning/.github/workflows/artifact_snyk_test.yml@main
     with:
       artifact_name: ${{ needs.build-image.outputs.tagged_image_name }}
-      kosli_flow: ${{vars.KOSLI_FLOW}}
-      kosli_trail: ${{github.sha}}
+      kosli_flow: ${{ needs.setup.outputs.kosli_flow }}
+      kosli_trail: ${{ needs.setup.outputs.kosli_trail }}
       kosli_attestation_name: dashboard.snyk-container-scan
     secrets:
       snyk_token: ${{ secrets.SNYK_TOKEN }}
