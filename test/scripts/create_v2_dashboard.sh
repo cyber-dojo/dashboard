@@ -8,9 +8,8 @@ source "${ROOT_DIR}/bin/lib.sh"
 exit_non_zero_unless_installed docker
 export $(echo_env_vars)
 
-TYPE=server 
+TYPE=server
 SERVICE=dashboard
-CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}"
 USER="${CYBER_DOJO_DASHBOARD_SERVER_USER}"
 
 create_v2_dashboard_prep()
@@ -21,6 +20,8 @@ create_v2_dashboard_prep()
 
 create_v2_dashboard()
 {
+  # Resolve the container now it is up; Compose namespaces it by project+service.
+  local -r CONTAINER_NAME="$(service_container "${SERVICE}")"
   docker exec \
     --user "${USER}" \
     "${CONTAINER_NAME}" \

@@ -145,6 +145,7 @@ jobs:
 
 
   snyk-container-scan:
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: [setup, build-image]
     uses: cyber-dojo/snyk-scanning/.github/workflows/artifact_snyk_test.yml@main
     with:

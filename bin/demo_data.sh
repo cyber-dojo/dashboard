@@ -29,7 +29,7 @@ readonly LIGHT_COUNT="${1:-5}"
 readonly AVATAR_COUNT="${2:-20}"
 
 echo "Creating group kata (${AVATAR_COUNT} avatars, ~${LIGHT_COUNT} test runs each)..."
-GID=$(docker exec --interactive test_dashboard_saver ruby - "${LIGHT_COUNT}" "${AVATAR_COUNT}" \
+GID=$(docker exec --interactive "$(service_container saver)" ruby - "${LIGHT_COUNT}" "${AVATAR_COUNT}" \
   < "${ROOT_DIR}/bin/create_group_kata.rb")
 readonly GID
 echo "Created group: ${GID}"

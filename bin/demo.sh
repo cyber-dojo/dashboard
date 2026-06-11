@@ -7,6 +7,17 @@ source "${ROOT_DIR}/bin/echo_env_vars.sh"
 exit_non_zero_unless_installed docker
 export $(echo_env_vars)
 
+# Each demo runs as its own docker-compose project so this repo's demo can
+# run alongside a sibling repo's demo (eg web) without their networks,
+# container names or host ports colliding. nginx is published to the host on
+# an overridable port; the backend services talk over the project's private
+# network. (dashboard is the one exception - curl_smoke_test below curls it
+# directly on CYBER_DOJO_DASHBOARD_PORT.) Override these to run a second
+# dashboard demo alongside the first, eg:
+#   COMPOSE_PROJECT_NAME=dashboard2 CYBER_DOJO_NGINX_HOST_PORT=81 bin/demo.sh
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-dashboard}"
+export CYBER_DOJO_NGINX_HOST_PORT="${CYBER_DOJO_NGINX_HOST_PORT:-80}"
+
 curl_smoke_test()
 {
   echo curl log in $(log_filename)
@@ -21,7 +32,7 @@ curl_smoke_test()
 
   local -r GID=$(cat "${ROOT_DIR}/test/data/demo_gid.txt")
   curl_plain_200 "show/${GID}" dashboard-page
-  open "http://localhost:80/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
+  open "http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
 }
 
 curl_json()
@@ -90,7 +101,8 @@ server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
 demo()
 {
-  stop_containers_using_our_ports
+  # Tear down only this demo's project (COMPOSE_PROJECT_NAME), leaving any
+  # other repo's running demo untouched.
   containers_down
   #docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" dashboard
   #docker --log-level=ERROR compose build --build-arg COMMIT_SHA="${COMMIT_SHA}" client
@@ -99,7 +111,6 @@ demo()
     --file "$(repo_root)/docker-compose.yml" \
     run \
       --detach \
-      --name test_dashboard_nginx \
       --service-ports \
       nginx
 
