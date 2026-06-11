@@ -26,32 +26,6 @@ containers_down()
   docker compose down --remove-orphans --volumes
 }
 
-stop_containers_using_our_ports()
-{
-  local -r ports=(
-    "${CYBER_DOJO_ASSET_BUILDER_PORT}"
-    "${CYBER_DOJO_DASHBOARD_CLIENT_PORT}"
-    "${CYBER_DOJO_CUSTOM_START_POINTS_PORT}"
-    "${CYBER_DOJO_EXERCISES_START_POINTS_PORT}"
-    "${CYBER_DOJO_LANGUAGES_START_POINTS_PORT}"
-    "${CYBER_DOJO_CREATOR_PORT}"
-    "${CYBER_DOJO_DASHBOARD_PORT}"
-    "${CYBER_DOJO_DIFFER_PORT}"
-    "${CYBER_DOJO_NGINX_PORT}"
-    "${CYBER_DOJO_RUNNER_PORT}"
-    "${CYBER_DOJO_SAVER_PORT}"
-    "${CYBER_DOJO_WEB_PORT}"
-  )
-  for port in "${ports[@]}"; do
-    local containers
-    containers=$(docker ps --filter "publish=${port}" --format "{{.Names}}")
-    if [ -n "${containers}" ]; then
-      echo "Stopping containers on port ${port}: ${containers}"
-      echo "${containers}" | xargs docker stop
-    fi
-  done
-}
-
 remove_old_images()
 {
   echo Removing old images
@@ -104,6 +78,20 @@ installed()
   fi
 }
 
+service_container()
+{
+  # Echo the container id of the given docker-compose service within this
+  # repo's project. The project is COMPOSE_PROJECT_NAME (set by bin/demo.sh),
+  # defaulting to dashboard so the saver/test helpers also work against a plain
+  # test run, where Compose derives the same project name from the repo
+  # directory.
+  local -r service="${1}"
+  docker ps \
+    --filter "label=com.docker.compose.project=${COMPOSE_PROJECT_NAME:-dashboard}" \
+    --filter "label=com.docker.compose.service=${service}" \
+    --format '{{.ID}}'
+}
+
 exit_non_zero()
 {
   kill -INT $$
@@ -117,7 +105,7 @@ stderr()
 
 copy_in_saver_test_data()
 {
-  local -r SAVER_CID=$(docker ps --filter status=running --format '{{.Names}}' | grep "saver")
+  local -r SAVER_CID="$(service_container saver)"
   # You cannot docker cp to a tmpfs, so tar-piping instead...
   # The v2 tgz is piped directly into the container to avoid macOS case-insensitive
   # filesystem collapsing case-distinct directory names (e.g. katas/Ks/ and katas/ks/).

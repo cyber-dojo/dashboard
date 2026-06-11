@@ -37,11 +37,9 @@ check_args()
       exit 0
       ;;
     'server')
-      export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_SERVER_CONTAINER_NAME}"
       export USER="${CYBER_DOJO_DASHBOARD_SERVER_USER}"
       ;;
     'client')
-      export CONTAINER_NAME="${CYBER_DOJO_DASHBOARD_CLIENT_CONTAINER_NAME}"
       export USER="${CYBER_DOJO_DASHBOARD_CLIENT_USER}"
       ;;
     '')
@@ -73,6 +71,8 @@ run_tests()
 
   # Don't do a build here, because in CI workflow, server image is built with GitHub Action
   docker compose --progress=plain up --no-build --wait --wait-timeout=10 "${SERVICE}"
+  # Resolve the container now it is up; Compose namespaces it by project+service.
+  export CONTAINER_NAME="$(service_container "${SERVICE}")"
   echo_warnings "${SERVICE}"
   copy_in_saver_test_data
 
