@@ -10,7 +10,7 @@ trail:
         - name: rubocop-lint
           type: junit
         - name: snyk-container-scan
-          type: generic
+          type: decision
         - name: sonarcloud-scan
           type: sonar
         - name: unit-test
