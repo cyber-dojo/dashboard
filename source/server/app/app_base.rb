@@ -10,7 +10,7 @@ class AppBase < Sinatra::Base
   # Compiled assets live in ${APP_DIR}/assets, a sibling of source/, populated
   # by the Dockerfile from the asset_builder stage, which keeps the precompiled
   # app.css/app.js out of the repo tree.
-  ASSETS_DIR = "#{ENV.fetch('APP_DIR')}/assets"
+  ASSETS_DIR = "#{ENV.fetch('APP_DIR')}/assets".freeze
 
   # Returns the public URL path for a compiled asset, fingerprinted with a short
   # hash of its content, eg "/assets/app-1a2b3c4d.css". Embedding the hash in the
@@ -47,13 +47,13 @@ class AppBase < Sinatra::Base
   # Assets
 
   get CSS_PATH do
-    cache_control :public, max_age: 31536000, immutable: true
+    cache_control :public, max_age: 31_536_000, immutable: true
     content_type 'text/css'
     send_file "#{ASSETS_DIR}/app.css"
   end
 
   get JS_PATH do
-    cache_control :public, max_age: 31536000, immutable: true
+    cache_control :public, max_age: 31_536_000, immutable: true
     content_type 'text/javascript'
     send_file "#{ASSETS_DIR}/app.js"
   end
