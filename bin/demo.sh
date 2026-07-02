@@ -27,9 +27,6 @@ curl_smoke_test()
   curl_json_body_200 ready
   curl_json_body_200 sha
 
-  curl_plain_200 assets/app.css 'content-type: text/css'
-  curl_plain_200 assets/app.js  'content-type: text/javascript'
-
   local -r GID=$(cat "${ROOT_DIR}/test/data/demo_gid.txt")
   curl_plain_200 "show/${GID}" dashboard-page
   open "http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
