@@ -4,39 +4,58 @@ require 'sinatra/base'
 silently { require 'sinatra/contrib' } # N x "warning: method redefined"
 require_relative 'http_json_hash/service'
 require 'json'
-require 'sprockets'
+require 'digest'
 
 class AppBase < Sinatra::Base
+  # Compiled assets live in ${APP_DIR}/assets, a sibling of source/, populated
+  # by the Dockerfile from the asset_builder stage, which keeps the precompiled
+  # app.css/app.js out of the repo tree.
+  ASSETS_DIR = "#{ENV.fetch('APP_DIR')}/assets"
+
+  # Returns the public URL path for a compiled asset, fingerprinted with a short
+  # hash of its content, eg "/assets/app-1a2b3c4d.css". Embedding the hash in the
+  # path gives each version a unique URL, so it can be cached immutably for a
+  # year; browsers then serve it from cache instead of re-pulling it on every
+  # page navigation through nginx's rate-limited /dashboard/ zone (which
+  # previously tripped a 429).
+  def self.asset_path(filename)
+    src  = "#{ASSETS_DIR}/#{filename}"
+    hash = Digest::SHA256.file(src).hexdigest[0, 8]
+    base = File.basename(filename, '.*')
+    ext  = File.extname(filename)
+    "/assets/#{base}-#{hash}#{ext}"
+  end
+
+  CSS_PATH = asset_path('app.css')
+  JS_PATH  = asset_path('app.js')
+
+  # Wires the app to its collaborators (saver, differ).
   def initialize(externals)
     @externals = externals
-    assets_dir = "#{ENV.fetch('APP_DIR')}/assets"
-    @css = File.read("#{assets_dir}/app.css")
-    @js  = File.read("#{assets_dir}/app.js")
     super(nil)
   end
 
   silently { register Sinatra::Contrib }
   set :port, ENV.fetch('PORT', nil)
-  set :environment, Sprockets::Environment.new
 
-  environment.append_path('app/assets/images')
+  # Permit all Host headers; nginx fronts this app and validates Host. Without
+  # this, Sinatra's development-mode host authorization rejects any Host that is
+  # not localhost/.test (eg Rack::Test's example.org) with 'Host not permitted'.
+  set :host_authorization, {}
 
-  get '/assets/app.css', provides: [:css] do
-    respond_to do |format|
-      format.css do
-        content_type 'text/css'
-        @css
-      end
-    end
+  # - - - - - - - - - - - - - - - -
+  # Assets
+
+  get CSS_PATH do
+    cache_control :public, max_age: 31536000, immutable: true
+    content_type 'text/css'
+    send_file "#{ASSETS_DIR}/app.css"
   end
 
-  get '/assets/app.js', provides: [:js] do
-    respond_to do |format|
-      format.js do
-        content_type 'text/javascript'
-        @js
-      end
-    end
+  get JS_PATH do
+    cache_control :public, max_age: 31536000, immutable: true
+    content_type 'text/javascript'
+    send_file "#{ASSETS_DIR}/app.js"
   end
 
   private

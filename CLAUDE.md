@@ -26,8 +26,9 @@ Clicking the active widget toggles its direction (▲↔▼). Clicking the inact
   - `sortedAvatarKeys()` sorts avatar keys by the active column and direction before rendering rows.
   - `totalLightCount()` counts non-collapsed RAG lights per avatar for the lights sort.
 - `source/server/app/assets/stylesheets/fixed-column.scss` — CSS for `.sort-header` and `.sort-widget` / `.sort-active`.
-- `source/server/app/assets/javascripts/pre-built-app.js` — rebuilt via `make assets` (Docker).
-- `source/server/app/assets/stylesheets/pre-built-app.css` — rebuilt via `make assets` (Docker).
+- Assets are not committed: the edited `.js`/`.scss` sources are compiled into a single
+  `app.css`/`app.js` by the Dockerfile `assets` stage (the `cyberdojo/asset_builder` image
+  runs `config/compile.sh`). There is no `make assets` step and no `pre-built-app.*` output.
 
 ## Datetime in event hovertips
 
@@ -40,5 +41,6 @@ Each traffic-light event's hovertip now shows a datetime row (row 2) immediately
   - `$trafficLightSummary()` appends a second `<tr>` with a `<td colspan=4 class="datetime">` when `light.time` is present.
   - `formatDateTime(timeA)` zero-pads each component and renders as `CCYY:MM:DD HH:MM:SS`.
 - `source/server/app/assets/stylesheets/lib/hover-tip.scss` — `.hover-tip .datetime` rule (small, grey, matching `.mini-text`).
-- `source/server/app/assets/javascripts/pre-built-app.js` — rebuilt via `make assets` (Docker).
-- `source/server/app/assets/stylesheets/pre-built-app.css` — rebuilt via `make assets` (Docker).
+- Assets are not committed: the edited `.js`/`.scss` sources are compiled into a single
+  `app.css`/`app.js` by the Dockerfile `assets` stage (the `cyberdojo/asset_builder` image
+  runs `config/compile.sh`). There is no `make assets` step and no `pre-built-app.*` output.

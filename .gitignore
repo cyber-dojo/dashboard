@@ -2,6 +2,3 @@ snyk.container.scan.json
 
 reports/*
 reports/.*
-
-source/server/app/assets/javascripts/pre-built-app.js
-source/server/app/assets/stylesheets/pre-built-app.css
