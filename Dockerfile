@@ -2,7 +2,7 @@ FROM ghcr.io/cyber-dojo/sinatra-base:1200d3b@sha256:7c4eb39e9b9de9b49f8fc650e47f
 # The FROM statement above is typically set via an automated pull-request from the sinatra-base repo
 
 # Compile the SCSS/JS assets to a single app.css and app.js.
-FROM cyberdojo/asset_builder:f2bcab7 AS assets
+FROM cyberdojo/asset_builder:5e9f6ad AS assets
 COPY source/server/app/assets/javascripts /app/app/assets/javascripts
 COPY source/server/app/assets/stylesheets /app/app/assets/stylesheets
 RUN /app/config/compile.sh /tmp/out
