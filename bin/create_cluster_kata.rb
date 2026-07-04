@@ -49,7 +49,7 @@ PROGRESS_REGEXS = [
 ].freeze
 
 AVATARS_PER_GROUP = 5
-LIGHTS_PER_AVATAR = (3..6)
+LIGHTS_PER_AVATAR = (3..6).freeze
 
 # Each colour is produced by substituting the echo line in hiker.sh:
 #   red:   echo "${n}" -> echo "WIBBLE"  (wrong output)
@@ -108,26 +108,37 @@ STDOUT_FOR     = { 'red' => RED_STDOUT, 'amber' => '', 'green' => GREEN_STDOUT }
 STDERR_FOR     = { 'red' => '', 'amber' => "./hiker.sh: line 10: `${n': bad substitution", 'green' => '' }.freeze
 STATUS_FOR     = { 'red' => 1, 'amber' => 1, 'green' => 0 }.freeze
 
-def manifest_for(display_name, progress_regexs)
-  manifest = {
-    'display_name' => display_name,
-    'image_name' => 'cyberdojofoundation/bash_bats:53d0c9c',
-    'filename_extension' => ['.sh'],
-    'tab_size' => 4,
-    'visible_files' => {
-      'hiker.sh' => file(HIKER_SH),
-      'test_hiker.sh' => file(TEST_HIKER_SH),
-      'cyber-dojo.sh' => file(CYBER_DOJO_SH),
-      'readme.txt' => file(README)
-    },
-    'exercise' => 'Fizz Buzz',
-    'version' => 2,
-    'highlight_filenames' => [],
-    'max_seconds' => 10
+# The manifest fields shared by every LTF; only display_name, visible_files and
+# (optionally) progress_regexs differ per child group.
+BASE_MANIFEST = {
+  'image_name' => 'cyberdojofoundation/bash_bats:53d0c9c',
+  'filename_extension' => ['.sh'],
+  'tab_size' => 4,
+  'exercise' => 'Fizz Buzz',
+  'version' => 2,
+  'highlight_filenames' => [],
+  'max_seconds' => 10
+}.freeze
+
+# The four visible files every child group starts with (all LTFs share them).
+def visible_files
+  {
+    'hiker.sh' => file(HIKER_SH),
+    'test_hiker.sh' => file(TEST_HIKER_SH),
+    'cyber-dojo.sh' => file(CYBER_DOJO_SH),
+    'readme.txt' => file(README)
   }
-  # An LTF that does not support progress simply OMITS progress_regexs - it must
-  # not store an empty []. (The saver polyfills a missing key to [] on read, so
-  # the dashboard still hides the progress button for these tabs.)
+end
+
+# The v2 group manifest for one LTF child group. An LTF that does not support
+# progress simply OMITS progress_regexs - it must not store an empty []. (The
+# saver polyfills a missing key to [] on read, so the dashboard still hides the
+# progress button for those tabs.)
+def manifest_for(display_name, progress_regexs)
+  manifest = BASE_MANIFEST.merge(
+    'display_name' => display_name,
+    'visible_files' => visible_files
+  )
   manifest['progress_regexs'] = progress_regexs if progress_regexs
   manifest
 end
@@ -158,17 +169,22 @@ def log_dot
   $stderr.flush
 end
 
-# Runs the tests once at the given index, having substituted hiker.sh to
-# produce the given colour, and returns the next index.
-def traffic_light(kata_id, index, files, original_hiker, hue)
-  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
-  args = {
+# The kata_ran_tests payload for one run producing the given colour.
+def ran_tests_args(kata_id, index, files, hue)
+  {
     id: kata_id, index: index, files: files,
     stdout: file(STDOUT_FOR[hue]),
     stderr: file(STDERR_FOR[hue]),
     status: STATUS_FOR[hue],
     summary: { 'colour' => hue, 'predicted' => 'none' }
   }
+end
+
+# Runs the tests once at the given index, having substituted hiker.sh to
+# produce the given colour, and returns the next index.
+def traffic_light(kata_id, index, files, original_hiker, hue)
+  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
+  args = ran_tests_args(kata_id, index, files, hue)
   next_index = saver_post('kata_ran_tests', args)['next_index']
   log_dot
   next_index
@@ -188,7 +204,7 @@ end
 # Create the cluster (materializes one child group per LTF) and read back its
 # child group ids.
 manifests = LTF_DISPLAY_NAMES.map do |name|
-  regexs = (name == LTF_WITH_PROGRESS) ? PROGRESS_REGEXS : nil
+  regexs = name == LTF_WITH_PROGRESS ? PROGRESS_REGEXS : nil
   manifest_for(name, regexs)
 end
 cluster_id = saver_post('cluster_create', { manifests: manifests })
