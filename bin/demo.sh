@@ -106,6 +106,7 @@ demo()
 
   docker compose \
     --file "$(repo_root)/docker-compose.yml" \
+    --file "$(repo_root)/docker-compose.demo.yml" \
     run \
       --detach \
       --service-ports \

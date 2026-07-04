@@ -1,0 +1,20 @@
+# Demo-only overlay, layered on top of docker-compose.yml.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.demo.yml run --service-ports nginx
+#
+# The base docker-compose.yml deliberately publishes no host ports (see its
+# comment) so concurrent test runs - here and in sibling repos - don't collide.
+# The demo needs two host ports:
+#   - nginx, so a browser can open the dashboard through the real routing
+#     (bin/demo.sh opens http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/...).
+#   - dashboard itself, because bin/demo.sh's curl_smoke_test curls it directly
+#     on CYBER_DOJO_DASHBOARD_PORT, bypassing nginx.
+# See bin/demo.sh.
+
+services:
+
+  nginx:
+    ports: [ "${CYBER_DOJO_NGINX_HOST_PORT:-80}:80" ]
+
+  dashboard:
+    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]

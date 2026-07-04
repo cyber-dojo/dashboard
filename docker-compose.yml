@@ -1,4 +1,12 @@
 
+# No service publishes a host port. The tests run inside the containers (via
+# docker exec - see bin/run_tests.sh) and inter-service traffic flows over the
+# project's private network by compose service name, so nothing needs a host
+# port. Not publishing means several test runs - in this repo or in sibling
+# repos - can run at once without fighting over the same host ports (eg 80).
+# The demo overlay (docker-compose.demo.yml) publishes the few ports the demo
+# needs.
+
 networks:
   cyber-dojo:
     driver: bridge
@@ -38,7 +46,6 @@ services:
       - differ
       - saver
     env_file: [ .env ]
-    ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]
     read_only: true
     restart: no
     volumes:
@@ -59,7 +66,6 @@ services:
       - web
     user: root
     init: true
-    ports: [ "${CYBER_DOJO_NGINX_HOST_PORT:-80}:80" ]
     restart: "no"
 
   web:
