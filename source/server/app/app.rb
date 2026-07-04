@@ -17,6 +17,7 @@ class App < AppBase
 
   get '/show/:id', provides: [:html] do
     @id = params[:id]
+    resolve_group_and_tabs
     respond_to do |wants|
       wants.html do
         erb :show
@@ -61,6 +62,36 @@ class App < AppBase
 
   helpers AvatarsProgressHelper
   helpers GathererHelper
+
+  # Resolves the shared id in @id (a kata, group or cluster id) up to the
+  # topmost entity and decides how the page renders it:
+  # - @group_id is the child group whose avatars are shown first (cd.groupId()).
+  # - @tabs is one entry per child group of a cluster (id + LTF display_name);
+  #   it is empty for a standalone group, so today's single view is unchanged.
+  # A cluster shows one tab per child group (duplicate-LTF children each get
+  # their own tab); the given id picks the active child (kata/group -> its own
+  # group; a bare cluster id -> the first child).
+  def resolve_group_and_tabs
+    chain = externals.saver.id_chain(@id)
+    cluster = chain.find { |entry| entry['type'] == 'cluster' }
+    group   = chain.find { |entry| entry['type'] == 'group' }
+    if cluster
+      groups = externals.saver.cluster_manifest(cluster['id'])['groups']
+      @tabs = groups.map do |group_id, manifest|
+        { 'id' => group_id, 'display_name' => manifest['display_name'] }
+      end
+      @group_id = group ? group['id'] : @tabs.first['id']
+    else
+      @tabs = []
+      @group_id = group ? group['id'] : @id
+    end
+  rescue StandardError
+    # Resolving is best-effort: if the id resolves to nothing (or the saver is
+    # unreachable), render as a standalone group keyed on the given id - today's
+    # behaviour - and let the per-child fetches surface any error, as before.
+    @tabs = []
+    @group_id = @id
+  end
 
   def altered(indexes, gapped)
     indexes.to_h do |kata_id, group_index|

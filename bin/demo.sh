@@ -96,6 +96,17 @@ log_filename() { echo -n /tmp/dashboard.log; }
 
 server_port() { echo "${CYBER_DOJO_DASHBOARD_PORT}"; }
 
+# Opens the dashboard for the pre-baked demo cluster (tar-piped into the saver
+# by copy_in_saver_test_data). The dashboard resolves the cluster id up and
+# renders one tab per child group. Re-bake the cluster with
+# bin/create_cluster_data.sh.
+open_cluster()
+{
+  local -r CLUSTER_ID=$(cat "${ROOT_DIR}/test/data/demo_cluster_id.txt")
+  echo "Opening cluster ${CLUSTER_ID}"
+  open "http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/dashboard/show/${CLUSTER_ID}?auto_refresh=true&minute_columns=true"
+}
+
 demo()
 {
   # Tear down only this demo's project (COMPOSE_PROJECT_NAME), leaving any
@@ -114,6 +125,7 @@ demo()
 
   copy_in_saver_test_data
   curl_smoke_test
+  open_cluster
 }
 
 demo "$@"

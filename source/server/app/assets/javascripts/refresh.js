@@ -31,7 +31,7 @@ $(() => {
       detailed:detailed
     };
     const params = new URLSearchParams(args);
-    fetch(`/dashboard/heartbeat/${cd.id()}?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+    fetch(`/dashboard/heartbeat/${cd.groupId()}?${params}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
       .then(r => r.json())
       .then(data => {
         refreshTableHeadWith(data.time_ticks);

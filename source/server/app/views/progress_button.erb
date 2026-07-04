@@ -29,7 +29,7 @@ $(() => {
   });
 
   const openProgressDialog = () => {
-    fetch(`/dashboard/progress/${cd.id()}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+    fetch(`/dashboard/progress/${cd.groupId()}`, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
       .then(r => r.json())
       .then(data => {
         dialog.querySelector('.dialog-body').innerHTML = progressTable(data.katas);
