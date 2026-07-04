@@ -18,8 +18,13 @@ Metrics/BlockLength:
   Exclude:
     - source/server/app/app_base.rb
 
+Metrics/ClassLength:
+  Exclude:
+    - source/server/app/app.rb
+
 Metrics/CyclomaticComplexity:
   Exclude:
+    - source/server/app/app.rb
     - source/server/app/helpers/td_gapper.rb
     - source/server/app/helpers/avatars_progress.rb
 
@@ -32,6 +37,7 @@ Metrics/MethodLength:
 
 Metrics/PerceivedComplexity:
   Exclude:
+    - source/server/app/app.rb
     - source/server/app/helpers/td_gapper.rb
     - source/server/app/helpers/avatars_progress.rb
 

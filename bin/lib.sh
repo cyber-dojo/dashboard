@@ -33,6 +33,11 @@ remove_old_images()
   remove_all_but_latest "${dil}" "${CYBER_DOJO_DASHBOARD_CLIENT_IMAGE}"
   remove_all_but_latest "${dil}" "${CYBER_DOJO_DASHBOARD_IMAGE}"
   remove_all_but_latest "${dil}" cyberdojo/dashboard
+  # Reclaim the dangling layers left behind by removing the old tagged images
+  # above. Use 'docker image prune' (dangling images only), NOT 'docker system
+  # prune', which would also wipe the BuildKit build cache and so force the
+  # asset_builder FROM stage to be re-pulled and re-compiled on every build.
+  docker image prune --force
 }
 
 remove_all_but_latest()
@@ -46,7 +51,6 @@ remove_all_but_latest()
       docker image rm --force "${image_name}" || echo "  skipped ${image_name} (in use)"
     fi
   done
-  docker system prune --force
 }
 
 exit_non_zero_unless_file_exists()
@@ -118,6 +122,12 @@ copy_in_saver_test_data()
   # Timestamps in events.json are rewritten on the fly to simulate a session starting now.
   ruby "${ROOT_DIR}/bin/rewrite_demo_timestamps.rb" \
     < "${ROOT_DIR}/test/data/saver_data.v2.tgz" \
+    | docker exec -i ${SAVER_CID} tar --no-xattrs -zxf - -C /
+
+  # tar-pipe the pre-baked demo cluster (3 LTFs, one child group each) the same
+  # way. Baked by bin/create_cluster_data.sh; its id is in test/data/demo_cluster_id.txt.
+  ruby "${ROOT_DIR}/bin/rewrite_demo_timestamps.rb" \
+    < "${ROOT_DIR}/test/data/saver_cluster.v2.tgz" \
     | docker exec -i ${SAVER_CID} tar --no-xattrs -zxf - -C /
 }
 

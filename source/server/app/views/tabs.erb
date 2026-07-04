@@ -1,0 +1,32 @@
+<% if @tabs.size > 1 %>
+<div id="cluster-tabs">
+  <% @tabs.each do |tab| %>
+    <div class="cluster-tab<%= ' cluster-tab-active' if tab['id'] == @group_id %>"
+         data-group-id="<%= tab['id'] %>">
+      <span class="cluster-tab-ltf"><%= tab['display_name'] %></span>
+      <span class="cluster-tab-id"><%= tab['id'] %></span>
+    </div>
+  <% end %>
+</div>
+
+<script>
+'use strict';
+$(() => {
+
+  // Each tab is one child group of the cluster. Clicking a tab makes its
+  // group the active child: all per-child fetches (heartbeat, group_manifest,
+  // progress) then key off it, and the traffic-lights grid + manifest reload
+  // in place. cd.id() (the cluster id in the URL) is unchanged.
+  $('#cluster-tabs .cluster-tab').click(function() {
+    const $tab = $(this);
+    if ($tab.hasClass('cluster-tab-active')) { return; }
+    $('#cluster-tabs .cluster-tab').removeClass('cluster-tab-active');
+    $tab.addClass('cluster-tab-active');
+    cd.setGroupId($tab.data('group-id').toString());
+    cd.loadManifest();
+    cd.refresh();
+  });
+
+});
+</script>
+<% end %>
