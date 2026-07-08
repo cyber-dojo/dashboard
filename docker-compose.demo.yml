@@ -14,7 +14,7 @@
 services:
 
   nginx:
-    ports: [ "${CYBER_DOJO_NGINX_HOST_PORT:-80}:80" ]
+    ports: [ "${CYBER_DOJO_NGINX_HOST_PORT:-82}:80" ]
 
   dashboard:
     ports: [ "${CYBER_DOJO_DASHBOARD_PORT}:${CYBER_DOJO_DASHBOARD_PORT}" ]

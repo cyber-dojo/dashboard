@@ -16,7 +16,7 @@ export $(echo_env_vars)
 # dashboard demo alongside the first, eg:
 #   COMPOSE_PROJECT_NAME=dashboard2 CYBER_DOJO_NGINX_HOST_PORT=81 bin/demo.sh
 export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-dashboard}"
-export CYBER_DOJO_NGINX_HOST_PORT="${CYBER_DOJO_NGINX_HOST_PORT:-80}"
+export CYBER_DOJO_NGINX_HOST_PORT="${CYBER_DOJO_NGINX_HOST_PORT:-82}"
 
 curl_smoke_test()
 {
