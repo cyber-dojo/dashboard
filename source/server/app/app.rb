@@ -80,7 +80,7 @@ class App < AppBase
       @tabs = groups.map do |group_id, manifest|
         { 'id' => group_id, 'display_name' => manifest['display_name'] }
       end
-      @group_id = group ? group['id'] : @tabs.first['id']
+      @group_id = active_child_id(group)
     else
       @tabs = []
       @group_id = group ? group['id'] : @id
@@ -91,6 +91,18 @@ class App < AppBase
     # behaviour - and let the per-child fetches surface any error, as before.
     @tabs = []
     @group_id = @id
+  end
+
+  # Picks which child group of a cluster is the initially-active tab. A
+  # ?group_id= query param naming a real child wins (deep-linking straight to
+  # one LTF's tab); otherwise the child from the resolved path id, else the
+  # first tab. An unknown group_id is ignored so we never activate an absent
+  # tab.
+  def active_child_id(group)
+    wanted = params[:group_id]
+    return wanted if @tabs.any? { |tab| tab['id'] == wanted }
+
+    group ? group['id'] : @tabs.first['id']
   end
 
   def altered(indexes, gapped)

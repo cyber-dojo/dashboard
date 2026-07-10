@@ -41,11 +41,29 @@ class ClusterTabsTest < TestBase
     refute_includes html, 'id="cluster-tabs"', html
   end
 
+  test 'c1u5b4', %w(
+  | a group_id query param inside a cluster selects that child as the active
+  | tab, overriding the bare-cluster-id default of the first child
+  ) do
+    html = show_html(CLUSTER_ID, group_id: '4tSCxB')
+    assert_includes html, 'id="cluster-tabs"', html
+    assert_equal '4tSCxB', active_tab_id(html), html
+  end
+
+  test 'c1u5b5', %w(
+  | a group_id query param that names no child of the cluster is ignored:
+  | the active tab falls back to the first child (never an absent tab)
+  ) do
+    html = show_html(CLUSTER_ID, group_id: 'nosuch')
+    assert_includes html, 'id="cluster-tabs"', html
+    assert_equal '8qTubq', active_tab_id(html), html
+  end
+
   private
 
   # GETs /show/<id> as html, asserts a 200, and returns the response body.
-  def show_html(id)
-    get "/show/#{id}", {}, { 'HTTP_ACCEPT' => 'text/html' }
+  def show_html(id, params = {})
+    get "/show/#{id}", params, { 'HTTP_ACCEPT' => 'text/html' }
     assert status?(200), "status=#{status}"
     last_response.body
   end

@@ -14,9 +14,31 @@ $(() => {
 
   cd.refresh();
   const seconds = (n) => n * 1000; // millisecs
+
+  // For a cluster (more than one tab) the auto-refresh heartbeat slowly
+  // rotates through the child groups: it dwells on each group for DWELL_BEATS
+  // heartbeats (refreshing its data in place) then advances to the next tab,
+  // wrapping around. A standalone group (no tabs) just refreshes in place.
+  // Rotation is driven entirely by the existing auto-refresh checkbox; it is
+  // purely time-based apart from this one dwell counter.
+  const DWELL_BEATS = 3; // ~30s per group (heartbeat fires every 10s)
+  let dwell = 0;
+  cd.resetDwell = () => { dwell = 0; };
+
+  const isCluster = () => cd.tabs().length > 1;
+  const nextGroupId = () => {
+    const ids = cd.tabs().map((tab) => tab['id']);
+    return ids[(ids.indexOf(cd.groupId()) + 1) % ids.length];
+  };
+
   const heartbeat = () => {
     if (cd.autoRefresh.isChecked()) {
-      cd.refresh();
+      if (isCluster() && ++dwell >= DWELL_BEATS) {
+        dwell = 0;
+        cd.activateGroup(nextGroupId()); // advances the tab and refreshes
+      } else {
+        cd.refresh();
+      }
     }
     setTimeout(heartbeat, seconds(10));
   };
