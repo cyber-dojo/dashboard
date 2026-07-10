@@ -58,7 +58,41 @@ class App < AppBase
     end
   end
 
+  get '/active_groups/:id', provides: [:json] do
+    respond_to do |wants|
+      wants.json do
+        json(active_groups)
+      end
+    end
+  end
+
   private
+
+  # For each child group of the cluster @id resolves up to, whether that group
+  # has any avatar with a non-creation event (a traffic-light) - ie whether it
+  # is worth rotating a cluster dashboard's auto-refresh onto. Keyed by child
+  # group id. Empty for a standalone group (no cluster - nothing to rotate).
+  def active_groups
+    chain = externals.saver.id_chain(params[:id])
+    cluster = chain.find { |entry| entry['type'] == 'cluster' }
+    return {} unless cluster
+
+    group_ids = externals.saver.cluster_manifest(cluster['id'])['groups'].keys
+    group_ids.to_h { |group_id| [group_id, group_active?(group_id)] }
+  rescue StandardError
+    # Best-effort, like resolve_group_and_tabs: on any saver hiccup report
+    # nothing active so the caller simply refreshes in place, never crashing.
+    {}
+  end
+
+  # True when any avatar in the group has a non-creation event. A freshly
+  # joined avatar has only its index-0 'created' event; a test run adds an
+  # event with index != 0. Matches gatherer's has_activity notion.
+  def group_active?(group_id)
+    externals.saver.group_joined(group_id).any? do |_avatar_index, o|
+      o['events'].any? { |event| event['index'] != 0 }
+    end
+  end
 
   helpers AvatarsProgressHelper
   helpers GathererHelper
