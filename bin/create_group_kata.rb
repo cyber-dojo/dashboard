@@ -7,6 +7,7 @@
 
 require 'json'
 require 'net/http'
+require 'securerandom'
 
 COUNT        = ARGV.fetch(0, '3').to_i
 AVATAR_COUNT = ARGV.fetch(1, '16').to_i
@@ -156,52 +157,73 @@ def log_dot
   $stderr.flush
 end
 
-def ran_tests_args(id, index, files, hue)
+# laptop_id and tab_seq form the writer's (laptop_id, tab_seq, colour)
+# idempotency key; the monotonic tab_seq stops same-colour runs colliding on it.
+def ran_tests_args(id, files, hue, laptop_id, tab_seq)
   {
-    id: id, index: index, files: files,
+    id: id, files: files,
     stdout: file(STDOUT_FOR[hue]),
     stderr: file(STDERR_FOR[hue]),
     status: STATUS_FOR[hue],
-    summary: colour(hue)
+    summary: colour(hue),
+    laptop_id: laptop_id,
+    tab_seq: tab_seq
   }
 end
 
-def traffic_light(id, index, files, original_hiker, hue)
+# One avatar is one writer: a fixed laptop_id (a browser profile) plus a
+# monotonic tab_seq advanced on every write, so same-colour writes never
+# collide on the saver's (laptop_id, tab_seq, colour) idempotency key.
+class Writer
+  attr_reader :laptop_id
+
+  # Mints a fresh browser-profile laptop_id; the tab counter starts at 0.
+  def initialize
+    @laptop_id = SecureRandom.hex(32)
+    @tab_seq = 0
+  end
+
+  # Advances to and returns this writer's next tab_seq (its first write is 1).
+  def next_tab_seq
+    @tab_seq += 1
+  end
+end
+
+def traffic_light(id, files, original_hiker, hue, writer)
   files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
-  next_index = saver_post('kata_ran_tests', ran_tests_args(id, index, files, hue))['next_index']
+  saver_post('kata_ran_tests', ran_tests_args(id, files, hue, writer.laptop_id, writer.next_tab_seq))
   log_dot
-  next_index
 end
 
 COMMENT_LINE = '# ...'
 
-def extra_file_edits(id, index, files)
+# Each edit is a distinct write, so the writer's tab_seq advances per edit.
+def extra_file_edits(id, files, writer)
   rand(1..2).times do
     files['hiker.sh']['content'] += "#{COMMENT_LINE}\n"
-    index = saver_post('kata_file_edit', { id: id, index: index, files: files })
+    saver_post('kata_file_edit', { id: id, files: files, laptop_id: writer.laptop_id, tab_seq: writer.next_tab_seq })
     log_dot
     files['test_hiker.sh']['content'] += "#{COMMENT_LINE}\n"
-    index = saver_post('kata_file_edit', { id: id, index: index, files: files })
+    saver_post('kata_file_edit', { id: id, files: files, laptop_id: writer.laptop_id, tab_seq: writer.next_tab_seq })
     log_dot
   end
-  index
 end
 
-def rag_cycle(id, index, files, original_hiker)
+def rag_cycle(id, files, original_hiker, writer)
   rand(1..4).times do
-    index = extra_file_edits(id, index, files) if rand < 0.6
-    index = traffic_light(id, index, files, original_hiker, %w[red amber green].sample)
+    extra_file_edits(id, files, writer) if rand < 0.6
+    traffic_light(id, files, original_hiker, %w[red amber green].sample, writer)
   end
-  index
 end
 
+# One avatar is one writer; its tab_seq counts every write across all its cycles.
 def create_avatar(gid, count)
   id = saver_post('group_join', { id: gid })
   files = saver_get('kata_event', { id: id, index: 0 })['files']
   original_hiker = files['hiker.sh']['content']
   avatar_count = [1, (count / 2) + rand(count + 1)].max
-  index = 1
-  avatar_count.times { index = rag_cycle(id, index, files, original_hiker) }
+  writer = Writer.new
+  avatar_count.times { rag_cycle(id, files, original_hiker, writer) }
 end
 
 gid = saver_post('group_create', { manifest: MANIFEST })

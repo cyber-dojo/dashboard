@@ -15,6 +15,7 @@
 
 require 'json'
 require 'net/http'
+require 'securerandom'
 
 if ARGV.include?('-h')
   puts <<~HELP
@@ -169,35 +170,56 @@ def log_dot
   $stderr.flush
 end
 
-# The kata_ran_tests payload for one run producing the given colour.
-def ran_tests_args(kata_id, index, files, hue)
+# The kata_ran_tests payload for one run producing the given colour. laptop_id
+# and tab_seq form the writer's (laptop_id, tab_seq, colour) idempotency key;
+# the monotonic tab_seq stops same-colour runs colliding on that key.
+def ran_tests_args(kata_id, files, hue, laptop_id, tab_seq)
   {
-    id: kata_id, index: index, files: files,
+    id: kata_id, files: files,
     stdout: file(STDOUT_FOR[hue]),
     stderr: file(STDERR_FOR[hue]),
     status: STATUS_FOR[hue],
-    summary: { 'colour' => hue, 'predicted' => 'none' }
+    summary: { 'colour' => hue, 'predicted' => 'none' },
+    laptop_id: laptop_id,
+    tab_seq: tab_seq
   }
 end
 
-# Runs the tests once at the given index, having substituted hiker.sh to
-# produce the given colour, and returns the next index.
-def traffic_light(kata_id, index, files, original_hiker, hue)
-  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
-  args = ran_tests_args(kata_id, index, files, hue)
-  next_index = saver_post('kata_ran_tests', args)['next_index']
-  log_dot
-  next_index
+# One avatar is one writer: a fixed laptop_id (a browser profile) plus a
+# monotonic tab_seq advanced on every write, so same-colour writes never
+# collide on the saver's (laptop_id, tab_seq, colour) idempotency key.
+class Writer
+  attr_reader :laptop_id
+
+  # Mints a fresh browser-profile laptop_id; the tab counter starts at 0.
+  def initialize
+    @laptop_id = SecureRandom.hex(32)
+    @tab_seq = 0
+  end
+
+  # Advances to and returns this writer's next tab_seq (its first write is 1).
+  def next_tab_seq
+    @tab_seq += 1
+  end
 end
 
-# Joins one avatar into the group and gives it 3-6 random traffic-lights.
+# Runs the tests once for the writer, having substituted hiker.sh to produce
+# the given colour.
+def traffic_light(kata_id, files, original_hiker, hue, writer)
+  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
+  saver_post('kata_ran_tests', ran_tests_args(kata_id, files, hue, writer.laptop_id, writer.next_tab_seq))
+  log_dot
+end
+
+# Joins one avatar into the group and gives it 3-6 random traffic-lights. The
+# avatar is one writer, so its tab_seq counts its writes 1, 2, 3...
 def create_avatar(group_id)
   kata_id = saver_post('group_join', { id: group_id })
   files = saver_get('kata_event', { id: kata_id, index: 0 })['files']
   original_hiker = files['hiker.sh']['content']
-  index = 1
+  writer = Writer.new
   rand(LIGHTS_PER_AVATAR).times do
-    index = traffic_light(kata_id, index, files, original_hiker, %w[red amber green].sample)
+    traffic_light(kata_id, files, original_hiker, %w[red amber green].sample, writer)
   end
 end
 

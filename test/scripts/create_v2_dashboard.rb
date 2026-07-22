@@ -1,6 +1,7 @@
 # This has to run inside a docker-container so it can call the dependent services
 
 require 'json'
+require 'securerandom'
 require_relative 'external_differ'
 require_relative 'external_saver'
 
@@ -16,18 +17,20 @@ def create_v2_dashboard
   puts("Kata ID=#{kid}")
   # { index:0, event:created }
 
+  # This kata is one writer (one laptop_id); tab_seq counts its writes 1, 2, 3.
+  laptop_id = SecureRandom.hex(32)
+
   files = manifest['visible_files']
   new_filename = 'wibble.txt'
   files['cyber-dojo.sh']['content'] += '#comment'
-  index = 1
-  index = saver.kata_file_create(kid, index, files, filename=new_filename)
+  saver.kata_file_create(kid, files, new_filename, laptop_id, 1)
   # VIP that new_filename is added only now.
   files[new_filename] = { 'content' => '' }
   # { index:1, event:edit-file, filename:'cyber-dojo.sh'}
   # { index:2, event:create-file, filename:'wibble.txt'}
 
   files[new_filename]['content'] += 'Hello world'
-  index = saver.kata_file_switch(kid, index, files)
+  saver.kata_file_edit(kid, files, laptop_id, 2)
   # { index:3, event:edit-file, filename:'wibble.txt'}
 
   stdout = { 'content' => '', 'truncated' => false }
@@ -39,7 +42,7 @@ def create_v2_dashboard
     predicted: 'none',
     revert_if_wrong: false
   }
-  index = saver.kata_ran_tests(kid, index, files, stdout, stderr, status, summary)
+  saver.kata_ran_tests(kid, files, stdout, stderr, status, summary, laptop_id, 3)
   # { index:4, colour:red }
 
   # index = saver.kata_file_delete(kid, index, files, filename)

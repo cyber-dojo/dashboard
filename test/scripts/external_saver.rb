@@ -40,39 +40,55 @@ class ExternalSaver
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def kata_file_create(id, index, files, filename)
-    @http.post(__method__, { id: id, index: index, files: files, filename: filename })
-  end
-
-  def kata_file_delete(id, index, files, filename)
-    @http.post(__method__, { id: id, index: index, files: files, filename: filename })
-  end
-
-  def kata_file_rename(id, index, files, old_filename, new_filename)
+  def kata_file_create(id, files, filename, laptop_id, tab_seq)
     @http.post(__method__,
     { # rubocop:disable Layout/ArgumentAlignment
       id: id,
-      index: index,
       files: files,
-      old_filename: old_filename,
-      new_filename: new_filename
+      filename: filename,
+      laptop_id: laptop_id,
+      tab_seq: tab_seq
     })
   end
 
-  def kata_file_switch(id, index, files)
-    @http.post(__method__, { id: id, index: index, files: files })
-  end
-
-  def kata_ran_tests(id, index, files, stdout, stderr, status, summary)
+  def kata_file_delete(id, files, filename, laptop_id, tab_seq)
     @http.post(__method__,
     { # rubocop:disable Layout/ArgumentAlignment
       id: id,
-      index: index,
+      files: files,
+      filename: filename,
+      laptop_id: laptop_id,
+      tab_seq: tab_seq
+    })
+  end
+
+  def kata_file_rename(id, files, old_filename, new_filename, laptop_id, tab_seq)
+    @http.post(__method__,
+    { # rubocop:disable Layout/ArgumentAlignment
+      id: id,
+      files: files,
+      old_filename: old_filename,
+      new_filename: new_filename,
+      laptop_id: laptop_id,
+      tab_seq: tab_seq
+    })
+  end
+
+  def kata_file_edit(id, files, laptop_id, tab_seq)
+    @http.post(__method__, { id: id, files: files, laptop_id: laptop_id, tab_seq: tab_seq })
+  end
+
+  def kata_ran_tests(id, files, stdout, stderr, status, summary, laptop_id, tab_seq)
+    @http.post(__method__,
+    { # rubocop:disable Layout/ArgumentAlignment
+      id: id,
       files: files,
       stdout: stdout,
       stderr: stderr,
       status: status,
-      summary: summary
+      summary: summary,
+      laptop_id: laptop_id,
+      tab_seq: tab_seq
     })
   end
 end
