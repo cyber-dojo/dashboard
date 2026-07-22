@@ -4,10 +4,10 @@ require 'net/http'
 
 class ActiveGroupsTest < TestBase
 
-  # Cluster eyxahp is baked into the saver test data (see cluster_tabs_test.rb);
+  # Cluster vntRcc is baked into the saver test data (see cluster_tabs_test.rb);
   # every one of its three child groups has avatars with traffic-lights.
-  BAKED_CLUSTER_ID = 'eyxahp'
-  BAKED_CHILD_IDS = %w[8qTubq 4tSCxB 5NjQeF].freeze
+  BAKED_CLUSTER_ID = 'vntRcc'
+  BAKED_CHILD_IDS = %w[9aZUWE jUgkhB 9bYWLV].freeze
   # A standalone group (in no cluster), also baked in.
   STANDALONE_GROUP_ID = 'LyQpFr'
 
@@ -72,13 +72,17 @@ class ActiveGroupsTest < TestBase
   end
 
   # Runs the kata's tests once (a green traffic-light), giving the avatar a
-  # non-creation event at index 1.
+  # non-creation event. The saver assigns the event's index (head + 1), so no
+  # index is sent. laptop_id/tab_seq are the writer's idempotency key the saver
+  # now requires on every write.
   def give_traffic_light(kata_id)
     files = saver_get('kata_event', { id: kata_id, index: 0 })['files']
     saver_post('kata_ran_tests', {
-                 id: kata_id, index: 1, files: files,
+                 id: kata_id, files: files,
                  stdout: file('2 tests, 0 failures'), stderr: file(''), status: 0,
-                 summary: { 'colour' => 'green', 'predicted' => 'none' }
+                 summary: { 'colour' => 'green', 'predicted' => 'none' },
+                 laptop_id: '02cfdffb5c0c31221b837a153d1108e6cd19fd6cef11db27c8457a1e63caf46f',
+                 tab_seq: 1
                })
   end
 
