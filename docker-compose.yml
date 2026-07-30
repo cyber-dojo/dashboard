@@ -74,6 +74,7 @@ services:
       - differ
       - runner
       - dashboard
+      - spooler
     image: ${CYBER_DOJO_WEB_IMAGE}:${CYBER_DOJO_WEB_TAG}
     platform: linux/amd64
     user: nobody
@@ -113,6 +114,27 @@ services:
     tmpfs:
       - /cyber-dojo:uid=19663,gid=65533
       - /tmp:uid=19663,gid=65533
+
+  # web's async write path. web POSTs its event writes (kata_file_create ...
+  # kata_checked_out) to the spooler, which durably buffers them and drains
+  # them on to the saver in tab_seq order. Without it those writes never reach
+  # the saver, so a traffic-light shows in the browser but vanishes on refresh
+  # (and never appears in the dashboard). web reaches it at hostname 'spooler'
+  # on CYBER_DOJO_SPOOLER_PORT (in .env). It buffers into its own /sqlite
+  # volume, owned by uid 19664 (the spooler user), separate from the saver's
+  # /cyber-dojo.
+  spooler:
+    image: ${CYBER_DOJO_SPOOLER_IMAGE}:${CYBER_DOJO_SPOOLER_TAG}
+    platform: linux/amd64
+    user: spooler
+    env_file: [ .env ]
+    read_only: true
+    restart: no
+    depends_on:
+      - saver
+    tmpfs:
+      - /sqlite:uid=19664,gid=65533
+      - /tmp
 
   creator:
     depends_on:
