@@ -18,6 +18,7 @@ class App < AppBase
   get '/show/:id', provides: [:html] do
     @id = params[:id]
     resolve_group_and_tabs
+    redirect(cluster_url) if @cluster_id && @cluster_id != @id
     respond_to do |wants|
       wants.html do
         erb :show
@@ -99,6 +100,8 @@ class App < AppBase
 
   # Resolves the shared id in @id (a kata, group or cluster id) up to the
   # topmost entity and decides how the page renders it:
+  # - @cluster_id is the cluster the id belongs to (nil for a standalone group);
+  #   it is the id the URL is canonicalised onto.
   # - @group_id is the child group whose avatars are shown first (cd.groupId()).
   # - @tabs is one entry per child group of a cluster (id + LTF display_name);
   #   it is empty for a standalone group, so today's single view is unchanged.
@@ -114,17 +117,30 @@ class App < AppBase
       @tabs = groups.map do |group_id, manifest|
         { 'id' => group_id, 'display_name' => manifest['display_name'] }
       end
+      @cluster_id = cluster['id']
       @group_id = active_child_id(group)
     else
+      @cluster_id = nil
       @tabs = []
       @group_id = group ? group['id'] : @id
     end
   rescue StandardError
     # Resolving is best-effort: if the id resolves to nothing (or the saver is
-    # unreachable), render as a standalone group keyed on the given id - today's
-    # behaviour - and let the per-child fetches surface any error, as before.
+    # unreachable), render as a standalone group keyed on the given id, and let
+    # the per-child fetches surface any error.
+    @cluster_id = nil
     @tabs = []
     @group_id = @id
+  end
+
+  # The canonical URL of the cluster the requested id sits in: the cluster's own
+  # /show URL, carrying the resolved child group as ?group_id= so the same tab
+  # stays active, and keeping every other query param (eg sort_by). Browsers
+  # reach this app through nginx, which strips the /dashboard prefix, so the
+  # prefix is put back here - as layout.erb does for the asset paths.
+  def cluster_url
+    query = request.params.merge('group_id' => @group_id)
+    "/dashboard/show/#{@cluster_id}?#{Rack::Utils.build_query(query)}"
   end
 
   # Picks which child group of a cluster is the initially-active tab. A

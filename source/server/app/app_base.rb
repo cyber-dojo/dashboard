@@ -38,6 +38,19 @@ class AppBase < Sinatra::Base
   silently { register Sinatra::Contrib }
   set :port, ENV.fetch('PORT', nil)
 
+  # Encode json() responses with the stdlib JSON module. Sinatra::Contrib's own
+  # default encoder is the legacy MultiJson constant, and its encoder lookup
+  # prefers :encode over :generate - multi_json warns about both, putting two
+  # deprecation lines on stderr. ::JSON responds only to :generate, so the
+  # encoded output is unchanged and nothing is written to stderr.
+  set :json_encoder, ::JSON
+
+  # Send redirects as a path, not a full URL. nginx fronts this app and
+  # terminates TLS, so the scheme and host Sinatra sees are its own (http, the
+  # container) not the ones the browser used; a path Location leaves the browser
+  # to keep its own scheme and host.
+  set :absolute_redirects, false
+
   # Permit all Host headers; nginx fronts this app and validates Host. Without
   # this, Sinatra's development-mode host authorization rejects any Host that is
   # not localhost/.test (eg Rack::Test's example.org) with 'Host not permitted'.

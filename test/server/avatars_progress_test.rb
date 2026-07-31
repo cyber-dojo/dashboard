@@ -1,5 +1,5 @@
 require_relative 'test_base'
-require_relative '../data/cyber-dojo/kata_test_data'
+require_relative '../data/cyber-dojo/kata_ids'
 require_source 'helpers/gatherer'
 require_source 'helpers/avatars_progress'
 
@@ -16,7 +16,7 @@ class AvatarsProgressTest < TestBase
     @params = { id: V0_GROUP_ID }
     expected = [
       {
-        id: 'k5ZTk0',
+        id: V0_KATA_ID,
         avatar_index: 11,
         colour: :green,
         progress: ''
@@ -32,7 +32,7 @@ class AvatarsProgressTest < TestBase
     @params = { id: V1_GROUP_ID }
     expected = [
       {
-        id: 'rUqcey',
+        id: V1_KATA_ID,
         avatar_index: 26,
         colour: :green,
         progress: 'OK'
