@@ -26,12 +26,12 @@ class ClusterTabsTest < TestBase
   end
 
   test 'c1u5b2', %w(
-  | a non-first child-group id inside a cluster resolves up to the cluster,
-  | and that given child is the active tab (line 83 group-present side)
+  | a child-group id inside a cluster redirects to the cluster's own URL,
+  | carrying that child as group_id so it stays the active tab
   ) do
-    html = show_html('9bYWLV')
-    assert_includes html, 'id="cluster-tabs"', html
-    assert_equal '9bYWLV', active_tab_id(html), html
+    get '/show/9bYWLV', {}, { 'HTTP_ACCEPT' => 'text/html' }
+    assert status?(302), "status=#{status}"
+    assert_equal "/dashboard/show/#{CLUSTER_ID}?group_id=9bYWLV", redirect_location
   end
 
   test 'c1u5b3', %w(
@@ -59,7 +59,21 @@ class ClusterTabsTest < TestBase
     assert_equal '9aZUWE', active_tab_id(html), html
   end
 
+  test 'c1u5b6', %w(
+  | the redirect to the cluster URL keeps the other query params, so eg a
+  | chosen sort survives the hop
+  ) do
+    get '/show/9bYWLV', { sort_by: 'lights' }, { 'HTTP_ACCEPT' => 'text/html' }
+    assert status?(302), "status=#{status}"
+    assert_equal "/dashboard/show/#{CLUSTER_ID}?sort_by=lights&group_id=9bYWLV", redirect_location
+  end
+
   private
+
+  # The Location header of the last response.
+  def redirect_location
+    last_response.headers['Location']
+  end
 
   # GETs /show/<id> as html, asserts a 200, and returns the response body.
   def show_html(id, params = {})
