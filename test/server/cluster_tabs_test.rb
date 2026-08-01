@@ -68,7 +68,29 @@ class ClusterTabsTest < TestBase
     assert_equal "/dashboard/show/#{CLUSTER_ID}?sort_by=lights&group_id=9bYWLV", redirect_location
   end
 
+  # - - - - - - - - - - - - - - - - -
+
+  test 'c1u5b7', %w(
+  | an id resolving to neither a cluster nor a group - a standalone kata - is
+  | rendered as a single group keyed on the requested id itself, with no tabs
+  ) do
+    saver = KataOnlyChainSaver.new
+    externals.instance_exec { @saver = saver }
+
+    html = show_html('kAtA01')
+    assert_includes html, 'let _groupId = "kAtA01";', html
+    assert_includes html, 'cd.tabs = () => [];', html
+  end
+
   private
+
+  # Stands in for the saver, answering an id-chain holding neither a cluster nor
+  # a group, which is what a standalone kata resolves to.
+  class KataOnlyChainSaver
+    def id_chain(id)
+      [{ 'type' => 'kata', 'id' => id }]
+    end
+  end
 
   # The Location header of the last response.
   def redirect_location

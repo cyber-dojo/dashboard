@@ -5,9 +5,11 @@ class ExternalHttp
     KLASS::Get.new(uri)
   end
 
+  # :nocov: post is called only by the fixture scripts in test/scripts
   def post(uri)
     KLASS::Post.new(uri)
   end
+  # :nocov:
 
   def start(hostname, port, req)
     KLASS.start(hostname, port) do |http|

@@ -13,10 +13,12 @@ module HttpJsonHash
       unpacked(response.body, path.to_s, args)
     end
 
+    # :nocov: post is called only by the fixture scripts in test/scripts
     def post(path, args)
       response = @requester.post(path, args)
       unpacked(response.body, path.to_s, args)
     end
+    # :nocov:
 
     private
 

@@ -1,5 +1,11 @@
 # This has to run inside a docker-container so it can call the dependent services
 
+# This script is the only caller of the post half of the app's http chain:
+# ExternalHttp#post, HttpJsonHash::Requester#post and
+# HttpJsonHash::Unpacker#post. The dashboard itself only reads from the saver,
+# so those three methods are live code that no test exercises, and they carry
+# :nocov: markers pointing back here.
+
 require 'json'
 require 'securerandom'
 require_relative 'external_differ'
