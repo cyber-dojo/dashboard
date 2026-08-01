@@ -3,10 +3,6 @@ AllCops:
   Exclude:
     - test/**/*
 
-Lint/IneffectiveAccessModifier:
-  Exclude:
-    - source/server/app/app_base.rb
-
 Metrics/AbcSize:
   Exclude:
     - source/server/app/app.rb

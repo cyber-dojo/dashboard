@@ -71,8 +71,6 @@ class AppBase < Sinatra::Base
     send_file "#{ASSETS_DIR}/app.js"
   end
 
-  private
-
   def self.get_delegate(klass, name)
     get "/#{name}", provides: [:json] do
       respond_to do |format|
@@ -85,29 +83,6 @@ class AppBase < Sinatra::Base
     end
   end
 
-  def json_args
-    symbolized(json_payload)
-  end
-
-  def symbolized(h)
-    # named-args require symbolization
-    h.transform_keys(&:to_sym)
-  end
-
-  def json_payload
-    request.body.rewind
-    json_hash_parse(request.body.read)
-  end
-
-  def json_hash_parse(body)
-    json = body === '' ? {} : JSON.parse!(body)
-    raise 'body is not JSON Hash' unless json.instance_of?(Hash)
-
-    json
-  rescue JSON::ParserError
-    raise 'body is not JSON'
-  end
-
   set :show_exceptions, false
 
   error do
@@ -118,7 +93,7 @@ class AppBase < Sinatra::Base
       exception: {
         request: {
           path: request.path,
-          body: request.body.read
+          body: request.body&.read
         },
         backtrace: error.backtrace
       }
