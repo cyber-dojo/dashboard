@@ -3,6 +3,17 @@ AllCops:
   Exclude:
     - test/**/*
 
+# Rubocop's default of 120 is far longer than this codebase needs. Long lines
+# here come from long identifiers rather than dense logic, so they gain nothing
+# from the extra room.
+#
+# This also works with Style/IfUnlessModifier, which demands the one-line
+# modifier form whenever it fits inside this Max, so the ceiling is what pushes
+# a long "do_something(...) if condition" out into an if/end block, the more
+# readable shape once the line gets long.
+Layout/LineLength:
+  Max: 80
+
 Metrics/AbcSize:
   Exclude:
     - source/server/app/app.rb

@@ -9,16 +9,16 @@ require 'digest'
 module DashboardApp
   class AppBase < Sinatra::Base
     # Compiled assets live in ${APP_DIR}/assets, a sibling of source/, populated
-    # by the Dockerfile from the asset_builder stage, which keeps the precompiled
-    # app.css/app.js out of the repo tree.
+    # by the Dockerfile from the asset_builder stage, which keeps the
+    # precompiled app.css/app.js out of the repo tree.
     ASSETS_DIR = "#{ENV.fetch('APP_DIR')}/assets".freeze
 
-    # Returns the public URL path for a compiled asset, fingerprinted with a short
-    # hash of its content, eg "/assets/app-1a2b3c4d.css". Embedding the hash in the
-    # path gives each version a unique URL, so it can be cached immutably for a
-    # year; browsers then serve it from cache instead of re-pulling it on every
-    # page navigation through nginx's rate-limited /dashboard/ zone (which
-    # previously tripped a 429).
+    # Returns the public URL path for a compiled asset, fingerprinted with a
+    # short hash of its content, eg "/assets/app-1a2b3c4d.css". Embedding the
+    # hash in the path gives each version a unique URL, so it can be cached
+    # immutably for a year; browsers then serve it from cache instead of
+    # re-pulling it on every page navigation through nginx's rate-limited
+    # /dashboard/ zone (which previously tripped a 429).
     def self.asset_path(filename)
       src  = "#{ASSETS_DIR}/#{filename}"
       hash = Digest::SHA256.file(src).hexdigest[0, 8]
@@ -39,22 +39,24 @@ module DashboardApp
     silently { register Sinatra::Contrib }
     set :port, ENV.fetch('PORT', nil)
 
-    # Encode json() responses with the stdlib JSON module. Sinatra::Contrib's own
-    # default encoder is the legacy MultiJson constant, and its encoder lookup
-    # prefers :encode over :generate - multi_json warns about both, putting two
-    # deprecation lines on stderr. ::JSON responds only to :generate, so the
-    # encoded output is unchanged and nothing is written to stderr.
+    # Encode json() responses with the stdlib JSON module. Sinatra::Contrib's
+    # own default encoder is the legacy MultiJson constant, and its encoder
+    # lookup prefers :encode over :generate - multi_json warns about both,
+    # putting two deprecation lines on stderr. ::JSON responds only to
+    # :generate, so the encoded output is unchanged and nothing is written to
+    # stderr.
     set :json_encoder, ::JSON
 
     # Send redirects as a path, not a full URL. nginx fronts this app and
     # terminates TLS, so the scheme and host Sinatra sees are its own (http, the
-    # container) not the ones the browser used; a path Location leaves the browser
-    # to keep its own scheme and host.
+    # container) not the ones the browser used; a path Location leaves the
+    # browser to keep its own scheme and host.
     set :absolute_redirects, false
 
     # Permit all Host headers; nginx fronts this app and validates Host. Without
-    # this, Sinatra's development-mode host authorization rejects any Host that is
-    # not localhost/.test (eg Rack::Test's example.org) with 'Host not permitted'.
+    # this, Sinatra's development-mode host authorization rejects any Host that
+    # is not localhost/.test (eg Rack::Test's example.org) with 'Host not
+    # permitted'.
     set :host_authorization, {}
 
     # - - - - - - - - - - - - - - - -

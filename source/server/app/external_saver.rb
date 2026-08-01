@@ -39,7 +39,8 @@ module DashboardApp
     end
 
     def diff_summary(id, was_index, now_index)
-      @http.get(__method__, { id: id, was_index: was_index, now_index: now_index })
+      @http.get(__method__,
+                { id: id, was_index: was_index, now_index: now_index })
     end
   end
 end
