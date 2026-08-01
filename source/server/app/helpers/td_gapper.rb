@@ -140,7 +140,9 @@ module DashboardApp
 
       empty_column = ->(td) { gapped.all? { |_, h| h[td] == [] } }
       collapsed_column = ->(td) { gapped.all? { |_, h| h[td].is_a?(Hash) } }
-      lightless_column = ->(td) { empty_column.call(td) || collapsed_column.call(td) }
+      lightless_column = lambda do |td|
+        empty_column.call(td) || collapsed_column.call(td)
+      end
       delete_column = ->(td) { gapped.each_value { |h| h.delete(td) } }
 
       kata_id = gapped.keys[0]

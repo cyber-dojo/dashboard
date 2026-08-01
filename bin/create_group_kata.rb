@@ -2,7 +2,8 @@
 
 # Connects to the saver (its port is exposed to the host) and creates a v2
 # group kata: Bash, bats / Fizz Buzz, with 16 avatars joined.
-# Each avatar gets a random number of test runs with random traffic-light colours.
+# Each avatar gets a random number of test runs with random traffic-light
+# colours.
 # Prints the group ID on completion.
 
 require 'json'
@@ -95,15 +96,35 @@ TEXT
 RED_STDOUT = "1..4\nnot ok 1 1 gives 1\n" \
              "# (in test file ./test_hiker.sh, line 6)\n" \
              "#   `[ \"$(fizz_buzz 1)\" = \"1\" ]' failed\n" \
-             "ok 2 3 gives Fizz\nok 3 5 gives Buzz\nok 4 15 gives FizzBuzz\n\n4 tests, 1 failure"
+             "ok 2 3 gives Fizz\nok 3 5 gives Buzz\n" \
+             "ok 4 15 gives FizzBuzz\n\n4 tests, 1 failure"
 
 GREEN_STDOUT = "1..4\nok 1 1 gives 1\nok 2 3 gives Fizz\nok 3 5 gives Buzz\n" \
                "ok 4 15 gives FizzBuzz\n\n4 tests, 0 failures"
 
-HIKER_LINE_FOR = { 'red' => RED_LINE, 'amber' => AMBER_LINE, 'green' => GREEN_LINE }.freeze
-STDOUT_FOR     = { 'red' => RED_STDOUT, 'amber' => '', 'green' => GREEN_STDOUT }.freeze
-STDERR_FOR     = { 'red' => '', 'amber' => "./hiker.sh: line 10: `${n': bad substitution", 'green' => '' }.freeze
-STATUS_FOR     = { 'red' => 1, 'amber' => 1, 'green' => 0 }.freeze
+HIKER_LINE_FOR = {
+  'red' => RED_LINE,
+  'amber' => AMBER_LINE,
+  'green' => GREEN_LINE
+}.freeze
+
+STDOUT_FOR = {
+  'red' => RED_STDOUT,
+  'amber' => '',
+  'green' => GREEN_STDOUT
+}.freeze
+
+STDERR_FOR = {
+  'red' => '',
+  'amber' => "./hiker.sh: line 10: `${n': bad substitution",
+  'green' => ''
+}.freeze
+
+STATUS_FOR = {
+  'red' => 1,
+  'amber' => 1,
+  'green' => 0
+}.freeze
 
 MANIFEST = {
   'display_name' => 'Bash, bats',
@@ -190,22 +211,29 @@ class Writer
 end
 
 def traffic_light(id, files, original_hiker, hue, writer)
-  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
-  saver_post('kata_ran_tests', ran_tests_args(id, files, hue, writer.laptop_id, writer.next_tab_seq))
+  files['hiker.sh']['content'] =
+    original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
+  args = ran_tests_args(id, files, hue, writer.laptop_id, writer.next_tab_seq)
+  saver_post('kata_ran_tests', args)
   log_dot
 end
 
 COMMENT_LINE = '# ...'
 
 # Each edit is a distinct write, so the writer's tab_seq advances per edit.
+# Appends a comment to the named file and posts that edit as one write.
+def append_comment(id, files, filename, writer)
+  files[filename]['content'] += "#{COMMENT_LINE}\n"
+  saver_post('kata_file_edit',
+             { id: id, files: files,
+               laptop_id: writer.laptop_id, tab_seq: writer.next_tab_seq })
+  log_dot
+end
+
 def extra_file_edits(id, files, writer)
   rand(1..2).times do
-    files['hiker.sh']['content'] += "#{COMMENT_LINE}\n"
-    saver_post('kata_file_edit', { id: id, files: files, laptop_id: writer.laptop_id, tab_seq: writer.next_tab_seq })
-    log_dot
-    files['test_hiker.sh']['content'] += "#{COMMENT_LINE}\n"
-    saver_post('kata_file_edit', { id: id, files: files, laptop_id: writer.laptop_id, tab_seq: writer.next_tab_seq })
-    log_dot
+    append_comment(id, files, 'hiker.sh', writer)
+    append_comment(id, files, 'test_hiker.sh', writer)
   end
 end
 
@@ -216,7 +244,8 @@ def rag_cycle(id, files, original_hiker, writer)
   end
 end
 
-# One avatar is one writer; its tab_seq counts every write across all its cycles.
+# One avatar is one writer; its tab_seq counts every write across all its
+# cycles.
 def create_avatar(gid, count)
   id = saver_post('group_join', { id: gid })
   files = saver_get('kata_event', { id: id, index: 0 })['files']

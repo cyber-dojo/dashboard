@@ -49,7 +49,8 @@ def random_gap(index)
 end
 
 def time_array(time)
-  [time.year, time.month, time.day, time.hour, time.min, time.sec, rand(1_000_000)]
+  [time.year, time.month, time.day,
+   time.hour, time.min, time.sec, rand(1_000_000)]
 end
 
 def rewrite_events(raw, avatar_start)

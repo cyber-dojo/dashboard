@@ -104,10 +104,29 @@ RED_STDOUT = "1..2\nnot ok 1 1 gives 1\n" \
 
 GREEN_STDOUT = "1..2\nok 1 1 gives 1\nok 2 3 gives Fizz\n\n2 tests, 0 failures"
 
-HIKER_LINE_FOR = { 'red' => RED_LINE, 'amber' => AMBER_LINE, 'green' => GREEN_LINE }.freeze
-STDOUT_FOR     = { 'red' => RED_STDOUT, 'amber' => '', 'green' => GREEN_STDOUT }.freeze
-STDERR_FOR     = { 'red' => '', 'amber' => "./hiker.sh: line 10: `${n': bad substitution", 'green' => '' }.freeze
-STATUS_FOR     = { 'red' => 1, 'amber' => 1, 'green' => 0 }.freeze
+HIKER_LINE_FOR = {
+  'red' => RED_LINE,
+  'amber' => AMBER_LINE,
+  'green' => GREEN_LINE
+}.freeze
+
+STDOUT_FOR = {
+  'red' => RED_STDOUT,
+  'amber' => '',
+  'green' => GREEN_STDOUT
+}.freeze
+
+STDERR_FOR = {
+  'red' => '',
+  'amber' => "./hiker.sh: line 10: `${n': bad substitution",
+  'green' => ''
+}.freeze
+
+STATUS_FOR = {
+  'red' => 1,
+  'amber' => 1,
+  'green' => 0
+}.freeze
 
 # The manifest fields shared by every LTF; only display_name, visible_files and
 # (optionally) progress_regexs differ per child group.
@@ -206,8 +225,11 @@ end
 # Runs the tests once for the writer, having substituted hiker.sh to produce
 # the given colour.
 def traffic_light(kata_id, files, original_hiker, hue, writer)
-  files['hiker.sh']['content'] = original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
-  saver_post('kata_ran_tests', ran_tests_args(kata_id, files, hue, writer.laptop_id, writer.next_tab_seq))
+  files['hiker.sh']['content'] =
+    original_hiker.sub(GREEN_LINE, HIKER_LINE_FOR[hue])
+  args = ran_tests_args(kata_id, files, hue, writer.laptop_id,
+                        writer.next_tab_seq)
+  saver_post('kata_ran_tests', args)
   log_dot
 end
 
@@ -219,7 +241,8 @@ def create_avatar(group_id)
   original_hiker = files['hiker.sh']['content']
   writer = Writer.new
   rand(LIGHTS_PER_AVATAR).times do
-    traffic_light(kata_id, files, original_hiker, %w[red amber green].sample, writer)
+    hue = %w[red amber green].sample
+    traffic_light(kata_id, files, original_hiker, hue, writer)
   end
 end
 

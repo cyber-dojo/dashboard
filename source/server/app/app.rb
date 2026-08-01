@@ -47,7 +47,8 @@ module DashboardApp
           id = params[:id]
           was_index = params[:was_index].to_i
           now_index = params[:now_index].to_i
-          json({ diff_summary: externals.saver.diff_summary(id, was_index, now_index) })
+          summary = externals.saver.diff_summary(id, was_index, now_index)
+          json({ diff_summary: summary })
         end
       end
     end
@@ -101,9 +102,10 @@ module DashboardApp
 
     # Resolves the shared id in @id (a kata, group or cluster id) up to the
     # topmost entity and decides how the page renders it:
-    # - @cluster_id is the cluster the id belongs to (nil for a standalone group);
-    #   it is the id the URL is canonicalised onto.
-    # - @group_id is the child group whose avatars are shown first (cd.groupId()).
+    # - @cluster_id is the cluster the id belongs to (nil for a standalone
+    #   group); it is the id the URL is canonicalised onto.
+    # - @group_id is the child group whose avatars are shown first
+    #   (cd.groupId()).
     # - @tabs is one entry per child group of a cluster (id + LTF display_name);
     #   it is empty for a standalone group, so today's single view is unchanged.
     # A cluster shows one tab per child group (duplicate-LTF children each get
@@ -127,18 +129,18 @@ module DashboardApp
       end
     rescue StandardError
       # Resolving is best-effort: if the id resolves to nothing (or the saver is
-      # unreachable), render as a standalone group keyed on the given id, and let
-      # the per-child fetches surface any error.
+      # unreachable), render as a standalone group keyed on the given id, and
+      # let the per-child fetches surface any error.
       @cluster_id = nil
       @tabs = []
       @group_id = @id
     end
 
-    # The canonical URL of the cluster the requested id sits in: the cluster's own
-    # /show URL, carrying the resolved child group as ?group_id= so the same tab
-    # stays active, and keeping every other query param (eg sort_by). Browsers
-    # reach this app through nginx, which strips the /dashboard prefix, so the
-    # prefix is put back here - as layout.erb does for the asset paths.
+    # The canonical URL of the cluster the requested id sits in: the cluster's
+    # own /show URL, carrying the resolved child group as ?group_id= so the same
+    # tab stays active, and keeping every other query param (eg sort_by).
+    # Browsers reach this app through nginx, which strips the /dashboard prefix,
+    # so the prefix is put back here - as layout.erb does for the asset paths.
     def cluster_url
       query = request.params.merge('group_id' => @group_id)
       "/dashboard/show/#{@cluster_id}?#{Rack::Utils.build_query(query)}"
@@ -195,7 +197,9 @@ module DashboardApp
         colour: light.colour,
         time: light.time_a
       }
-      element['predicted'] = light.predicted if light.predicted && light.predicted != 'none'
+      if light.predicted && light.predicted != 'none'
+        element['predicted'] = light.predicted
+      end
       element['revert'] = light.revert if light.revert
       element['checkout'] = light.checkout if light.checkout
       element['filename'] = light.filename if light.filename
