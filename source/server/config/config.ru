@@ -10,5 +10,5 @@ end
 
 require_relative '../app/app'
 require_relative '../app/externals'
-externals = Externals.new
-run App.new(externals)
+externals = DashboardApp::Externals.new
+run DashboardApp::App.new(externals)

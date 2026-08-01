@@ -6,6 +6,11 @@ require_source 'externals'
 class TestBase < Id58TestBase
   include Rack::Test::Methods
 
+  # The server app lives in the DashboardApp namespace. Including it here puts
+  # that module in the ancestor chain of every test class, so tests name App,
+  # Externals, TdGapper and friends unqualified.
+  include DashboardApp
+
   def app
     App.new(externals)
   end

@@ -7,7 +7,7 @@ class ExternalDiffer
   def initialize
     hostname = 'differ'
     port = ENV.fetch('CYBER_DOJO_DIFFER_PORT')
-    @http = HttpJsonHash.service(self.class.name, ExternalHttp.new, hostname, port)
+    @http = DashboardApp::HttpJsonHash.service(self.class.name, DashboardApp::ExternalHttp.new, hostname, port)
   end
 
   def diff_lines(id, was_index, now_index)
