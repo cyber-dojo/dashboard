@@ -25,7 +25,7 @@ class ErrorHandlerTest < TestBase
     service = exception['http_service']
     assert_equal %w[args body message name path], service.keys.sort, service
     assert_equal 'diff_summary', service['path'], service
-    assert_equal 'ExternalSaver', service['name'], service
+    assert_equal 'DashboardApp::ExternalSaver', service['name'], service
     assert_equal 'xxxx', service['body'], service
     assert_equal({ 'id' => GROUP_ID, 'was_index' => 1, 'now_index' => 2 },
                  service['args'], service)

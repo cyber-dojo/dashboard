@@ -7,7 +7,7 @@ class ExternalSaver
   def initialize
     hostname = 'saver'
     port = ENV.fetch('CYBER_DOJO_SAVER_PORT')
-    @http = HttpJsonHash.service(self.class.name, ExternalHttp.new, hostname, port)
+    @http = DashboardApp::HttpJsonHash.service(self.class.name, DashboardApp::ExternalHttp.new, hostname, port)
   end
 
   def ready?

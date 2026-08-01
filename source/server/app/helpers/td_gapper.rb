@@ -1,171 +1,173 @@
-class TdGapper
-  def initialize(start, seconds_per_td, max_seconds_uncollapsed)
-    @start = start
-    @seconds_per_td = seconds_per_td
-    @max_seconds_uncollapsed = max_seconds_uncollapsed
-  end
+module DashboardApp
+  class TdGapper
+    def initialize(start, seconds_per_td, max_seconds_uncollapsed)
+      @start = start
+      @seconds_per_td = seconds_per_td
+      @max_seconds_uncollapsed = max_seconds_uncollapsed
+    end
 
-  def fully_gapped(all_lights, now)
-    s = stats(all_lights, now)
-    vertical_bleed(s)
-    collapsed_table(s[:td_nos]).each do |td, gi|
-      count = gi[1]
-      s[:katas].each_value do |td_map|
-        count.times { |n| td_map[td + n + 1] = [] } if gi[0] == :dont_collapse
-        td_map[td + 1] = { collapsed: count } if gi[0] == :collapse
+    def fully_gapped(all_lights, now)
+      s = stats(all_lights, now)
+      vertical_bleed(s)
+      collapsed_table(s[:td_nos]).each do |td, gi|
+        count = gi[1]
+        s[:katas].each_value do |td_map|
+          count.times { |n| td_map[td + n + 1] = [] } if gi[0] == :dont_collapse
+          td_map[td + 1] = { collapsed: count } if gi[0] == :collapse
+        end
       end
+      # eg
+      # s[:katas] == {
+      #   'de535Z' => {
+      #       0 => [],
+      #       5 => [R,G],
+      #       7 => [],
+      #      11 => [G,R],
+      #      99 => []
+      #   },
+      #   '3s1BqT' => {
+      #       0 => [],
+      #       5 => [A],
+      #       7 => [G,A],
+      #      11 => [],
+      #      99 => []
+      #   }
+      # }
+      #
+      # eg
+      # collapsed_table == {
+      #    0 => [ :collapse,       4 ],  #  4 == ( 5- 0) - 1
+      #    5 => [ :dont_collapse,  1 ],  #  1 == ( 7- 5) - 1
+      #    7 => [ :dont_collapse,  3 ],  #  3 == (11- 7) - 1
+      #   11 => [ :collapse,      87 ]   # 87 == (99-11) - 1
+      # }
+      # so td_map[] additions are
+      #    0: 0+1    1 => { collapsed:4 }
+      #    5: 5+0+1  6 => []
+      #    7: 7+0+1  8 => []
+      #    7: 7+1+1  9 => []
+      #    7: 7+2+1 10 => []
+      #   11: 11+1  12 => { collapsed:87 }
+      #
+      # so td_map becomes
+      #          0   1        5      6   7     8   9   10   11    12
+      # 'de535Z' []  {c'd:4}  [R,G]  []  []    []  []  []   [G,R] {c'd:87},
+      # '3s1BqT' []  {c'd:4}  [A]    []  [G,A] []  []  []   []    {c'd:87}
+
+      strip(s[:katas])
     end
-    # eg
-    # s[:katas] == {
-    #   'de535Z' => {
-    #       0 => [],
-    #       5 => [R,G],
-    #       7 => [],
-    #      11 => [G,R],
-    #      99 => []
-    #   },
-    #   '3s1BqT' => {
-    #       0 => [],
-    #       5 => [A],
-    #       7 => [G,A],
-    #      11 => [],
-    #      99 => []
-    #   }
-    # }
-    #
-    # eg
-    # collapsed_table == {
-    #    0 => [ :collapse,       4 ],  #  4 == ( 5- 0) - 1
-    #    5 => [ :dont_collapse,  1 ],  #  1 == ( 7- 5) - 1
-    #    7 => [ :dont_collapse,  3 ],  #  3 == (11- 7) - 1
-    #   11 => [ :collapse,      87 ]   # 87 == (99-11) - 1
-    # }
-    # so td_map[] additions are
-    #    0: 0+1    1 => { collapsed:4 }
-    #    5: 5+0+1  6 => []
-    #    7: 7+0+1  8 => []
-    #    7: 7+1+1  9 => []
-    #    7: 7+2+1 10 => []
-    #   11: 11+1  12 => { collapsed:87 }
-    #
-    # so td_map becomes
-    #          0   1        5      6   7     8   9   10   11    12
-    # 'de535Z' []  {c'd:4}  [R,G]  []  []    []  []  []   [G,R] {c'd:87},
-    # '3s1BqT' []  {c'd:4}  [A]    []  [G,A] []  []  []   []    {c'd:87}
 
-    strip(s[:katas])
-  end
+    def time_ticks(gapped)
+      return {} if gapped == {}
 
-  def time_ticks(gapped)
-    return {} if gapped == {}
-
-    ticks = {}
-    kata_id = gapped.keys.sample
-    gapped[kata_id].each do |td, content|
-      ticks[td] = if content.is_a?(Array)
-                    (td + 1) * @seconds_per_td
-                  else
-                    content # { collapsed:N }
-                  end
-    end
-    ticks
-  end
-
-  def stats(all_lights, now)
-    obj = { katas: {}, td_nos: [0, n(now)] }
-    # eg td_nos: [0,99]
-    all_lights.each do |kata_id, lights|
-      an = obj[:katas][kata_id] = {}
-      lights.each do |light|
-        tdn = number(light)
-        an[tdn] ||= []
-        an[tdn] << light
-        obj[:td_nos] << tdn
+      ticks = {}
+      kata_id = gapped.keys.sample
+      gapped[kata_id].each do |td, content|
+        ticks[td] = if content.is_a?(Array)
+                      (td + 1) * @seconds_per_td
+                    else
+                      content # { collapsed:N }
+                    end
       end
+      ticks
     end
-    obj[:td_nos].sort!.uniq!
-    obj
-    # eg katas: {
-    #     'de535Z' => { 5=>[R,G], 11=[G,R] },
-    #     '3s1BqT' => { 5=>[A],   7=>[G,A] }
-    #   }
-    # eg td_nos: [ 0,5,7,11,99 ]
-  end
 
-  def vertical_bleed(s)
-    s[:td_nos].each do |n|
-      s[:katas].each_value do |td_map|
-        td_map[n] ||= []
+    def stats(all_lights, now)
+      obj = { katas: {}, td_nos: [0, n(now)] }
+      # eg td_nos: [0,99]
+      all_lights.each do |kata_id, lights|
+        an = obj[:katas][kata_id] = {}
+        lights.each do |light|
+          tdn = number(light)
+          an[tdn] ||= []
+          an[tdn] << light
+          obj[:td_nos] << tdn
+        end
       end
+      obj[:td_nos].sort!.uniq!
+      obj
+      # eg katas: {
+      #     'de535Z' => { 5=>[R,G], 11=[G,R] },
+      #     '3s1BqT' => { 5=>[A],   7=>[G,A] }
+      #   }
+      # eg td_nos: [ 0,5,7,11,99 ]
     end
-    # eg katas: {
-    #     'de535Z' => { 0=>[], 5=>[R,G], 7=>[],    11=[G,R], 99=>[] },
-    #     '3s1BqT' => { 0=>[], 5=>[A],   7=>[G,A], 11=>[],   99=>[] }
-    #   }
-  end
 
-  def collapsed_table(td_nos)
-    max_uncollapsed_tds = @max_seconds_uncollapsed / @seconds_per_td
-    obj = {}
-    td_nos.each_cons(2) do |p|
-      diff = p[1] - p[0]
-      key = diff < max_uncollapsed_tds ? :dont_collapse : :collapse
-      obj[p[0]] = [key, diff - 1]
+    def vertical_bleed(s)
+      s[:td_nos].each do |n|
+        s[:katas].each_value do |td_map|
+          td_map[n] ||= []
+        end
+      end
+      # eg katas: {
+      #     'de535Z' => { 0=>[], 5=>[R,G], 7=>[],    11=[G,R], 99=>[] },
+      #     '3s1BqT' => { 0=>[], 5=>[A],   7=>[G,A], 11=>[],   99=>[] }
+      #   }
     end
-    obj
-    # eg td_nos: [ 0,5,7,8,11,99 ]
-    # eg max_uncollapsed_tds = 240/60 == 4
-    # each_cons(2)
-    #   p[0]  p[1]  diff
-    #   - - - - - - - -
-    #   0     5     5       5<4==false  :collapse
-    #   5     7     2       2<4==true   :dont_collapse
-    #   7     8     1       1<4==true   :dont_collapse
-    #   8    11     3       3<4==true   :dont_collapse
-    #   11   99    88      88<4==false  :collapse
-    #
-    # obj: {
-    #    0 => [ :collapse,       4 ],  # ( 5- 0)-1
-    #    5 => [ :dont_collapse,  1 ],  # ( 7- 5)-1
-    #    7 => [ :dont_collapse,  0 ],  # ( 8- 7)-0
-    #    8 => [ :dont_collapse,  2 ],  # (11- 8)-1
-    #   11 => [ :collapse,      87 ]   # (99-11)-1
-    # }
-  end
 
-  def strip(gapped)
-    # remove lightless columns from both ends
-    return gapped if gapped == {}
-
-    empty_column = ->(td) { gapped.all? { |_, h| h[td] == [] } }
-    collapsed_column = ->(td) { gapped.all? { |_, h| h[td].is_a?(Hash) } }
-    lightless_column = ->(td) { empty_column.call(td) || collapsed_column.call(td) }
-    delete_column = ->(td) { gapped.each_value { |h| h.delete(td) } }
-
-    kata_id = gapped.keys[0]
-    gapped[kata_id].keys.sort.reverse_each do |td|
-      break unless lightless_column.call(td)
-
-      delete_column.call(td)
+    def collapsed_table(td_nos)
+      max_uncollapsed_tds = @max_seconds_uncollapsed / @seconds_per_td
+      obj = {}
+      td_nos.each_cons(2) do |p|
+        diff = p[1] - p[0]
+        key = diff < max_uncollapsed_tds ? :dont_collapse : :collapse
+        obj[p[0]] = [key, diff - 1]
+      end
+      obj
+      # eg td_nos: [ 0,5,7,8,11,99 ]
+      # eg max_uncollapsed_tds = 240/60 == 4
+      # each_cons(2)
+      #   p[0]  p[1]  diff
+      #   - - - - - - - -
+      #   0     5     5       5<4==false  :collapse
+      #   5     7     2       2<4==true   :dont_collapse
+      #   7     8     1       1<4==true   :dont_collapse
+      #   8    11     3       3<4==true   :dont_collapse
+      #   11   99    88      88<4==false  :collapse
+      #
+      # obj: {
+      #    0 => [ :collapse,       4 ],  # ( 5- 0)-1
+      #    5 => [ :dont_collapse,  1 ],  # ( 7- 5)-1
+      #    7 => [ :dont_collapse,  0 ],  # ( 8- 7)-0
+      #    8 => [ :dont_collapse,  2 ],  # (11- 8)-1
+      #   11 => [ :collapse,      87 ]   # (99-11)-1
+      # }
     end
-    gapped[kata_id].keys.sort.each do |td|
-      break unless lightless_column.call(td)
 
-      delete_column.call(td)
+    def strip(gapped)
+      # remove lightless columns from both ends
+      return gapped if gapped == {}
+
+      empty_column = ->(td) { gapped.all? { |_, h| h[td] == [] } }
+      collapsed_column = ->(td) { gapped.all? { |_, h| h[td].is_a?(Hash) } }
+      lightless_column = ->(td) { empty_column.call(td) || collapsed_column.call(td) }
+      delete_column = ->(td) { gapped.each_value { |h| h.delete(td) } }
+
+      kata_id = gapped.keys[0]
+      gapped[kata_id].keys.sort.reverse_each do |td|
+        break unless lightless_column.call(td)
+
+        delete_column.call(td)
+      end
+      gapped[kata_id].keys.sort.each do |td|
+        break unless lightless_column.call(td)
+
+        delete_column.call(td)
+      end
+      gapped
     end
-    gapped
-  end
 
-  def number(light)
-    n(light.time)
-  end
+    def number(light)
+      n(light.time)
+    end
 
-  def n(now)
-    ordinal(Time.mktime(*now))
-  end
+    def n(now)
+      ordinal(Time.mktime(*now))
+    end
 
-  def ordinal(o)
-    ((o - @start) / @seconds_per_td).to_i
+    def ordinal(o)
+      ((o - @start) / @seconds_per_td).to_i
+    end
   end
 end
 
