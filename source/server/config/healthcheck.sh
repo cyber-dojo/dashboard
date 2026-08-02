@@ -14,7 +14,8 @@ set -Eeu
 readonly PORT="${CYBER_DOJO_DASHBOARD_PORT}"
 readonly READY_LOG_FILENAME=/tmp/ready.log
 
-wget http://0.0.0.0:${PORT}/ready -q -O - >> "${READY_LOG_FILENAME}" 2>&1
+# /dashboard is the app's only mount, so the probe carries the prefix too.
+wget http://0.0.0.0:${PORT}/dashboard/ready -q -O - >> "${READY_LOG_FILENAME}" 2>&1
 echo >> "${READY_LOG_FILENAME}"  # add a newline
 
 # keep only most recent 500 lines
