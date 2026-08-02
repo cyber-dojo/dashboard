@@ -109,7 +109,7 @@ def create_v2_dashboard
   # Diff 1 - 2
   # http://localhost/review/show/SR3Fxc?was_index=1&now_index=2
   # Correctly showing wibble.txt was created, but not selected (cyber-dojo.sh is)
-  # See web repo, source/app/views/review/lib/_pick_file.html.erb
+  # See web repo, source/server/web/views/review/lib/_pick_file.html.erb
   # which shows a bias to not selecting .txt files.
   #
   # Diff 2 - 3
