@@ -3,6 +3,13 @@
 
   cd.lib = {};
 
+  // Every cd fetch asks for JSON and identifies itself as an XHR, so the app
+  // can tell these apart from a page navigation.
+  cd.lib.jsonHeaders = {
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  };
+
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Older katas did not distinguish between
   //   - an auto-revert, from an incorrect test prediction

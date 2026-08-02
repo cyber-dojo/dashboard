@@ -5,6 +5,15 @@ require_relative 'helpers/avatars_progress'
 
 module DashboardApp
   class App < AppBase
+    # Where nginx sends this app's traffic, and where it therefore mounts
+    # itself. Named here so config.ru and the tests mount it identically.
+    MOUNT_PATH = '/dashboard'.freeze
+
+    # The rack app to run: this app under its mount point.
+    def self.mounted(externals)
+      Rack::URLMap.new(MOUNT_PATH => new(externals))
+    end
+
     def initialize(externals)
       super
       @externals = externals
@@ -139,11 +148,11 @@ module DashboardApp
     # The canonical URL of the cluster the requested id sits in: the cluster's
     # own /show URL, carrying the resolved child group as ?group_id= so the same
     # tab stays active, and keeping every other query param (eg sort_by).
-    # Browsers reach this app through nginx, which strips the /dashboard prefix,
-    # so the prefix is put back here - as layout.erb does for the asset paths.
+    # path_to() prepends wherever the app is mounted, so this reads the same
+    # whether that is /dashboard or, in tests, the root.
     def cluster_url
       query = request.params.merge('group_id' => @group_id)
-      "/dashboard/show/#{@cluster_id}?#{Rack::Utils.build_query(query)}"
+      path_to("/show/#{@cluster_id}?#{Rack::Utils.build_query(query)}")
     end
 
     # Picks which child group of a cluster is the initially-active tab. A

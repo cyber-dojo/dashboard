@@ -30,6 +30,13 @@ module DashboardApp
     CSS_PATH = asset_path('app.css')
     JS_PATH  = asset_path('app.js')
 
+    # A path from the host root: wherever the app is mounted, plus this path.
+    # Sinatra's to() returns a full URL unless told otherwise, and a full URL
+    # would bake in the host the request happened to arrive on.
+    def path_to(path)
+      to(path, false)
+    end
+
     # Wires the app to its collaborators (saver, differ).
     def initialize(externals)
       @externals = externals

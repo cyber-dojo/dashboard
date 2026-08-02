@@ -15,7 +15,7 @@ class DiffSummaryTest < TestBase
     kata_id = join_avatar(group_id)
     edit_a_file(kata_id)
 
-    get "/diff_summary?id=#{kata_id}&was_index=0&now_index=1",
+    get "#{App::MOUNT_PATH}/diff_summary?id=#{kata_id}&was_index=0&now_index=1",
         {}, { 'HTTP_ACCEPT' => 'application/json' }
     assert status?(200), "status=#{status}"
 

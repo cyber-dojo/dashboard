@@ -11,8 +11,10 @@ class TestBase < Id58TestBase
   # Externals, TdGapper and friends unqualified.
   include DashboardApp
 
+  # The same mounting config.ru runs, so a test drives the URLs a browser
+  # drives and the app builds the same URLs back. Only the externals differ.
   def app
-    App.new(externals)
+    App.mounted(externals)
   end
 
   def externals

@@ -3,8 +3,9 @@ require 'json'
 require 'rack/builder'
 
 class ConfigRuMountsDashboardPrefixOnlyTest < TestBase
-  # The suite normally drives App directly. This test needs the rack app that
-  # config.ru actually builds, since the two mount points live only there.
+  # The suite normally drives App directly, which mounts it at the root. This
+  # file needs the rack app config.ru builds, because everything here is about
+  # the app being mounted under /dashboard.
   def app
     @app ||= Rack::Builder.parse_file(
       File.expand_path('../../source/config/config.ru', __dir__)
