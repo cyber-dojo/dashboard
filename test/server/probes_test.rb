@@ -84,7 +84,7 @@ class ProbesTest < TestBase
   # the parsed body.
   def assert_probe_200(path, &block)
     stdout, stderr = capture_io do
-      get "/#{path}", {}, { 'HTTP_ACCEPT' => 'application/json' }
+      get "#{App::MOUNT_PATH}/#{path}", {}, { 'HTTP_ACCEPT' => 'application/json' }
     end
     assert status?(200), "status=#{status}"
     assert_equal '', stderr, :stderr

@@ -147,7 +147,7 @@ class HeartbeatTest < TestBase
 
   # GETs /heartbeat/<id> as json, asserts 200, and returns the parsed body.
   def get_heartbeat(id, query = '')
-    get "/heartbeat/#{id}?#{query}", {}, { 'HTTP_ACCEPT' => 'application/json' }
+    get "#{App::MOUNT_PATH}/heartbeat/#{id}?#{query}", {}, { 'HTTP_ACCEPT' => 'application/json' }
     assert status?(200), "status=#{status}"
     JSON.parse(last_response.body)
   end
