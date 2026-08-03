@@ -10,6 +10,10 @@
     'X-Requested-With': 'XMLHttpRequest'
   };
 
+  // The URL for a route under wherever this app is mounted. Mirrors path_to()
+  // in ruby; cd.mountPath is set by layout.erb from SCRIPT_NAME.
+  cd.mountedPath = (route) => `${cd.mountPath}${route}`;
+
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Older katas did not distinguish between
   //   - an auto-revert, from an incorrect test prediction

@@ -29,7 +29,7 @@ $(() => {
   });
 
   const openProgressDialog = () => {
-    fetch(`${cd.mountPath}/progress/${cd.groupId()}`, { headers: cd.lib.jsonHeaders })
+    fetch(cd.mountedPath(`/progress/${cd.groupId()}`), { headers: cd.lib.jsonHeaders })
       .then(r => r.json())
       .then(data => {
         dialog.querySelector('.dialog-body').innerHTML = progressTable(data.katas);

@@ -45,7 +45,7 @@ $(() => {
   // Advance the rotation onto the next active group; if that is the current
   // group (nothing else active) just refresh in place.
   const rotateToNextActiveGroup = () => {
-    fetch(`${cd.mountPath}/active_groups/${cd.id()}`, { headers: cd.lib.jsonHeaders })
+    fetch(cd.mountedPath(`/active_groups/${cd.id()}`), { headers: cd.lib.jsonHeaders })
       .then((response) => response.json())
       .then((active) => {
         const nextId = nextActiveGroupId(active);
