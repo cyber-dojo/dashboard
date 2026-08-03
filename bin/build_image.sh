@@ -21,11 +21,6 @@ show_help()
 EOF
 }
 
-exit_non_zero()
-{
-  kill -INT $$
-}
-
 check_args()
 {
   case "${1:-}" in
