@@ -9,7 +9,7 @@ class AssetsTest < TestBase
     |immutable Cache-Control header, so browsers do not re-pull it
     |through nginx's rate-limited /dashboard/ zone on every navigation
   ] do
-    get "#{App::MOUNT_PATH}#{App::CSS_PATH}"
+    get mounted_asset_path(App::CSS_PATH)
     assert status?(200), status
     assert css_content?, content_type
     cache_control = last_response.headers['Cache-Control']
@@ -23,7 +23,7 @@ class AssetsTest < TestBase
     |the fingerprinted JS path is served as javascript with the
     |same one-year immutable Cache-Control header, as for kf1
   ] do
-    get "#{App::MOUNT_PATH}#{App::JS_PATH}"
+    get mounted_asset_path(App::JS_PATH)
     assert status?(200), status
     assert js_content?, content_type
     cache_control = last_response.headers['Cache-Control']
@@ -48,10 +48,10 @@ class AssetsTest < TestBase
     |the layout links each asset by its fingerprinted path, under the mount
     |point. The app writes no prefix itself: path_to() prepends SCRIPT_NAME.
   ] do
-    get "#{App::MOUNT_PATH}/show/aB3kf4", {}, { 'HTTP_ACCEPT' => 'text/html' }
+    get mounted_path('show/aB3kf4'), {}, { 'HTTP_ACCEPT' => 'text/html' }
     assert status?(200), status
     html = last_response.body
-    assert html.include?(%Q{href="#{App::MOUNT_PATH}#{App::CSS_PATH}"}), html
-    assert html.include?(%Q{src="#{App::MOUNT_PATH}#{App::JS_PATH}"}), html
+    assert html.include?(%Q{href="#{mounted_asset_path(App::CSS_PATH)}"}), html
+    assert html.include?(%Q{src="#{mounted_asset_path(App::JS_PATH)}"}), html
   end
 end

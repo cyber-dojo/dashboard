@@ -19,7 +19,7 @@ class ErrorHandlerTest < TestBase
 
     exception = assert_500_diagnostic['exception']
     assert_equal %w[backtrace http_service request], exception.keys.sort, exception
-    assert_equal({ 'path' => "#{App::MOUNT_PATH}/diff_summary", 'body' => nil },
+    assert_equal({ 'path' => mounted_path('diff_summary'), 'body' => nil },
                  exception['request'], exception)
 
     service = exception['http_service']
@@ -99,7 +99,7 @@ class ErrorHandlerTest < TestBase
     request_body = 'some-request-body'
 
     exception = assert_500_diagnostic(JSON_HEADERS.merge(input: request_body))['exception']
-    assert_equal({ 'path' => "#{App::MOUNT_PATH}/diff_summary", 'body' => request_body },
+    assert_equal({ 'path' => mounted_path('diff_summary'), 'body' => request_body },
                  exception['request'], exception)
   end
 
@@ -111,7 +111,7 @@ class ErrorHandlerTest < TestBase
 
   def assert_500_diagnostic(env = JSON_HEADERS)
     stdout, stderr = capture_io do
-      get "#{App::MOUNT_PATH}/diff_summary?id=#{GROUP_ID}&was_index=1&now_index=2", {}, env
+      get mounted_path("diff_summary?id=#{GROUP_ID}&was_index=1&now_index=2"), {}, env
     end
     assert status?(500), "status=#{status}"
     assert_equal 'application/json', content_type, content_type

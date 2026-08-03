@@ -72,7 +72,7 @@ class ActiveGroupsTest < TestBase
 
   # GETs /active_groups/<id> as json, asserts 200, and returns the parsed body.
   def get_active_groups(id)
-    get "#{App::MOUNT_PATH}/active_groups/#{id}", {}, { 'HTTP_ACCEPT' => 'application/json' }
+    get mounted_path("active_groups/#{id}"), {}, { 'HTTP_ACCEPT' => 'application/json' }
     assert status?(200), "status=#{status}"
     JSON.parse(last_response.body)
   end

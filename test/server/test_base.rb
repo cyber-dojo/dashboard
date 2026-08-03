@@ -21,6 +21,19 @@ class TestBase < Id58TestBase
     @externals ||= Externals.new
   end
 
+  # The URL a browser uses for a route: the app's mount point plus the route.
+  # Takes a bare route name, eg 'show/vntRcc'. It does not strip a leading
+  # slash: accepting both forms hides a doubled-slash path.
+  def mounted_path(route)
+    "#{App::MOUNT_PATH}/#{route}"
+  end
+
+  # The same, for a path that already starts with a slash, eg the
+  # fingerprinted asset paths in App::CSS_PATH and App::JS_PATH.
+  def mounted_asset_path(path)
+    "#{App::MOUNT_PATH}#{path}"
+  end
+
   # True when the last response status matches expected.
   def status?(expected)
     status == expected

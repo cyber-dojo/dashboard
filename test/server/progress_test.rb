@@ -21,7 +21,7 @@ class ProgressTest < TestBase
     index_of = saver_get('group_joined', { id: group_id })
                .to_h { |index, o| [o['id'], index.to_i] }
 
-    get "#{App::MOUNT_PATH}/progress/#{group_id}", {}, { 'HTTP_ACCEPT' => 'application/json' }
+    get mounted_path("progress/#{group_id}"), {}, { 'HTTP_ACCEPT' => 'application/json' }
     assert status?(200), "status=#{status}"
 
     expected = [

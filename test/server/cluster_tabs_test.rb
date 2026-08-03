@@ -29,9 +29,9 @@ class ClusterTabsTest < TestBase
   | a child-group id inside a cluster redirects to the cluster's own URL,
   | carrying that child as group_id so it stays the active tab
   ) do
-    get "#{App::MOUNT_PATH}/show/9bYWLV", {}, { 'HTTP_ACCEPT' => 'text/html' }
+    get mounted_path('show/9bYWLV'), {}, { 'HTTP_ACCEPT' => 'text/html' }
     assert status?(302), "status=#{status}"
-    expected = "#{App::MOUNT_PATH}/show/#{CLUSTER_ID}?group_id=9bYWLV"
+    expected = mounted_path("show/#{CLUSTER_ID}?group_id=9bYWLV")
     assert_equal expected, redirect_location
   end
 
@@ -64,9 +64,9 @@ class ClusterTabsTest < TestBase
   | the redirect to the cluster URL keeps the other query params, so eg a
   | chosen sort survives the hop
   ) do
-    get "#{App::MOUNT_PATH}/show/9bYWLV", { sort_by: 'lights' }, { 'HTTP_ACCEPT' => 'text/html' }
+    get mounted_path('show/9bYWLV'), { sort_by: 'lights' }, { 'HTTP_ACCEPT' => 'text/html' }
     assert status?(302), "status=#{status}"
-    expected = "#{App::MOUNT_PATH}/show/#{CLUSTER_ID}?sort_by=lights&group_id=9bYWLV"
+    expected = mounted_path("show/#{CLUSTER_ID}?sort_by=lights&group_id=9bYWLV")
     assert_equal expected, redirect_location
   end
 
@@ -101,7 +101,7 @@ class ClusterTabsTest < TestBase
 
   # GETs /show/<id> as html, asserts a 200, and returns the response body.
   def show_html(id, params = {})
-    get "#{App::MOUNT_PATH}/show/#{id}", params, { 'HTTP_ACCEPT' => 'text/html' }
+    get mounted_path("show/#{id}"), params, { 'HTTP_ACCEPT' => 'text/html' }
     assert status?(200), "status=#{status}"
     last_response.body
   end
