@@ -32,6 +32,10 @@ curl_smoke_test()
   open "http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/dashboard/show/${GID}?auto_refresh=true&minute_columns=true"
 }
 
+# These curl the dashboard container directly on its published port, so nothing
+# strips or adds a path prefix on the way. The app mounts itself at /dashboard
+# and serves nothing at the root, so the URLs below carry that prefix - see
+# App::MOUNT_PATH, which this script cannot reach.
 curl_json()
 {
   local -r route="${1}"  # eg ready
@@ -43,7 +47,7 @@ curl_json()
     --request GET \
     --silent \
     --verbose \
-      "http://localhost:$(server_port)/${route}" \
+      "http://localhost:$(server_port)/dashboard/${route}" \
       > "$(log_filename)" 2>&1
 }
 
@@ -71,7 +75,7 @@ curl_plain()
     --request GET \
     --silent \
     --verbose \
-      "http://localhost:$(server_port)/${route}" \
+      "http://localhost:$(server_port)/dashboard/${route}" \
       > "$(log_filename)" 2>&1
 }
 

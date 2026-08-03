@@ -96,9 +96,13 @@ service_container()
     --format '{{.ID}}'
 }
 
+# Ends the script, non-zero. Not kill -INT $$: the INT trap above runs
+# remove_tmp_dir, which does not exit, so bash ran the handler and then carried
+# on from where it was - a caller reporting FAILED would keep going and the
+# script would still exit 0.
 exit_non_zero()
 {
-  kill -INT $$
+  exit 42
 }
 
 stderr()
