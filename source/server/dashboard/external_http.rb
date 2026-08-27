@@ -6,11 +6,11 @@ module DashboardApp
       KLASS::Get.new(uri)
     end
 
-    # :nocov: post is called only by the fixture scripts in test/scripts
+    # simplecov:disable post is called only by the fixture scripts in test/scripts
     def post(uri)
       KLASS::Post.new(uri)
     end
-    # :nocov:
+    # simplecov:enable
 
     def start(hostname, port, req)
       KLASS.start(hostname, port) do |http|

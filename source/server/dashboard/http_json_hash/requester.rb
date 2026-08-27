@@ -16,13 +16,13 @@ module DashboardApp
         end
       end
 
-      # :nocov: post is called only by the fixture scripts in test/scripts
+      # simplecov:disable post is called only by the fixture scripts in test/scripts
       def post(path, args)
         request(path, args) do |uri|
           @http.post(uri)
         end
       end
-      # :nocov:
+      # simplecov:enable
 
       private
 
