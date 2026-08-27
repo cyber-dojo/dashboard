@@ -4,7 +4,7 @@
 # ExternalHttp#post, HttpJsonHash::Requester#post and
 # HttpJsonHash::Unpacker#post. The dashboard itself only reads from the saver,
 # so those three methods are live code that no test exercises, and they carry
-# :nocov: markers pointing back here.
+# simplecov:disable markers pointing back here.
 
 require 'json'
 require 'securerandom'
