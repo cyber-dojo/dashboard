@@ -6,7 +6,8 @@ module DashboardApp
       KLASS::Get.new(uri)
     end
 
-    # simplecov:disable post is called only by the fixture scripts in test/scripts
+    # post is called only by the fixture scripts in test/scripts
+    # simplecov:disable
     def post(uri)
       KLASS::Post.new(uri)
     end

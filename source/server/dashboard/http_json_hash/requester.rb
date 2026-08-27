@@ -16,7 +16,8 @@ module DashboardApp
         end
       end
 
-      # simplecov:disable post is called only by the fixture scripts in test/scripts
+      # post is called only by the fixture scripts in test/scripts
+      # simplecov:disable
       def post(path, args)
         request(path, args) do |uri|
           @http.post(uri)

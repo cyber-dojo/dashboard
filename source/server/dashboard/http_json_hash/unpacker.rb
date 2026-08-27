@@ -14,7 +14,8 @@ module DashboardApp
         unpacked(response.body, path.to_s, args)
       end
 
-      # simplecov:disable post is called only by the fixture scripts in test/scripts
+      # post is called only by the fixture scripts in test/scripts
+      # simplecov:disable
       def post(path, args)
         response = @requester.post(path, args)
         unpacked(response.body, path.to_s, args)
