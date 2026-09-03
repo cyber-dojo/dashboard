@@ -73,14 +73,12 @@ build_image()
   fi
 
   if [ "${type}" == 'server' ]; then
-    # Create latest tag for image build cache
-    docker tag "${image_name}" "${CYBER_DOJO_DASHBOARD_IMAGE}:latest"
     # Tag image-name for local development where dashboard's name comes from echo_env_vars
     docker tag "${image_name}" "cyberdojo/dashboard:${CYBER_DOJO_DASHBOARD_TAG}"
-    # After tagging, so removing an earlier build's tags takes its last tag with
-    # them and the image itself goes, rather than being left dangling when
-    # :latest moves to this build. check_args rejects both types inside CI, so
-    # this script only ever runs locally.
+    # After tagging, so this build is protected by its own tag, and removing an
+    # earlier build's tags takes its last tag with them and the image itself
+    # goes. check_args rejects both types inside CI, so this script only ever
+    # runs locally.
     remove_old_images
     echo
     echo "  echo CYBER_DOJO_DASHBOARD_SHA=${CYBER_DOJO_DASHBOARD_SHA}"
