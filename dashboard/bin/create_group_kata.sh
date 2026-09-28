@@ -3,7 +3,7 @@ set -Eeu
 
 if [[ "${1:-}" == '-h' ]]; then
   cat << 'HELP'
-Usage: bin/create_group_kata.sh [traffic_light_count] [avatar_count]
+Usage: dashboard/bin/create_group_kata.sh [traffic_light_count] [avatar_count]
 
   traffic_light_count  Approx number of red/amber/green cycles per avatar (default: 3)
   avatar_count         Approx number of avatars to join the group (default: 16)
@@ -13,10 +13,10 @@ Creates a bash/bats FizzBuzz group kata in the running saver, prints the group I
 To create new demo data and persist it:
 ----------------------------------------
 1. Start the demo:
-     make demo
+     make dashboard_demo
 
 2. Create and save new demo data (runs this script, copies out tgz, updates GID):
-     make demo_data
+     make dashboard_demo_data
 
 3. Commit the updated tgz and demo.sh.
 HELP

@@ -1,7 +1,16 @@
-name: Main
+name: Main dashboard
 
 on:
   push:
+    paths:
+      - 'dashboard/**'
+      - 'deployment/terraform-dashboard/**'
+      - 'flow-templates/**'
+      - 'Dockerfile'
+      - 'Makefile'
+      - 'docker-compose*.yml'
+      - '.dockerignore'
+      - '.github/workflows/main-dashboard.yml'
 
 env:
   KOSLI_API_TOKEN:     ${{ secrets.KOSLI_API_TOKEN }}
@@ -10,13 +19,13 @@ env:
   KOSLI_DRY_RUN:       ${{ vars.KOSLI_DRY_RUN }}               # true/false
   KOSLI_HOST:          ${{ vars.KOSLI_HOST }}                  # https://app.kosli.com
   KOSLI_ORG:           ${{ vars.KOSLI_ORG }}                   # cyber-dojo
-  KOSLI_FLOW:          ${{ vars.KOSLI_FLOW }}                  # dashboard-ci
+  KOSLI_FLOW:          dashboard-ci
   KOSLI_TRAIL:         ${{ github.sha }}
 
   AWS_ECR_ID:          ${{ vars.AWS_ECR_ID }}
   AWS_REGION:          ${{ vars.AWS_REGION }}
   AWS_ACCOUNT_ID_BETA: ${{ vars.AWS_ACCOUNT_ID_BETA }}
-  SERVICE_NAME:        ${{ github.event.repository.name }}  # dashboard
+  SERVICE_NAME:        dashboard
 
 jobs:
 
@@ -55,6 +64,7 @@ jobs:
       - name: Begin Kosli Trail
         uses: cyber-dojo/kosli-begin-trail@main
         with:
+          template_filename: dashboard/.kosli.yml
           flow_description: "UX for a group practice dashboard"
           flow_tags: |
             env=${{ env.KOSLI_AWS_BETA }}
@@ -93,15 +103,15 @@ jobs:
 
       - name: Run Rubocop linter on source
         run:
-          make rubocop_lint
+          make dashboard_rubocop_lint
 
       - name: Attest evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest junit
             --name=dashboard.rubocop-lint
-            --results-dir=./reports/rubocop
-            --attachments=./.rubocop.yml
+            --results-dir=./dashboard/reports/rubocop
+            --attachments=./dashboard/.rubocop.yml
 
 
   sonarcloud-scan:
@@ -118,6 +128,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         uses: SonarSource/sonarqube-scan-action@v7
+        with:
+          projectBaseDir: dashboard
 
 
       - name: Attest evidence to Kosli
@@ -136,7 +148,8 @@ jobs:
       checkout_repository: cyber-dojo/dashboard
       checkout_ref: ${{ github.sha }}
       checkout_fetch_depth: 1
-      image_name: ${{ needs.setup.outputs.ecr_registry }}/${{ github.event.repository.name }}
+      target: dashboard
+      image_name: ${{ needs.setup.outputs.ecr_registry }}/${{ needs.setup.outputs.service_name }}
       image_tag: ${{ needs.setup.outputs.image_tag }}
       image_build_args: |
         COMMIT_SHA=${{ github.sha }}
@@ -179,19 +192,19 @@ jobs:
 
       - name: Run unit tests
         run:
-          make test_server
+          make dashboard_test_server
 
       - name: Get Unit test coverage
         id: coverage
         run:
-          make coverage_server
+          make dashboard_coverage_server
 
       - name: Attest JUnit test evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
         run:
           kosli attest junit
             --name=dashboard.unit-test
-            --results-dir=./reports/server/junit
+            --results-dir=./dashboard/reports/server/junit
 
       - name: Attest coverage evidence to Kosli
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -201,7 +214,7 @@ jobs:
           kosli attest generic \
             --description="unit-test branch-coverage and metrics" \
             --name=dashboard.unit-test-coverage \
-            --user-data=./reports/server/coverage_metrics.json
+            --user-data=./dashboard/reports/server/coverage_metrics.json
 
 
   sdlc-control-gate:

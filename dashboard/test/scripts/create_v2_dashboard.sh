@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeu
 
-# Run this after doing 'make demo'
+# Run this after doing 'make dashboard_demo'
 
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "${ROOT_DIR}/bin/lib.sh"

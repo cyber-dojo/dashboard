@@ -3,19 +3,20 @@ set -Eeu
 
 if [[ "${1:-}" == '-h' ]]; then
   cat << 'HELP'
-Usage: bin/demo_data.sh [traffic_light_count] [avatar_count]
+Usage: dashboard/bin/demo_data.sh [traffic_light_count] [avatar_count]
 
   traffic_light_count  Approx test runs per avatar (default: 5)
   avatar_count         Approx avatars to join the group (default: 20)
 
 Creates a new demo group kata in the running saver, snapshots the result
-to test/data/saver_data.v2.tgz, and writes the GID to test/data/demo_gid.txt.
+to dashboard/test/data/saver_data.v2.tgz, and writes the GID to
+dashboard/test/data/demo_gid.txt.
 
-Requires the demo stack to already be running (run 'make demo' first).
+Requires the demo stack to already be running (run 'make dashboard_demo' first).
 
 Example:
-  make demo
-  bin/demo_data.sh 5 20
+  make dashboard_demo
+  dashboard/bin/demo_data.sh 5 20
 HELP
   exit 0
 fi

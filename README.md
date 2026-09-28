@@ -1,4 +1,4 @@
-[![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/cyber-dojo/dashboard/actions)
+[![Github Action (main)](https://github.com/cyber-dojo/dashboard/actions/workflows/main-dashboard.yml/badge.svg?branch=main)](https://github.com/cyber-dojo/dashboard/actions)
 
 
 - A [docker-containerized](https://registry.hub.docker.com/r/cyberdojo/dashboard) micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
@@ -11,31 +11,31 @@
 
 ```bash
 # To build the image
-$ make image_server
+$ make dashboard_image
 
 # To run all tests
-$ make test_server
+$ make dashboard_test_server
 
 # To run only specific tests
-$ make test_server tid=449AC6
+$ make dashboard_test_server tid=449AC6
 
 # To check coverage metrics
-$ make coverage_server
+$ make dashboard_coverage_server
 
 # To run snyk-container-scan
-$ make snyk_container_scan
+$ make dashboard_snyk_container_scan
 
 # To run rubocop-lint
-$ make rubocop_lint
+$ make dashboard_rubocop_lint
 
 # To run demo
-$ make demo v=2
+$ make dashboard_demo v=2
 ```
 
 - - - -
-* [GET alive](docs/api.md#get-alive)  
-* [GET ready](docs/api.md#get-ready)
-* [GET sha](docs/api.md#get-sha)
+* [GET alive](dashboard/docs/api.md#get-alive)  
+* [GET ready](dashboard/docs/api.md#get-ready)
+* [GET sha](dashboard/docs/api.md#get-sha)
 * ...
 
 - - - -
