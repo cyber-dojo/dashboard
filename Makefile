@@ -1,21 +1,21 @@
 
-image_server:
-	@${PWD}/bin/build_image.sh server
+dashboard_image:
+	@${PWD}/dashboard/bin/build_image.sh server
 
-test_server:
-	@${PWD}/bin/run_tests.sh server
+dashboard_test_server:
+	@${PWD}/dashboard/bin/run_tests.sh server
 
-coverage_server:
-	@${PWD}/bin/check_coverage.sh server
+dashboard_coverage_server:
+	@${PWD}/dashboard/bin/check_coverage.sh server
 
-rubocop_lint:
-	@${PWD}/bin/rubocop_lint.sh
+dashboard_rubocop_lint:
+	@${PWD}/dashboard/bin/rubocop_lint.sh
 
-snyk_container_scan:
-	@${PWD}/bin/snyk_container_scan.sh
+dashboard_snyk_container_scan:
+	@${PWD}/dashboard/bin/snyk_container_scan.sh
 
-demo: image_server
-	@${PWD}/bin/demo.sh
+dashboard_demo: dashboard_image
+	@${PWD}/dashboard/bin/demo.sh
 
-demo_data:
-	@${PWD}/bin/demo_data.sh
+dashboard_demo_data:
+	@${PWD}/dashboard/bin/demo_data.sh

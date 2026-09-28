@@ -1,4 +1,4 @@
 snyk.container.scan.json
 
-reports/*
-reports/.*
+dashboard/reports/*
+dashboard/reports/.*

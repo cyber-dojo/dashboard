@@ -6,10 +6,10 @@
 # comment) so concurrent test runs - here and in sibling repos - don't collide.
 # The demo needs two host ports:
 #   - nginx, so a browser can open the dashboard through the real routing
-#     (bin/demo.sh opens http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/...).
-#   - dashboard itself, because bin/demo.sh's curl_smoke_test curls it directly
-#     on CYBER_DOJO_DASHBOARD_PORT, bypassing nginx.
-# See bin/demo.sh.
+#     (dashboard/bin/demo.sh opens http://localhost:${CYBER_DOJO_NGINX_HOST_PORT}/...).
+#   - dashboard itself, because dashboard/bin/demo.sh's curl_smoke_test curls it
+#     directly on CYBER_DOJO_DASHBOARD_PORT, bypassing nginx.
+# See dashboard/bin/demo.sh.
 
 services:
 
