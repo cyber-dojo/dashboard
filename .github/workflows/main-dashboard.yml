@@ -139,6 +139,7 @@ jobs:
             --max-wait=16
             --name=dashboard.sonarcloud-scan
             --sonar-api-token="${{ secrets.SONARCLOUD_TOKEN }}"
+            --sonar-working-dir=dashboard/.scannerwork
 
 
   build-image:
